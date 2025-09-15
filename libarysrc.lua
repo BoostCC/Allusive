@@ -1,1 +1,777 @@
-print("ud ud ud")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local libary = {}
+local KeybindList = {}
+local Windows = {}
+local CurrentWindow = nil
+local CurrentTab = nil
+local Sections = {left = {}, right = {}}
+local ActiveKeybinds = {}
+local Dragging = false
+local DragStart = nil
+local DragStartPosition = nil
+
+local libary_config = {
+    ToggleState = {},
+    SliderProgress = {},
+    TextInputValue = {},
+    DropdownSelectedValues = {},
+    DropdownValue = {},
+    ConfigName = {},
+    ConfigDate = {},
+    KeybindValue = {},
+    ColorPickerValue = {},
+    MasterSwitchState = {},
+    UIDPIScaleValue = {},
+    KeybindListState = {}
+}
+
+-- Create the main ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = game.CoreGui
+
+-- Main Window Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Name = "MainFrame"
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.Size = UDim2.new(0, 615, 0, 382)
+MainFrame.BorderSizePixel = 0
+MainFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(25, 25, 25)
+UIStroke.Parent = MainFrame
+
+-- Header
+local Header = Instance.new("Frame")
+Header.BackgroundTransparency = 1
+Header.Name = "Header"
+Header.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Header.Size = UDim2.new(0, 615, 0, 32)
+Header.BorderSizePixel = 0
+Header.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Header.Parent = MainFrame
+
+local Inline = Instance.new("Frame")
+Inline.AnchorPoint = Vector2.new(0, 1)
+Inline.Name = "Inline"
+Inline.Position = UDim2.new(0, 0, 1, 0)
+Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Inline.Size = UDim2.new(1, 1, 0, 1)
+Inline.BorderSizePixel = 0
+Inline.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Inline.Parent = Header
+
+local Libary_Name = Instance.new("TextLabel")
+Libary_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+Libary_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+Libary_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Libary_Name.Text = "YourLibary"
+Libary_Name.Name = "Libary_Name"
+Libary_Name.AnchorPoint = Vector2.new(0, 0.5)
+Libary_Name.Size = UDim2.new(0, 1, 0, 1)
+Libary_Name.BackgroundTransparency = 1
+Libary_Name.Position = UDim2.new(0, 50, 0.5, 0)
+Libary_Name.BorderSizePixel = 0
+Libary_Name.AutomaticSize = Enum.AutomaticSize.XY
+Libary_Name.TextSize = 12
+Libary_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Libary_Name.Parent = Header
+
+-- Exit Button
+local Exit_Button = Instance.new("ImageLabel")
+Exit_Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Exit_Button.Name = "Exit_Button"
+Exit_Button.AnchorPoint = Vector2.new(1, 0.5)
+Exit_Button.Image = "rbxassetid://112974212472592"
+Exit_Button.BackgroundTransparency = 1
+Exit_Button.Position = UDim2.new(0.9804878234863281, 0, 0.5, 0)
+Exit_Button.Size = UDim2.new(0, 15, 0, 15)
+Exit_Button.BorderSizePixel = 0
+Exit_Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Exit_Button.Parent = Header
+
+-- Minus Button
+local Minus_Button = Instance.new("ImageLabel")
+Minus_Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Minus_Button.Name = "Minus_Button"
+Minus_Button.AnchorPoint = Vector2.new(1, 0.5)
+Minus_Button.Image = "rbxassetid://76709387357398"
+Minus_Button.BackgroundTransparency = 1
+Minus_Button.Position = UDim2.new(0.9447154402732849, 0, 0.5, 0)
+Minus_Button.Size = UDim2.new(0, 15, 0, 15)
+Minus_Button.BorderSizePixel = 0
+Minus_Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Minus_Button.Parent = Header
+
+-- Icon Holder
+local Holder = Instance.new("Frame")
+Holder.BackgroundTransparency = 1
+Holder.Name = "Holder"
+Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder.Size = UDim2.new(0, 39, 0, 31)
+Holder.BorderSizePixel = 0
+Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder.Parent = MainFrame
+
+local Libary_Icon = Instance.new("ImageLabel")
+Libary_Icon.ScaleType = Enum.ScaleType.Fit
+Libary_Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Libary_Icon.Name = "Libary_Icon"
+Libary_Icon.AnchorPoint = Vector2.new(0.5, 0.5)
+Libary_Icon.Image = "rbxassetid://130833403023050"
+Libary_Icon.BackgroundTransparency = 1
+Libary_Icon.Position = UDim2.new(0.5, 0, 0.5, 0)
+Libary_Icon.Size = UDim2.new(0, 15, 0, 15)
+Libary_Icon.BorderSizePixel = 0
+Libary_Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Libary_Icon.Parent = Holder
+
+local Inline = Instance.new("Frame")
+Inline.AnchorPoint = Vector2.new(1, 0)
+Inline.Name = "Inline"
+Inline.Position = UDim2.new(1, 0, 0, 0)
+Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Inline.Size = UDim2.new(0, 1, 1, 1)
+Inline.BorderSizePixel = 0
+Inline.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Inline.Parent = Holder
+
+-- Side Bar
+local Side_Bar = Instance.new("Frame")
+Side_Bar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Side_Bar.AnchorPoint = Vector2.new(0, 1)
+Side_Bar.BackgroundTransparency = 1
+Side_Bar.Position = UDim2.new(0, 0, 1, 0)
+Side_Bar.Name = "Side_Bar"
+Side_Bar.Size = UDim2.new(0, 126, 0, 351)
+Side_Bar.BorderSizePixel = 0
+Side_Bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Side_Bar.Parent = MainFrame
+
+local Inline = Instance.new("Frame")
+Inline.AnchorPoint = Vector2.new(1, 0)
+Inline.Name = "Inline"
+Inline.Position = UDim2.new(1, 0, 0, 0)
+Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Inline.Size = UDim2.new(0, 1, 1, 1)
+Inline.BorderSizePixel = 0
+Inline.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Inline.Parent = Side_Bar
+
+-- Player Info Holder
+local PlayerHolder = Instance.new("Frame")
+PlayerHolder.AnchorPoint = Vector2.new(0.5, 1)
+PlayerHolder.Name = "PlayerHolder"
+PlayerHolder.Position = UDim2.new(0.488095223903656, 0, 1, -8)
+PlayerHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PlayerHolder.Size = UDim2.new(0, 114, 0, 35)
+PlayerHolder.BorderSizePixel = 0
+PlayerHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+PlayerHolder.Parent = Side_Bar
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = PlayerHolder
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(25, 25, 25)
+UIStroke.Parent = PlayerHolder
+
+local Player_Icon = Instance.new("ImageLabel")
+Player_Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Player_Icon.AnchorPoint = Vector2.new(0, 0.5)
+Player_Icon.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+Player_Icon.Name = "Player_Icon"
+Player_Icon.Position = UDim2.new(0.061403509229421616, 0, 0.5, 0)
+Player_Icon.Size = UDim2.new(0, 22, 0, 22)
+Player_Icon.BorderSizePixel = 0
+Player_Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Player_Icon.Parent = PlayerHolder
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 50)
+UICorner.Parent = Player_Icon
+
+local Player_User = Instance.new("TextLabel")
+Player_User.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Player_User.TextColor3 = Color3.fromRGB(255, 255, 255)
+Player_User.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Player_User.Text = "RobloxUser"
+Player_User.Name = "Player_User"
+Player_User.Size = UDim2.new(0, 1, 0, 1)
+Player_User.BackgroundTransparency = 1
+Player_User.Position = UDim2.new(0.280456006526947, 3, 0.17157156765460968, 0)
+Player_User.BorderSizePixel = 0
+Player_User.AutomaticSize = Enum.AutomaticSize.XY
+Player_User.TextSize = 12
+Player_User.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Player_User.Parent = PlayerHolder
+
+local Player_Membership = Instance.new("TextLabel")
+Player_Membership.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+Player_Membership.TextColor3 = Color3.fromRGB(75, 75, 75)
+Player_Membership.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Player_Membership.Text = "Owner"
+Player_Membership.Name = "Player_Membership"
+Player_Membership.Size = UDim2.new(0, 1, 0, 1)
+Player_Membership.BorderSizePixel = 0
+Player_Membership.BackgroundTransparency = 1
+Player_Membership.Position = UDim2.new(0.2982456088066101, 0, 0.5142857432365417, 0)
+Player_Membership.RichText = true
+Player_Membership.AutomaticSize = Enum.AutomaticSize.XY
+Player_Membership.TextSize = 12
+Player_Membership.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Player_Membership.Parent = PlayerHolder
+
+-- Tab Container
+local TabContainer = Instance.new("Frame")
+TabContainer.BackgroundTransparency = 1
+TabContainer.Name = "TabContainer"
+TabContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TabContainer.Size = UDim2.new(0, 125, 0, 352)
+TabContainer.BorderSizePixel = 0
+TabContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TabContainer.Parent = Side_Bar
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0, 8)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Parent = TabContainer
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0, 10)
+UIPadding.PaddingLeft = UDim.new(0, 8)
+UIPadding.Parent = TabContainer
+
+-- Main Content Area
+local Page = Instance.new("Frame")
+Page.Name = "Page"
+Page.BackgroundTransparency = 1
+Page.Position = UDim2.new(0.20596517622470856, 0, 0.08496125787496567, 0)
+Page.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Page.Size = UDim2.new(0, 489, 0, 350)
+Page.BorderSizePixel = 0
+Page.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Page.Parent = MainFrame
+
+local Container = Instance.new("ScrollingFrame")
+Container.Active = true
+Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Container.ScrollBarThickness = 0
+Container.BackgroundTransparency = 1
+Container.Name = "Container"
+Container.Size = UDim2.new(0, 488, 0, 349)
+Container.BorderSizePixel = 0
+Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Container.Parent = Page
+
+local UIListLayout2 = Instance.new("UIListLayout")
+UIListLayout2.Wraps = true
+UIListLayout2.Padding = UDim.new(0, 12)
+UIListLayout2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout2.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout2.Parent = Container
+
+local UIPadding2 = Instance.new("UIPadding")
+UIPadding2.PaddingTop = UDim.new(0, 10)
+UIPadding2.PaddingLeft = UDim.new(0, 10)
+UIPadding2.Parent = Container
+
+-- Shadow effect
+local Shadow = Instance.new("Frame")
+Shadow.AnchorPoint = Vector2.new(0, 1)
+Shadow.Name = "Shadow"
+Shadow.Position = UDim2.new(0, 0, 1, 0)
+Shadow.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Shadow.Size = UDim2.new(0, 488, 0, 83)
+Shadow.BorderSizePixel = 0
+Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Shadow.Parent = Page
+
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Rotation = 90
+UIGradient.Transparency = NumberSequence.new{
+    NumberSequenceKeypoint.new(0, 1),
+    NumberSequenceKeypoint.new(0.291, 0.28125),
+    NumberSequenceKeypoint.new(0.915, 0.012499988079071045),
+    NumberSequenceKeypoint.new(0.928, 0),
+    NumberSequenceKeypoint.new(1, 0)
+}
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+}
+UIGradient.Parent = Shadow
+
+-- Drag handle
+local Scalable_Dragge = Instance.new("ImageLabel")
+Scalable_Dragge.ImageColor3 = Color3.fromRGB(88, 88, 88)
+Scalable_Dragge.ScaleType = Enum.ScaleType.Fit
+Scalable_Dragge.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Scalable_Dragge.Name = "Scalable_Dragge"
+Scalable_Dragge.AnchorPoint = Vector2.new(1, 1)
+Scalable_Dragge.Image = "rbxassetid://74600870587278"
+Scalable_Dragge.BackgroundTransparency = 1
+Scalable_Dragge.Position = UDim2.new(0.9856557250022888, 0, 0.891566276550293, 0)
+Scalable_Dragge.Size = UDim2.new(0, 10, 0, 10)
+Scalable_Dragge.BorderSizePixel = 0
+Scalable_Dragge.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Scalable_Dragge.Parent = Shadow
+
+-- Window class
+local Window = {}
+Window.__index = Window
+
+-- Tab class
+local Tab = {}
+Tab.__index = Tab
+
+-- Section class
+local Section = {}
+Section.__index = Section
+
+-- CreateWindow function
+function libary:CreateWindow(config)
+    local window = setmetatable({}, Window)
+    window.config = config.library_config or {}
+    window.tabs = {}
+    window.currentTab = nil
+    
+    -- Update library name and icon
+    if window.config.Cheat_Name then
+        Libary_Name.Text = window.config.Cheat_Name
+    end
+    
+    if window.config.Cheat_Icon then
+        Libary_Icon.Image = window.config.Cheat_Icon
+    end
+    
+    -- Update player info
+    if window.config.Player_Membership then
+        Player_Membership.Text = window.config.Player_Membership
+    end
+    
+    -- Set up keybind
+    if window.config.interface_keybind then
+        local keybind = Enum.KeyCode[window.config.interface_keybind]
+        if keybind then
+            UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                if not gameProcessed and input.KeyCode == keybind then
+                    MainFrame.Visible = not MainFrame.Visible
+                end
+            end)
+        end
+    end
+    
+    -- Set up exit button
+    Exit_Button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            MainFrame.Visible = false
+        end
+    end)
+    
+    -- Set up minimize button
+    Minus_Button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            MainFrame.Size = UDim2.new(0, 615, 0, 32)
+            Page.Visible = false
+        end
+    end)
+    
+    -- Double click to restore
+    Minus_Button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            wait(0.1)
+            if Minus_Button.AbsolutePosition.X <= UserInputService:GetMouseLocation().X and 
+               UserInputService:GetMouseLocation().X <= Minus_Button.AbsolutePosition.X + Minus_Button.AbsoluteSize.X and
+               Minus_Button.AbsolutePosition.Y <= UserInputService:GetMouseLocation().Y and 
+               UserInputService:GetMouseLocation().Y <= Minus_Button.AbsolutePosition.Y + Minus_Button.AbsoluteSize.Y then
+                MainFrame.Size = UDim2.new(0, 615, 0, 382)
+                Page.Visible = true
+            end
+        end
+    end)
+    
+    -- Set up dragging
+    local dragging = false
+    local dragStart = nil
+    local startPosition = nil
+    
+    Header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPosition = MainFrame.Position
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            MainFrame.Position = UDim2.new(startPosition.X.Scale, startPosition.X.Offset + delta.X, startPosition.Y.Scale, startPosition.Y.Offset + delta.Y)
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    CurrentWindow = window
+    return window
+end
+
+-- CreateTab function
+function Window:CreateTab(config)
+    local tab = setmetatable({}, Tab)
+    tab.config = config
+    tab.sections = {left = {}, right = {}}
+    
+    -- Create tab button
+    local TabButton = Instance.new("Frame")
+    TabButton.Name = "Tab_" .. config.TabText
+    TabButton.BackgroundTransparency = 1
+    TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabButton.Size = UDim2.new(0, 107, 0, 25)
+    TabButton.BorderSizePixel = 0
+    TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    TabButton.Parent = TabContainer
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = TabButton
+    
+    local Icon = Instance.new("ImageLabel")
+    Icon.ImageColor3 = Color3.fromRGB(78, 78, 78)
+    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Icon.Name = "Icon"
+    Icon.AnchorPoint = Vector2.new(0, 0.5)
+    Icon.Image = config.icon or "rbxassetid://103009339613412"
+    Icon.BackgroundTransparency = 1
+    Icon.Position = UDim2.new(0, 6, 0.5, 0)
+    Icon.Size = UDim2.new(0, 15, 0, 15)
+    Icon.BorderSizePixel = 0
+    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Icon.Parent = TabButton
+    
+    local Tab_Name = Instance.new("TextLabel")
+    Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
+    Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Tab_Name.Text = config.TabText
+    Tab_Name.Name = "Tab_Name"
+    Tab_Name.AnchorPoint = Vector2.new(0, 0.5)
+    Tab_Name.Size = UDim2.new(0, 1, 0, 1)
+    Tab_Name.BackgroundTransparency = 1
+    Tab_Name.Position = UDim2.new(0, 25, 0.5, 0)
+    Tab_Name.BorderSizePixel = 0
+    Tab_Name.AutomaticSize = Enum.AutomaticSize.XY
+    Tab_Name.TextSize = 14
+    Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Tab_Name.Parent = TabButton
+    
+    -- Tab click functionality
+    TabButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            -- Hide all sections
+            for _, section in pairs(Container:GetChildren()) do
+                if section:IsA("Frame") and section.Name:find("Section_") then
+                    section.Visible = false
+                end
+            end
+            
+            -- Show this tab's sections
+            for _, section in pairs(tab.sections.left) do
+                if section.frame then
+                    section.frame.Visible = true
+                end
+            end
+            for _, section in pairs(tab.sections.right) do
+                if section.frame then
+                    section.frame.Visible = true
+                end
+            end
+            
+            -- Update tab appearance
+            for _, child in pairs(TabContainer:GetChildren()) do
+                if child:IsA("Frame") and child.Name:find("Tab_") then
+                    child.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                    child:FindFirstChild("Tab_Name").TextColor3 = Color3.fromRGB(78, 78, 78)
+                    child:FindFirstChild("Icon").ImageColor3 = Color3.fromRGB(78, 78, 78)
+                end
+            end
+            
+            TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+            
+            CurrentTab = tab
+        end
+    end)
+    
+    -- Set as first tab if none selected
+    if not CurrentTab then
+        TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+        CurrentTab = tab
+    end
+    
+    table.insert(self.tabs, tab)
+    return tab
+end
+
+-- CreateSection function
+function Tab:CreateSection(config)
+    local section = setmetatable({}, Section)
+    section.config = config
+    section.components = {}
+    
+    -- Create section frame
+    local SectionFrame = Instance.new("Frame")
+    SectionFrame.ClipsDescendants = true
+    SectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SectionFrame.Name = "Section_" .. config.SectionText
+    SectionFrame.Size = UDim2.new(0, 228, 0, 65)
+    SectionFrame.BorderSizePixel = 0
+    SectionFrame.AutomaticSize = Enum.AutomaticSize.Y
+    SectionFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+    SectionFrame.Parent = Container
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = SectionFrame
+    
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+    UIStroke.Parent = SectionFrame
+    
+    -- Header
+    local Header = Instance.new("Frame")
+    Header.AnchorPoint = Vector2.new(0.5, 0)
+    Header.Name = "Header"
+    Header.Position = UDim2.new(0.5, 0, 0, 0)
+    Header.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Header.Size = UDim2.new(0, 228, 0, 35)
+    Header.BorderSizePixel = 0
+    Header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Header.Parent = SectionFrame
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Header
+    
+    local Inline = Instance.new("Frame")
+    Inline.AnchorPoint = Vector2.new(0, 1)
+    Inline.Name = "Inline"
+    Inline.Position = UDim2.new(0, 0, 1, 0)
+    Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Inline.Size = UDim2.new(1, 1, 0, 1)
+    Inline.BorderSizePixel = 0
+    Inline.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+    Inline.Parent = Header
+    
+    local Icon = Instance.new("ImageLabel")
+    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Icon.Name = "Icon"
+    Icon.AnchorPoint = Vector2.new(0, 0.5)
+    Icon.Image = config.SectionIcon or "rbxassetid://78055370910689"
+    Icon.BackgroundTransparency = 1
+    Icon.Position = UDim2.new(0, 8, 0.5, 0)
+    Icon.Size = UDim2.new(0, 15, 0, 15)
+    Icon.BorderSizePixel = 0
+    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Icon.Parent = Header
+    
+    local Section_Name = Instance.new("TextLabel")
+    Section_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Section_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Section_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Section_Name.Text = config.SectionText
+    Section_Name.Name = "Section_Name"
+    Section_Name.AnchorPoint = Vector2.new(0, 0.5)
+    Section_Name.Size = UDim2.new(0, 1, 0, 1)
+    Section_Name.BackgroundTransparency = 1
+    Section_Name.Position = UDim2.new(0, 30, 0.5, 0)
+    Section_Name.BorderSizePixel = 0
+    Section_Name.AutomaticSize = Enum.AutomaticSize.XY
+    Section_Name.TextSize = 14
+    Section_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Section_Name.Parent = Header
+    
+    -- Master Switch (if enabled)
+    if config.MasterSwitchState then
+        local Master_Switch = Instance.new("Frame")
+        Master_Switch.AnchorPoint = Vector2.new(1, 0.5)
+        Master_Switch.Name = "Master_Switch"
+        Master_Switch.Position = UDim2.new(1, -10, 0.5, 0)
+        Master_Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        Master_Switch.Size = UDim2.new(0, 30, 0, 18)
+        Master_Switch.BorderSizePixel = 0
+        Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+        Master_Switch.Parent = Header
+        
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 100)
+        UICorner.Parent = Master_Switch
+        
+        local Pointer = Instance.new("Frame")
+        Pointer.AnchorPoint = Vector2.new(0, 0.5)
+        Pointer.Name = "Pointer"
+        Pointer.Position = UDim2.new(0, 3, 0.5, 0)
+        Pointer.BorderColor3 = Color3.fromRGB(20, 20, 20)
+        Pointer.Size = UDim2.new(0, 12, 0, 12)
+        Pointer.BorderSizePixel = 0
+        Pointer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Pointer.Parent = Master_Switch
+        
+        local UICorner2 = Instance.new("UICorner")
+        UICorner2.CornerRadius = UDim.new(0, 100)
+        UICorner2.Parent = Pointer
+    end
+    
+    -- Keybind display
+    local Keybind = Instance.new("TextLabel")
+    Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Keybind.Text = "Space"
+    Keybind.BorderSizePixel = 0
+    Keybind.AnchorPoint = Vector2.new(1, 0.5)
+    Keybind.Size = UDim2.new(0, 1, 0, 1)
+    Keybind.Name = "Keybind"
+    Keybind.Position = UDim2.new(1, -45, 0.5, 0)
+    Keybind.AutomaticSize = Enum.AutomaticSize.XY
+    Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
+    Keybind.TextSize = 14
+    Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+    Keybind.Parent = Header
+    
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.PaddingTop = UDim.new(0, 3)
+    UIPadding.PaddingBottom = UDim.new(0, 3)
+    UIPadding.PaddingRight = UDim.new(0, 6)
+    UIPadding.PaddingLeft = UDim.new(0, 6)
+    UIPadding.Parent = Keybind
+    
+    local UICorner3 = Instance.new("UICorner")
+    UICorner3.CornerRadius = UDim.new(0, 4)
+    UICorner3.Parent = Keybind
+    
+    -- Content holder
+    local Holder = Instance.new("Frame")
+    Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Holder.AnchorPoint = Vector2.new(0.5, 0)
+    Holder.Name = "Holder"
+    Holder.BackgroundTransparency = 1
+    Holder.Position = UDim2.new(0.5, 0, 1, 0)
+    Holder.Size = UDim2.new(0, 1, 0, 1)
+    Holder.BorderSizePixel = 0
+    Holder.AutomaticSize = Enum.AutomaticSize.XY
+    Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Holder.Parent = Header
+    
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Parent = Holder
+    
+    local UIPadding2 = Instance.new("UIPadding")
+    UIPadding2.PaddingBottom = UDim.new(0, 25)
+    UIPadding2.PaddingTop = UDim.new(0, 4)
+    UIPadding2.Parent = Holder
+    
+    local UIPadding3 = Instance.new("UIPadding")
+    UIPadding3.PaddingBottom = UDim.new(0, 10)
+    UIPadding3.Parent = SectionFrame
+    
+    section.frame = SectionFrame
+    section.header = Header
+    section.holder = Holder
+    
+    -- Add to appropriate side
+    if config.position == "left" then
+        table.insert(self.sections.left, section)
+    else
+        table.insert(self.sections.right, section)
+    end
+    
+    return section
+end
+
+-- Placeholder functions for other components (hidden for now)
+function Section:CreateToggle(config)
+    print("Toggle created:", config.ToggleText)
+    return {}
+end
+
+function Section:CreateSlider(config)
+    print("Slider created:", config.SliderText)
+    return {}
+end
+
+function Section:CreateTextInput(config)
+    print("TextInput created:", config.TextInputText)
+    return {}
+end
+
+function Section:CreateDropdown(config)
+    print("Dropdown created:", config.DropdownText)
+    return {}
+end
+
+function Section:CreateKeybind(config)
+    print("Keybind created:", config.KeybindText)
+    return {}
+end
+
+function Section:CreateColorpicker(config)
+    print("Colorpicker created:", config.ColorpickerText)
+    return {}
+end
+
+function Section:CreateLabel(config)
+    print("Label created:", config.LabelText)
+    return {}
+end
+
+function Section:CreateButton(config)
+    print("Button created:", config.ButtonText)
+    return {}
+end
+
+function Section:AddColorToggle(config)
+    print("ColorToggle created:", config)
+    return {}
+end
+
+function Tab:CreateConfigSection(config)
+    print("ConfigSection created:", config.Text)
+    return {}
+end
+
+-- Library utility functions
+function libary:KeybindList()
+    print("KeybindList called")
+end
+
+function libary:CreateNotification(config)
+    print("Notification created:", config.NotiTitle)
+end
+
+function libary:SetAccentColor(color)
+    print("Accent color set:", color)
+end
+
+return libary
