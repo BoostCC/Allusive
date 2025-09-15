@@ -191,7 +191,7 @@ UIStroke.Parent = PlayerHolder
 local Player_Icon = Instance.new("ImageLabel")
 Player_Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Player_Icon.AnchorPoint = Vector2.new(0, 0.5)
-Player_Icon.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+Player_Icon.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=150&height=150&format=png"
 Player_Icon.Name = "Player_Icon"
 Player_Icon.Position = UDim2.new(0.061403509229421616, 0, 0.5, 0)
 Player_Icon.Size = UDim2.new(0, 22, 0, 22)
@@ -207,7 +207,7 @@ local Player_User = Instance.new("TextLabel")
 Player_User.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Player_User.TextColor3 = Color3.fromRGB(255, 255, 255)
 Player_User.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Player_User.Text = "RobloxUser"
+Player_User.Text = game.Players.LocalPlayer.Name
 Player_User.Name = "Player_User"
 Player_User.Size = UDim2.new(0, 1, 0, 1)
 Player_User.BackgroundTransparency = 1
@@ -442,7 +442,7 @@ function Window:CreateTab(config)
     -- Create tab button
     local TabButton = Instance.new("Frame")
     TabButton.Name = "Tab_" .. config.TabText
-    TabButton.BackgroundTransparency = 1
+    TabButton.Position = UDim2.new(0.0873015895485878, 0, 0.022522522136569023, 0)
     TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabButton.Size = UDim2.new(0, 107, 0, 25)
     TabButton.BorderSizePixel = 0
@@ -453,8 +453,11 @@ function Window:CreateTab(config)
     UICorner.CornerRadius = UDim.new(0, 4)
     UICorner.Parent = TabButton
     
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(25, 25, 25)
+    UIStroke.Parent = TabButton
+    
     local Icon = Instance.new("ImageLabel")
-    Icon.ImageColor3 = Color3.fromRGB(78, 78, 78)
     Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Icon.Name = "Icon"
     Icon.AnchorPoint = Vector2.new(0, 0.5)
@@ -468,7 +471,7 @@ function Window:CreateTab(config)
     
     local Tab_Name = Instance.new("TextLabel")
     Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
+    Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
     Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Tab_Name.Text = config.TabText
     Tab_Name.Name = "Tab_Name"
@@ -510,12 +513,18 @@ function Window:CreateTab(config)
                     child.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
                     child:FindFirstChild("Tab_Name").TextColor3 = Color3.fromRGB(78, 78, 78)
                     child:FindFirstChild("Icon").ImageColor3 = Color3.fromRGB(78, 78, 78)
+                    if child:FindFirstChild("UIStroke") then
+                        child:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
+                    end
                 end
             end
             
             TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
             Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+            if TabButton:FindFirstChild("UIStroke") then
+                TabButton:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
+            end
             
             CurrentTab = tab
         end
@@ -526,6 +535,9 @@ function Window:CreateTab(config)
         TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
         Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+        if TabButton:FindFirstChild("UIStroke") then
+            TabButton:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
+        end
         CurrentTab = tab
     end
     
@@ -659,6 +671,55 @@ function Tab:CreateSection(config)
     Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
     Keybind.Parent = Header
     
+    -- Keybind functionality
+    local currentKeybind = Enum.KeyCode.Space
+    local keybindConnection = nil
+    
+    local function updateKeybind(keyCode)
+        currentKeybind = keyCode
+        Keybind.Text = keyCode.Name
+        
+        -- Disconnect old connection
+        if keybindConnection then
+            keybindConnection:Disconnect()
+        end
+        
+        -- Create new connection
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed and input.KeyCode == currentKeybind then
+                -- Toggle all toggles in this section
+                for _, component in pairs(section.components) do
+                    if component.toggle and component.state ~= nil then
+                        component.state = not component.state
+                        if component.config.Callback then
+                            component.config.Callback(component.state)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    -- Set up keybind listening
+    Keybind.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Keybind.Text = "Press Key..."
+            Keybind.TextColor3 = Color3.fromRGB(255, 255, 0)
+            
+            local connection
+            connection = UserInputService.InputBegan:Connect(function(input2, gameProcessed)
+                if not gameProcessed and input2.KeyCode ~= Enum.KeyCode.MouseButton1 then
+                    updateKeybind(input2.KeyCode)
+                    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    connection:Disconnect()
+                end
+            end)
+        end
+    end)
+    
+    -- Initialize keybind
+    updateKeybind(Enum.KeyCode.Space)
+    
     local UIPadding = Instance.new("UIPadding")
     UIPadding.PaddingTop = UDim.new(0, 3)
     UIPadding.PaddingBottom = UDim.new(0, 3)
@@ -710,10 +771,120 @@ function Tab:CreateSection(config)
     return section
 end
 
--- Placeholder functions for other components (hidden for now)
+-- Working Toggle function with animations
 function Section:CreateToggle(config)
-    print("Toggle created:", config.ToggleText)
-    return {}
+    local toggle = {}
+    toggle.config = config
+    toggle.state = false
+    
+    -- Create toggle component
+    local ToggleComponent = Instance.new("Frame")
+    ToggleComponent.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ToggleComponent.AnchorPoint = Vector2.new(0.5, 0)
+    ToggleComponent.BackgroundTransparency = 1
+    ToggleComponent.Position = UDim2.new(0.5, 0, 0, 0)
+    ToggleComponent.Name = "Toggle_" .. config.ToggleText
+    ToggleComponent.Size = UDim2.new(0, 228, 0, 30)
+    ToggleComponent.BorderSizePixel = 0
+    ToggleComponent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleComponent.Parent = self.holder
+    
+    local ToggleText = Instance.new("TextLabel")
+    ToggleText.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ToggleText.Text = config.ToggleText
+    ToggleText.Name = "Toggle_Text"
+    ToggleText.AnchorPoint = Vector2.new(0, 0.5)
+    ToggleText.Size = UDim2.new(0, 1, 0, 1)
+    ToggleText.BackgroundTransparency = 1
+    ToggleText.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+    ToggleText.BorderSizePixel = 0
+    ToggleText.AutomaticSize = Enum.AutomaticSize.XY
+    ToggleText.TextSize = 14
+    ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleText.Parent = ToggleComponent
+    
+    local Toggle = Instance.new("Frame")
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.AnchorPoint = Vector2.new(1, 0.5)
+    Toggle.BackgroundTransparency = 1
+    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+    Toggle.Name = "Toggle"
+    Toggle.Size = UDim2.new(0, 16, 0, 16)
+    Toggle.BorderSizePixel = 0
+    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Toggle.Parent = ToggleComponent
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Toggle
+    
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+    UIStroke.Parent = Toggle
+    
+    local Check = Instance.new("ImageLabel")
+    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Check.Name = "Check"
+    Check.AnchorPoint = Vector2.new(0.5, 0.5)
+    Check.Image = "rbxassetid://103083009202465"
+    Check.BackgroundTransparency = 1
+    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Check.Size = UDim2.new(0, 10, 0, 12)
+    Check.BorderSizePixel = 0
+    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Check.Parent = Toggle
+    Check.Visible = false
+    
+    -- Toggle click functionality
+    ToggleComponent.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            toggle.state = not toggle.state
+            
+            -- Animate toggle
+            if toggle.state then
+                -- Turn on animation
+                Toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                UIStroke.Color = Color3.fromRGB(0, 200, 0)
+                Check.Visible = true
+                
+                -- Smooth scale animation
+                local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
+                scaleTween:Play()
+            else
+                -- Turn off animation
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                
+                -- Smooth scale out animation
+                local scaleInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 0, 0, 0)})
+                scaleTween:Play()
+                
+                -- Hide check after animation
+                scaleTween.Completed:Connect(function()
+                    Check.Visible = false
+                end)
+            end
+            
+            -- Call callback
+            if config.Callback then
+                config.Callback(toggle.state)
+            end
+        end
+    end)
+    
+    toggle.component = ToggleComponent
+    toggle.toggle = Toggle
+    toggle.check = Check
+    toggle.text = ToggleText
+    
+    -- Register with section
+    table.insert(self.components, toggle)
+    
+    return toggle
 end
 
 function Section:CreateSlider(config)
