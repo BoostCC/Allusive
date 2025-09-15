@@ -494,6 +494,11 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     child.BackgroundTransparency = 1
                     child:FindFirstChild("Tab_Name").TextColor3 = Color3.fromRGB(78, 78, 78)
                     child:FindFirstChild("Icon").ImageColor3 = Color3.fromRGB(78, 78, 78)
+                    -- Remove UIStroke if it exists
+                    local existingStroke = child:FindFirstChild("UIStroke")
+                    if existingStroke then
+                        existingStroke:Destroy()
+                    end
                 end
             end
             
