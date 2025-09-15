@@ -662,7 +662,7 @@ Section_Name.Parent = Header
                 
                 -- Animate master switch
                 if masterSwitchState then
-                    Master_Switch.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                    Master_Switch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     local moveInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
                     local moveTween = TweenService:Create(Pointer, moveInfo, {Position = UDim2.new(0, 15, 0.5, 0)})
                     moveTween:Play()
@@ -679,12 +679,14 @@ Section_Name.Parent = Header
                         component.state = masterSwitchState
                         if component.toggle then
                             if masterSwitchState then
-                                component.toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(0, 200, 0)
+                                component.toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(255, 255, 255)
+                                component.text.TextColor3 = Color3.fromRGB(255, 255, 255)
                                 component.check.Visible = true
                             else
                                 component.toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
                                 component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(26, 26, 26)
+                                component.text.TextColor3 = Color3.fromRGB(76, 76, 76)
                                 component.check.Visible = false
                             end
                         end
@@ -834,7 +836,7 @@ function Section:CreateToggle(config)
     
     local ToggleText = Instance.new("TextLabel")
     ToggleText.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
     ToggleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ToggleText.Text = config.ToggleText
     ToggleText.Name = "Toggle_Text"
@@ -887,8 +889,9 @@ function Section:CreateToggle(config)
             -- Animate toggle
             if toggle.state then
                 -- Turn on animation
-                Toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                UIStroke.Color = Color3.fromRGB(0, 200, 0)
+                Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                UIStroke.Color = Color3.fromRGB(255, 255, 255)
+                ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
                 Check.Visible = true
                 
                 -- Smooth scale animation
@@ -899,6 +902,7 @@ function Section:CreateToggle(config)
                 -- Turn off animation
                 Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
                 UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
                 
                 -- Smooth scale out animation
                 local scaleInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
