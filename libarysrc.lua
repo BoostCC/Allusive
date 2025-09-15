@@ -380,25 +380,9 @@ function libary:CreateWindow(config)
         end
     end)
     
-    -- Set up minimize button
     Minus_Button.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            MainFrame.Size = UDim2.new(0, 615, 0, 32)
-            Page.Visible = false
-        end
-    end)
-    
-    -- Double click to restore
-    Minus_Button.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            wait(0.1)
-            if Minus_Button.AbsolutePosition.X <= UserInputService:GetMouseLocation().X and 
-               UserInputService:GetMouseLocation().X <= Minus_Button.AbsolutePosition.X + Minus_Button.AbsoluteSize.X and
-               Minus_Button.AbsolutePosition.Y <= UserInputService:GetMouseLocation().Y and 
-               UserInputService:GetMouseLocation().Y <= Minus_Button.AbsolutePosition.Y + Minus_Button.AbsoluteSize.Y then
-
-                Page.Visible = true
-            end
+            MainFrame.Visible = false
         end
     end)
     
@@ -857,15 +841,15 @@ function Section:CreateToggle(config)
     Toggle.BorderSizePixel = 0
     Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     Toggle.Parent = ToggleComponent
-    
+
     local UICorner = Instance.new("UICorner")
     UICorner.CornerRadius = UDim.new(0, 4)
     UICorner.Parent = Toggle
-    
+
     local UIStroke = Instance.new("UIStroke")
     UIStroke.Color = Color3.fromRGB(26, 26, 26)
     UIStroke.Parent = Toggle
-    
+
     local Check = Instance.new("ImageLabel")
     Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Check.Name = "Check"
