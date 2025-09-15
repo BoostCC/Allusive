@@ -28,12 +28,10 @@ local libary_config = {
     KeybindListState = {}
 }
 
--- Create the main ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game.CoreGui
 
--- Main Window Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Name = "MainFrame"
@@ -398,7 +396,7 @@ function libary:CreateWindow(config)
                UserInputService:GetMouseLocation().X <= Minus_Button.AbsolutePosition.X + Minus_Button.AbsoluteSize.X and
                Minus_Button.AbsolutePosition.Y <= UserInputService:GetMouseLocation().Y and 
                UserInputService:GetMouseLocation().Y <= Minus_Button.AbsolutePosition.Y + Minus_Button.AbsoluteSize.Y then
-                MainFrame.Size = UDim2.new(0, 615, 0, 382)
+
                 Page.Visible = true
             end
         end
