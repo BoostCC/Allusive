@@ -751,305 +751,59 @@ Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
 Keybind.Parent = Header
 
     -- Keybind functionality
-    local currentKeybind = Enum.KeyCode.Space
-    local currentMouseButton = nil
-    local currentControllerKey = nil
-    local currentControllerNumber = nil
     local keybindConnection = nil
-    
-    local function updateKeybind(keyCode)
+    local currentKeybind : Enum.KeyCode? = nil
+    local currentMouseButton : string? = nil
+    local currentControllerKey : Enum.KeyCode? = nil
+    local currentControllerNumber : number? = nil
+
+    local function disconnectKeybind()
+        if keybindConnection then keybindConnection:Disconnect() keybindConnection = nil end
+    end
+
+    local function updateKB(keyCode)
         currentKeybind = keyCode
-        
-        -- Convert keycode to readable name with comprehensive mapping
-        local keyName = nil
-        
-        -- Handle keyboard input (including shift keys)
-        if keyCode and keyCode.Name then
-            -- Skip WASD movement keys
-            if keyCode == Enum.KeyCode.W or keyCode == Enum.KeyCode.A or 
-               keyCode == Enum.KeyCode.S or keyCode == Enum.KeyCode.D then
-                return
-            end
-            
-            -- Comprehensive keyboard key mapping
-            if keyCode == Enum.KeyCode.LeftShift then
-                keyName = "LShift"
-            elseif keyCode == Enum.KeyCode.RightShift then
-                keyName = "RShift"
-            elseif keyCode == Enum.KeyCode.LeftControl then
-                keyName = "LCtrl"
-            elseif keyCode == Enum.KeyCode.RightControl then
-                keyName = "RCtrl"
-            elseif keyCode == Enum.KeyCode.LeftAlt then
-                keyName = "LAlt"
-            elseif keyCode == Enum.KeyCode.RightAlt then
-                keyName = "RAlt"
-            elseif keyCode == Enum.KeyCode.Return then
-                keyName = "Enter"
-            elseif keyCode == Enum.KeyCode.Escape then
-                keyName = "Esc"
-            elseif keyCode == Enum.KeyCode.Backspace then
-                keyName = "Back"
-            elseif keyCode == Enum.KeyCode.Tab then
-                keyName = "Tab"
-            elseif keyCode == Enum.KeyCode.Space then
-                keyName = "Space"
-            elseif keyCode == Enum.KeyCode.CapsLock then
-                keyName = "Caps"
-            elseif keyCode == Enum.KeyCode.Insert then
-                keyName = "Ins"
-            elseif keyCode == Enum.KeyCode.Delete then
-                keyName = "Del"
-            elseif keyCode == Enum.KeyCode.Home then
-                keyName = "Home"
-            elseif keyCode == Enum.KeyCode.End then
-                keyName = "End"
-            elseif keyCode == Enum.KeyCode.PageUp then
-                keyName = "PgUp"
-            elseif keyCode == Enum.KeyCode.PageDown then
-                keyName = "PgDn"
-            elseif keyCode == Enum.KeyCode.Up then
-                keyName = "Up"
-            elseif keyCode == Enum.KeyCode.Down then
-                keyName = "Down"
-            elseif keyCode == Enum.KeyCode.Left then
-                keyName = "Left"
-            elseif keyCode == Enum.KeyCode.Right then
-                keyName = "Right"
-            elseif keyCode == Enum.KeyCode.NumLock then
-                keyName = "NumLock"
-            elseif keyCode == Enum.KeyCode.ScrollLock then
-                keyName = "Scroll"
-            elseif keyCode == Enum.KeyCode.Pause then
-                keyName = "Pause"
-            elseif keyCode == Enum.KeyCode.Print then
-                keyName = "Print"
-            elseif keyCode == Enum.KeyCode.F1 then
-                keyName = "F1"
-            elseif keyCode == Enum.KeyCode.F2 then
-                keyName = "F2"
-            elseif keyCode == Enum.KeyCode.F3 then
-                keyName = "F3"
-            elseif keyCode == Enum.KeyCode.F4 then
-                keyName = "F4"
-            elseif keyCode == Enum.KeyCode.F5 then
-                keyName = "F5"
-            elseif keyCode == Enum.KeyCode.F6 then
-                keyName = "F6"
-            elseif keyCode == Enum.KeyCode.F7 then
-                keyName = "F7"
-            elseif keyCode == Enum.KeyCode.F8 then
-                keyName = "F8"
-            elseif keyCode == Enum.KeyCode.F9 then
-                keyName = "F9"
-            elseif keyCode == Enum.KeyCode.F10 then
-                keyName = "F10"
-            elseif keyCode == Enum.KeyCode.F11 then
-                keyName = "F11"
-            elseif keyCode == Enum.KeyCode.F12 then
-                keyName = "F12"
-            elseif keyCode == Enum.KeyCode.Semicolon then
-                keyName = ";"
-            elseif keyCode == Enum.KeyCode.Quote then
-                keyName = "'"
-            elseif keyCode == Enum.KeyCode.Comma then
-                keyName = ","
-            elseif keyCode == Enum.KeyCode.Period then
-                keyName = "."
-            elseif keyCode == Enum.KeyCode.Slash then
-                keyName = "/"
-            elseif keyCode == Enum.KeyCode.Backslash then
-                keyName = "\\"
-            elseif keyCode == Enum.KeyCode.LeftBracket then
-                keyName = "["
-            elseif keyCode == Enum.KeyCode.RightBracket then
-                keyName = "]"
-            elseif keyCode == Enum.KeyCode.Equals then
-                keyName = "="
-            elseif keyCode == Enum.KeyCode.Minus then
-                keyName = "-"
-            elseif keyCode == Enum.KeyCode.Grave then
-                keyName = "`"
-            elseif keyCode == Enum.KeyCode.Zero then
-                keyName = "0"
-            elseif keyCode == Enum.KeyCode.One then
-                keyName = "1"
-            elseif keyCode == Enum.KeyCode.Two then
-                keyName = "2"
-            elseif keyCode == Enum.KeyCode.Three then
-                keyName = "3"
-            elseif keyCode == Enum.KeyCode.Four then
-                keyName = "4"
-            elseif keyCode == Enum.KeyCode.Five then
-                keyName = "5"
-            elseif keyCode == Enum.KeyCode.Six then
-                keyName = "6"
-            elseif keyCode == Enum.KeyCode.Seven then
-                keyName = "7"
-            elseif keyCode == Enum.KeyCode.Eight then
-                keyName = "8"
-            elseif keyCode == Enum.KeyCode.Nine then
-                keyName = "9"
-            elseif keyCode == Enum.KeyCode.NumPadZero then
-                keyName = "Num0"
-            elseif keyCode == Enum.KeyCode.NumPadOne then
-                keyName = "Num1"
-            elseif keyCode == Enum.KeyCode.NumPadTwo then
-                keyName = "Num2"
-            elseif keyCode == Enum.KeyCode.NumPadThree then
-                keyName = "Num3"
-            elseif keyCode == Enum.KeyCode.NumPadFour then
-                keyName = "Num4"
-            elseif keyCode == Enum.KeyCode.NumPadFive then
-                keyName = "Num5"
-            elseif keyCode == Enum.KeyCode.NumPadSix then
-                keyName = "Num6"
-            elseif keyCode == Enum.KeyCode.NumPadSeven then
-                keyName = "Num7"
-            elseif keyCode == Enum.KeyCode.NumPadEight then
-                keyName = "Num8"
-            elseif keyCode == Enum.KeyCode.NumPadNine then
-                keyName = "Num9"
-            elseif keyCode == Enum.KeyCode.NumPadMinus then
-                keyName = "Num-"
-            elseif keyCode == Enum.KeyCode.NumPadPlus then
-                keyName = "Num+"
-            elseif keyCode == Enum.KeyCode.NumPadMultiply then
-                keyName = "Num*"
-            elseif keyCode == Enum.KeyCode.NumPadDivide then
-                keyName = "Num/"
-            elseif keyCode == Enum.KeyCode.NumPadDecimal then
-                keyName = "Num."
-            elseif keyCode == Enum.KeyCode.NumPadEnter then
-                keyName = "NumEnter"
-            else
-                keyName = keyCode.Name
-            end
-        end
-        
-        Keybind.Text = keyName or "None"
-        
-        -- Disconnect old connection
-        if keybindConnection then
-            keybindConnection:Disconnect()
-        end
-        
-        -- Create new connection for keyboard input
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == currentKeybind then
-                -- Toggle all toggles in this section
-                for _, component in pairs(section.components) do
-                    if component.toggle and component.state ~= nil then
-                        component.state = not component.state
-                        if component.config.Callback then
-                            component.config.Callback(component.state)
-                        end
-                    end
-                end
+        Keybind.Text = keyCode and keyCode.Name or "None"
+        disconnectKeybind()
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+            if gp then return end
+            if input.UserInputType == Enum.UserInputType.Keyboard and currentKeybind and input.KeyCode == currentKeybind then
+                -- toggle behavior by default
+                applyActiveState(not keybind.active)
             end
         end)
     end
-    
-    local function updateKeybindMouse(mouseButton)
+
+    local function updateMouse(mouseButton)
         currentMouseButton = mouseButton
         Keybind.Text = mouseButton
-        
-        -- Disconnect old connection
-        if keybindConnection then
-            keybindConnection:Disconnect()
-        end
-        
-        -- Create new connection for mouse input
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if not gameProcessed then
-                local shouldTrigger = false
-                if mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    shouldTrigger = true
-                elseif mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2 then
-                    shouldTrigger = true
-                elseif mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3 then
-                    shouldTrigger = true
-                end
-                
-                if shouldTrigger then
-                    -- Toggle all toggles in this section
-                    for _, component in pairs(section.components) do
-                        if component.toggle and component.state ~= nil then
-                            component.state = not component.state
-                            if component.config.Callback then
-                                component.config.Callback(component.state)
-                            end
-                        end
-                    end
-                end
+        disconnectKeybind()
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+            if gp then return end
+            local hit = (mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1)
+                or (mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2)
+                or (mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3)
+            if hit then
+                applyActiveState(not keybind.active)
             end
         end)
     end
-    
-    local function updateKeybindController(gamepadKey, controllerNumber)
+
+    local function updateController(gamepadKey, controllerNumber)
         currentControllerKey = gamepadKey
         currentControllerNumber = controllerNumber
-        
-        -- Convert controller key to readable name
-        local controllerName = nil
-        if gamepadKey == Enum.KeyCode.ButtonA then
-            controllerName = "A"
-        elseif gamepadKey == Enum.KeyCode.ButtonB then
-            controllerName = "B"
-        elseif gamepadKey == Enum.KeyCode.ButtonX then
-            controllerName = "X"
-        elseif gamepadKey == Enum.KeyCode.ButtonY then
-            controllerName = "Y"
-        elseif gamepadKey == Enum.KeyCode.ButtonStart then
-            controllerName = "Start"
-        elseif gamepadKey == Enum.KeyCode.ButtonSelect then
-            controllerName = "Select"
-        elseif gamepadKey == Enum.KeyCode.ButtonL1 then
-            controllerName = "LB"
-        elseif gamepadKey == Enum.KeyCode.ButtonR1 then
-            controllerName = "RB"
-        elseif gamepadKey == Enum.KeyCode.ButtonL2 then
-            controllerName = "LT"
-        elseif gamepadKey == Enum.KeyCode.ButtonR2 then
-            controllerName = "RT"
-        elseif gamepadKey == Enum.KeyCode.ButtonL3 then
-            controllerName = "LS"
-        elseif gamepadKey == Enum.KeyCode.ButtonR3 then
-            controllerName = "RS"
-        elseif gamepadKey == Enum.KeyCode.DPadLeft then
-            controllerName = "DLeft"
-        elseif gamepadKey == Enum.KeyCode.DPadRight then
-            controllerName = "DRight"
-        elseif gamepadKey == Enum.KeyCode.DPadUp then
-            controllerName = "DUp"
-        elseif gamepadKey == Enum.KeyCode.DPadDown then
-            controllerName = "DDown"
-        else
-            controllerName = gamepadKey.Name
-        end
-        
-        Keybind.Text = "P" .. controllerNumber .. "_" .. controllerName
-        
-        -- Disconnect old connection
-        if keybindConnection then
-            keybindConnection:Disconnect()
-        end
-        
-        -- Create new connection for controller input
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if not gameProcessed and input.UserInputType == Enum.UserInputType["Gamepad" .. controllerNumber] and input.KeyCode == currentControllerKey then
-                -- Toggle all toggles in this section
-                for _, component in pairs(section.components) do
-                    if component.toggle and component.state ~= nil then
-                        component.state = not component.state
-                        if component.config.Callback then
-                            component.config.Callback(component.state)
-                        end
-                    end
-                end
+        Keybind.Text = "P" .. tostring(controllerNumber) .. "_" .. gamepadKey.Name
+        disconnectKeybind()
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+            if gp then return end
+            if currentControllerNumber and input.UserInputType == Enum.UserInputType["Gamepad" .. currentControllerNumber] and currentControllerKey and input.KeyCode == currentControllerKey then
+                applyActiveState(not keybind.active)
             end
         end)
     end
+
+    -- replace earlier default
+    updateKB(Enum.KeyCode.Space)
     
     -- Set up keybind listening with typewriter animation
     Keybind.InputBegan:Connect(function(input)
@@ -1090,29 +844,29 @@ Keybind.Parent = Header
                     
                     -- Handle different input types properly
                     if input2.UserInputType == Enum.UserInputType.Keyboard then
-                        updateKeybind(input2.KeyCode)
+                        updateKB(input2.KeyCode)
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton1 then
-                        updateKeybindMouse("LMB")
+                        updateMouse("LMB")
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton2 then
-                        updateKeybindMouse("RMB")
+                        updateMouse("RMB")
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton3 then
-                        updateKeybindMouse("MMB")
+                        updateMouse("MMB")
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad1 then
-                        updateKeybindController(input2.KeyCode, 1)
+                        updateController(input2.KeyCode, 1)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad2 then
-                        updateKeybindController(input2.KeyCode, 2)
+                        updateController(input2.KeyCode, 2)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad3 then
-                        updateKeybindController(input2.KeyCode, 3)
+                        updateController(input2.KeyCode, 3)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad4 then
-                        updateKeybindController(input2.KeyCode, 4)
+                        updateController(input2.KeyCode, 4)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad5 then
-                        updateKeybindController(input2.KeyCode, 5)
+                        updateController(input2.KeyCode, 5)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad6 then
-                        updateKeybindController(input2.KeyCode, 6)
+                        updateController(input2.KeyCode, 6)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad7 then
-                        updateKeybindController(input2.KeyCode, 7)
+                        updateController(input2.KeyCode, 7)
                     elseif input2.UserInputType == Enum.UserInputType.Gamepad8 then
-                        updateKeybindController(input2.KeyCode, 8)
+                        updateController(input2.KeyCode, 8)
                     end
                     
                     Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1241,7 +995,7 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
     end)
     
     -- Initialize keybind
-    updateKeybind(Enum.KeyCode.Space)
+    updateKB(Enum.KeyCode.Space)
 
 local UIPadding = Instance.new("UIPadding")
 UIPadding.PaddingTop = UDim.new(0, 3)
@@ -1535,20 +1289,20 @@ function Section:CreateKeybind(config)
 					return
 				end
 				KeybindLabel.Text = input.KeyCode.Name
-				updateKeybind(input.KeyCode)
+				updateKB(input.KeyCode)
 			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
 				KeybindLabel.Text = "LMB"
-				updateKeybindMouse("LMB")
+				updateMouse("LMB")
 			elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
 				KeybindLabel.Text = "RMB"
-				updateKeybindMouse("RMB")
+				updateMouse("RMB")
 			elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
 				KeybindLabel.Text = "MMB"
-				updateKeybindMouse("MMB")
+				updateMouse("MMB")
 			elseif tostring(input.UserInputType):find("Gamepad") then
 				KeybindLabel.Text = input.KeyCode.Name
 				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
-				updateKeybindController(input.KeyCode, gpIdx)
+				updateController(input.KeyCode, gpIdx)
 			end
 			if conn then conn:Disconnect() end
 		end)
@@ -1567,7 +1321,7 @@ function Section:CreateKeybind(config)
 	end)
 
 	-- Default
-	updateKeybind(Enum.KeyCode.Space)
+	updateKB(Enum.KeyCode.Space)
 
 	-- Register component to section to allow master switch and keybind section toggles
 	keybind.component = Keybind_Componenet
