@@ -1426,8 +1426,135 @@ function Section:CreateDropdown(config)
 end
 
 function Section:CreateKeybind(config)
-    print("Keybind created:", config.KeybindText)
-    return {}
+	local keybind = {}
+	keybind.config = config or {}
+	keybind.text = keybind.config.KeybindText or "Keybind"
+	keybind.mode = "toggle"
+	keybind.active = false
+
+	local Keybind_Componenet = Instance.new("Frame")
+	Keybind_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Keybind_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+	Keybind_Componenet.BackgroundTransparency = 1
+	Keybind_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+	Keybind_Componenet.Name = "Keybind_Componenet"
+	Keybind_Componenet.Size = UDim2.new(0, 228, 0, 30)
+	Keybind_Componenet.BorderSizePixel = 0
+	Keybind_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Keybind_Componenet.Parent = self.holder
+
+	local Toggle_Text = Instance.new("TextLabel")
+	Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle_Text.Text = keybind.text
+	Toggle_Text.Name = "Toggle_Text"
+	Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+	Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+	Toggle_Text.BackgroundTransparency = 1
+	Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+	Toggle_Text.BorderSizePixel = 0
+	Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+	Toggle_Text.TextSize = 14
+	Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Toggle_Text.Parent = Keybind_Componenet
+
+	local KeybindLabel = Instance.new("TextLabel")
+	KeybindLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	KeybindLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	KeybindLabel.Text = "Space"
+	KeybindLabel.BorderSizePixel = 0
+	KeybindLabel.AnchorPoint = Vector2.new(1, 0.5)
+	KeybindLabel.Size = UDim2.new(0, 1, 0, 1)
+	KeybindLabel.Name = "Keybind"
+	KeybindLabel.Position = UDim2.new(1, -6, 0.5, 0)
+	KeybindLabel.AutomaticSize = Enum.AutomaticSize.XY
+	KeybindLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+	KeybindLabel.TextSize = 14
+	KeybindLabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	KeybindLabel.Parent = Keybind_Componenet
+
+	local UIPadding = Instance.new("UIPadding")
+	UIPadding.PaddingTop = UDim.new(0, 3)
+	UIPadding.PaddingBottom = UDim.new(0, 3)
+	UIPadding.PaddingRight = UDim.new(0, 6)
+	UIPadding.PaddingLeft = UDim.new(0, 6)
+	UIPadding.Parent = KeybindLabel
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0, 4)
+	UICorner.Parent = KeybindLabel
+
+	local listening = false
+
+	local function applyActiveState(isActive)
+		keybind.active = isActive
+		if keybind.config.Callback then
+			keybind.config.Callback(isActive)
+		end
+	end
+
+	local function listenForKey()
+		if listening then return end
+		listening = true
+		local dots = ""
+		local lastUpdate = 0
+		local twConn
+		twConn = RunService.Heartbeat:Connect(function()
+			local t = tick()
+			if t - lastUpdate >= 0.5 then
+				dots = dots .. "."
+				if #dots > 3 then dots = "" end
+				KeybindLabel.Text = dots
+				lastUpdate = t
+			end
+		end)
+		local conn
+		conn = UserInputService.InputBegan:Connect(function(input, gp)
+			if gp then return end
+			if input.UserInputType == Enum.UserInputType.Keyboard then
+				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then return end
+				KeybindLabel.Text = input.KeyCode.Name
+				updateKeybind(input.KeyCode)
+			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
+				KeybindLabel.Text = "LMB"
+				updateKeybindMouse("LMB")
+			elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+				KeybindLabel.Text = "RMB"
+				updateKeybindMouse("RMB")
+			elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
+				KeybindLabel.Text = "MMB"
+				updateKeybindMouse("MMB")
+			elseif tostring(input.UserInputType):find("Gamepad") then
+				KeybindLabel.Text = input.KeyCode.Name
+				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
+				updateKeybindController(input.KeyCode, gpIdx)
+			end
+			if twConn then twConn:Disconnect() end
+			if conn then conn:Disconnect() end
+			listening = false
+		end)
+	end
+
+	KeybindLabel.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			listenForKey()
+		elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+			-- open the existing context menu hook defined earlier
+			KeybindLabel.Text = KeybindLabel.Text
+		end
+	end)
+
+	-- Default
+	updateKeybind(Enum.KeyCode.Space)
+
+	-- Register component to section to allow master switch and keybind section toggles
+	keybind.component = Keybind_Componenet
+	keybind.label = KeybindLabel
+	table.insert(self.components, keybind)
+
+	return keybind
 end
 
 function Section:CreateColorpicker(config)
