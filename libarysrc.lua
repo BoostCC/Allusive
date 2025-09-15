@@ -196,6 +196,7 @@ Player_Icon.Name = "Player_Icon"
 Player_Icon.Position = UDim2.new(0.061403509229421616, 0, 0.5, 0)
 Player_Icon.Size = UDim2.new(0, 22, 0, 22)
 Player_Icon.BorderSizePixel = 0
+Player_Icon.BackgroundTransparency = 1
 Player_Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Player_Icon.Parent = PlayerHolder
 
@@ -207,7 +208,7 @@ local Player_User = Instance.new("TextLabel")
 Player_User.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Player_User.TextColor3 = Color3.fromRGB(255, 255, 255)
 Player_User.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Player_User.Text = game.Players.LocalPlayer.Name
+Player_User.Text = string.len(game.Players.LocalPlayer.Name) > 8 and string.sub(game.Players.LocalPlayer.Name, 1, 7) .. "." or game.Players.LocalPlayer.Name
 Player_User.Name = "Player_User"
 Player_User.Size = UDim2.new(0, 1, 0, 1)
 Player_User.BackgroundTransparency = 1
@@ -448,25 +449,25 @@ function Window:CreateTab(config)
     TabButton.BorderSizePixel = 0
     TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     TabButton.Parent = TabContainer
-    
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
     UICorner.Parent = TabButton
-    
-    local UIStroke = Instance.new("UIStroke")
+
+local UIStroke = Instance.new("UIStroke")
     UIStroke.Color = Color3.fromRGB(25, 25, 25)
     UIStroke.Parent = TabButton
-    
-    local Icon = Instance.new("ImageLabel")
-    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Icon.Name = "Icon"
+
+local Icon = Instance.new("ImageLabel")
+Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Icon.Name = "Icon"
     Icon.AnchorPoint = Vector2.new(0, 0.5)
     Icon.Image = config.icon or "rbxassetid://103009339613412"
-    Icon.BackgroundTransparency = 1
+Icon.BackgroundTransparency = 1
     Icon.Position = UDim2.new(0, 6, 0.5, 0)
-    Icon.Size = UDim2.new(0, 15, 0, 15)
-    Icon.BorderSizePixel = 0
-    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.Size = UDim2.new(0, 15, 0, 15)
+Icon.BorderSizePixel = 0
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Icon.Parent = TabButton
     
     local Tab_Name = Instance.new("TextLabel")
@@ -561,69 +562,70 @@ function Tab:CreateSection(config)
     SectionFrame.AutomaticSize = Enum.AutomaticSize.Y
     SectionFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
     SectionFrame.Parent = Container
-    
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
     UICorner.Parent = SectionFrame
-    
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
     UIStroke.Parent = SectionFrame
-    
+
     -- Header
-    local Header = Instance.new("Frame")
-    Header.AnchorPoint = Vector2.new(0.5, 0)
-    Header.Name = "Header"
-    Header.Position = UDim2.new(0.5, 0, 0, 0)
-    Header.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Header.Size = UDim2.new(0, 228, 0, 35)
-    Header.BorderSizePixel = 0
-    Header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+local Header = Instance.new("Frame")
+Header.AnchorPoint = Vector2.new(0.5, 0)
+Header.Name = "Header"
+Header.Position = UDim2.new(0.5, 0, 0, 0)
+Header.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Header.Size = UDim2.new(0, 228, 0, 35)
+Header.BorderSizePixel = 0
+Header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     Header.Parent = SectionFrame
-    
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = Header
-    
-    local Inline = Instance.new("Frame")
-    Inline.AnchorPoint = Vector2.new(0, 1)
-    Inline.Name = "Inline"
-    Inline.Position = UDim2.new(0, 0, 1, 0)
-    Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Inline.Size = UDim2.new(1, 1, 0, 1)
-    Inline.BorderSizePixel = 0
-    Inline.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
-    Inline.Parent = Header
-    
-    local Icon = Instance.new("ImageLabel")
-    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Icon.Name = "Icon"
-    Icon.AnchorPoint = Vector2.new(0, 0.5)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Header
+
+local Inline = Instance.new("Frame")
+Inline.AnchorPoint = Vector2.new(0, 1)
+Inline.Name = "Inline"
+Inline.Position = UDim2.new(0, 0, 1, 0)
+Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Inline.Size = UDim2.new(1, 1, 0, 1)
+Inline.BorderSizePixel = 0
+Inline.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+Inline.Parent = Header
+
+local Icon = Instance.new("ImageLabel")
+Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Icon.Name = "Icon"
+Icon.AnchorPoint = Vector2.new(0, 0.5)
     Icon.Image = config.SectionIcon or "rbxassetid://78055370910689"
-    Icon.BackgroundTransparency = 1
-    Icon.Position = UDim2.new(0, 8, 0.5, 0)
-    Icon.Size = UDim2.new(0, 15, 0, 15)
-    Icon.BorderSizePixel = 0
-    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Icon.Parent = Header
-    
-    local Section_Name = Instance.new("TextLabel")
-    Section_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Section_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Section_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Icon.BackgroundTransparency = 1
+Icon.Position = UDim2.new(0, 8, 0.5, 0)
+Icon.Size = UDim2.new(0, 15, 0, 15)
+Icon.BorderSizePixel = 0
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.Parent = Header
+
+local Section_Name = Instance.new("TextLabel")
+Section_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Section_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+Section_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Section_Name.Text = config.SectionText
-    Section_Name.Name = "Section_Name"
-    Section_Name.AnchorPoint = Vector2.new(0, 0.5)
-    Section_Name.Size = UDim2.new(0, 1, 0, 1)
-    Section_Name.BackgroundTransparency = 1
-    Section_Name.Position = UDim2.new(0, 30, 0.5, 0)
-    Section_Name.BorderSizePixel = 0
-    Section_Name.AutomaticSize = Enum.AutomaticSize.XY
-    Section_Name.TextSize = 14
-    Section_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Section_Name.Parent = Header
-    
+Section_Name.Name = "Section_Name"
+Section_Name.AnchorPoint = Vector2.new(0, 0.5)
+Section_Name.Size = UDim2.new(0, 1, 0, 1)
+Section_Name.BackgroundTransparency = 1
+Section_Name.Position = UDim2.new(0, 30, 0.5, 0)
+Section_Name.BorderSizePixel = 0
+Section_Name.AutomaticSize = Enum.AutomaticSize.XY
+Section_Name.TextSize = 14
+Section_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Section_Name.Parent = Header
+
     -- Master Switch (if enabled)
+    local masterSwitchState = false
     if config.MasterSwitchState then
         local Master_Switch = Instance.new("Frame")
         Master_Switch.AnchorPoint = Vector2.new(1, 0.5)
@@ -652,24 +654,65 @@ function Tab:CreateSection(config)
         local UICorner2 = Instance.new("UICorner")
         UICorner2.CornerRadius = UDim.new(0, 100)
         UICorner2.Parent = Pointer
+        
+        -- Master Switch functionality
+        Master_Switch.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                masterSwitchState = not masterSwitchState
+                
+                -- Animate master switch
+                if masterSwitchState then
+                    Master_Switch.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                    local moveInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    local moveTween = TweenService:Create(Pointer, moveInfo, {Position = UDim2.new(0, 15, 0.5, 0)})
+                    moveTween:Play()
+                else
+                    Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+                    local moveInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    local moveTween = TweenService:Create(Pointer, moveInfo, {Position = UDim2.new(0, 3, 0.5, 0)})
+                    moveTween:Play()
+                end
+                
+                -- Toggle all components in this section
+                for _, component in pairs(section.components) do
+                    if component.state ~= nil then
+                        component.state = masterSwitchState
+                        if component.toggle then
+                            if masterSwitchState then
+                                component.toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(0, 200, 0)
+                                component.check.Visible = true
+                            else
+                                component.toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(26, 26, 26)
+                                component.check.Visible = false
+                            end
+                        end
+                        if component.config.Callback then
+                            component.config.Callback(component.state)
+                        end
+                    end
+                end
+            end
+        end)
     end
     
     -- Keybind display
-    local Keybind = Instance.new("TextLabel")
-    Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Keybind.Text = "Space"
-    Keybind.BorderSizePixel = 0
-    Keybind.AnchorPoint = Vector2.new(1, 0.5)
-    Keybind.Size = UDim2.new(0, 1, 0, 1)
-    Keybind.Name = "Keybind"
-    Keybind.Position = UDim2.new(1, -45, 0.5, 0)
-    Keybind.AutomaticSize = Enum.AutomaticSize.XY
-    Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
-    Keybind.TextSize = 14
-    Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    Keybind.Parent = Header
+local Keybind = Instance.new("TextLabel")
+Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keybind.Text = "Space"
+Keybind.BorderSizePixel = 0
+Keybind.AnchorPoint = Vector2.new(1, 0.5)
+Keybind.Size = UDim2.new(0, 1, 0, 1)
+Keybind.Name = "Keybind"
+Keybind.Position = UDim2.new(1, -45, 0.5, 0)
+Keybind.AutomaticSize = Enum.AutomaticSize.XY
+Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
+Keybind.TextSize = 14
+Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+Keybind.Parent = Header
     
     -- Keybind functionality
     local currentKeybind = Enum.KeyCode.Space
@@ -719,35 +762,35 @@ function Tab:CreateSection(config)
     
     -- Initialize keybind
     updateKeybind(Enum.KeyCode.Space)
-    
-    local UIPadding = Instance.new("UIPadding")
-    UIPadding.PaddingTop = UDim.new(0, 3)
-    UIPadding.PaddingBottom = UDim.new(0, 3)
-    UIPadding.PaddingRight = UDim.new(0, 6)
-    UIPadding.PaddingLeft = UDim.new(0, 6)
-    UIPadding.Parent = Keybind
-    
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0, 3)
+UIPadding.PaddingBottom = UDim.new(0, 3)
+UIPadding.PaddingRight = UDim.new(0, 6)
+UIPadding.PaddingLeft = UDim.new(0, 6)
+UIPadding.Parent = Keybind
+
     local UICorner3 = Instance.new("UICorner")
     UICorner3.CornerRadius = UDim.new(0, 4)
     UICorner3.Parent = Keybind
     
     -- Content holder
-    local Holder = Instance.new("Frame")
-    Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Holder.AnchorPoint = Vector2.new(0.5, 0)
-    Holder.Name = "Holder"
-    Holder.BackgroundTransparency = 1
-    Holder.Position = UDim2.new(0.5, 0, 1, 0)
-    Holder.Size = UDim2.new(0, 1, 0, 1)
-    Holder.BorderSizePixel = 0
-    Holder.AutomaticSize = Enum.AutomaticSize.XY
-    Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Holder.Parent = Header
-    
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Parent = Holder
-    
+local Holder = Instance.new("Frame")
+Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder.AnchorPoint = Vector2.new(0.5, 0)
+Holder.Name = "Holder"
+Holder.BackgroundTransparency = 1
+Holder.Position = UDim2.new(0.5, 0, 1, 0)
+Holder.Size = UDim2.new(0, 1, 0, 1)
+Holder.BorderSizePixel = 0
+Holder.AutomaticSize = Enum.AutomaticSize.XY
+Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder.Parent = Header
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Parent = Holder
+
     local UIPadding2 = Instance.new("UIPadding")
     UIPadding2.PaddingBottom = UDim.new(0, 25)
     UIPadding2.PaddingTop = UDim.new(0, 4)
@@ -804,13 +847,12 @@ function Section:CreateToggle(config)
     ToggleText.TextSize = 14
     ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleText.Parent = ToggleComponent
-    
+
     local Toggle = Instance.new("Frame")
-    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Toggle.AnchorPoint = Vector2.new(1, 0.5)
-    Toggle.BackgroundTransparency = 1
-    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
     Toggle.Name = "Toggle"
+    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Toggle.Size = UDim2.new(0, 16, 0, 16)
     Toggle.BorderSizePixel = 0
     Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
