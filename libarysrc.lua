@@ -502,6 +502,12 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 end
             end
             
+            -- Remove UIStroke from current tab button before adding new one
+            local currentStroke = TabButton:FindFirstChild("UIStroke")
+            if currentStroke then
+                currentStroke:Destroy()
+            end
+            
             -- Set this tab to active
             TabButton.BackgroundTransparency = 0
             TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
