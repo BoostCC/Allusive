@@ -609,30 +609,30 @@ Section_Name.Parent = Header
     -- Master Switch (if enabled)
     local masterSwitchState = false
     if config.MasterSwitchState then
-        local Master_Switch = Instance.new("Frame")
-        Master_Switch.AnchorPoint = Vector2.new(1, 0.5)
-        Master_Switch.Name = "Master_Switch"
-        Master_Switch.Position = UDim2.new(1, -10, 0.5, 0)
-        Master_Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        Master_Switch.Size = UDim2.new(0, 30, 0, 18)
-        Master_Switch.BorderSizePixel = 0
+local Master_Switch = Instance.new("Frame")
+Master_Switch.AnchorPoint = Vector2.new(1, 0.5)
+Master_Switch.Name = "Master_Switch"
+Master_Switch.Position = UDim2.new(1, -10, 0.5, 0)
+Master_Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Master_Switch.Size = UDim2.new(0, 30, 0, 18)
+Master_Switch.BorderSizePixel = 0
         Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-        Master_Switch.Parent = Header
-        
-        local UICorner = Instance.new("UICorner")
-        UICorner.CornerRadius = UDim.new(0, 100)
-        UICorner.Parent = Master_Switch
-        
-        local Pointer = Instance.new("Frame")
-        Pointer.AnchorPoint = Vector2.new(0, 0.5)
-        Pointer.Name = "Pointer"
+Master_Switch.Parent = Header
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 100)
+UICorner.Parent = Master_Switch
+
+local Pointer = Instance.new("Frame")
+Pointer.AnchorPoint = Vector2.new(0, 0.5)
+Pointer.Name = "Pointer"
         Pointer.Position = UDim2.new(0, 3, 0.5, 0)
-        Pointer.BorderColor3 = Color3.fromRGB(20, 20, 20)
-        Pointer.Size = UDim2.new(0, 12, 0, 12)
-        Pointer.BorderSizePixel = 0
-        Pointer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        Pointer.Parent = Master_Switch
-        
+Pointer.BorderColor3 = Color3.fromRGB(20, 20, 20)
+Pointer.Size = UDim2.new(0, 12, 0, 12)
+Pointer.BorderSizePixel = 0
+Pointer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Pointer.Parent = Master_Switch
+
         local UICorner2 = Instance.new("UICorner")
         UICorner2.CornerRadius = UDim.new(0, 100)
         UICorner2.Parent = Pointer
@@ -697,14 +697,54 @@ Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
 Keybind.TextSize = 14
 Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
 Keybind.Parent = Header
-    
+
     -- Keybind functionality
     local currentKeybind = Enum.KeyCode.Space
     local keybindConnection = nil
     
     local function updateKeybind(keyCode)
         currentKeybind = keyCode
-        Keybind.Text = keyCode.Name
+        
+        -- Convert keycode to readable name using STARHUB mapping
+        local keyName = nil
+        
+        -- Handle keyboard input (including shift keys)
+        if keyCode and keyCode.Name then
+            -- Skip WASD movement keys
+            if keyCode == Enum.KeyCode.W or keyCode == Enum.KeyCode.A or 
+               keyCode == Enum.KeyCode.S or keyCode == Enum.KeyCode.D then
+                return
+            end
+            
+            -- Simplify keyboard key names
+            if keyCode == Enum.KeyCode.LeftShift then
+                keyName = "LShift"
+            elseif keyCode == Enum.KeyCode.RightShift then
+                keyName = "RShift"
+            elseif keyCode == Enum.KeyCode.LeftControl then
+                keyName = "LCtrl"
+            elseif keyCode == Enum.KeyCode.RightControl then
+                keyName = "RCtrl"
+            elseif keyCode == Enum.KeyCode.LeftAlt then
+                keyName = "LAlt"
+            elseif keyCode == Enum.KeyCode.RightAlt then
+                keyName = "RAlt"
+            elseif keyCode == Enum.KeyCode.Return then
+                keyName = "Enter"
+            elseif keyCode == Enum.KeyCode.Escape then
+                keyName = "Esc"
+            elseif keyCode == Enum.KeyCode.Backspace then
+                keyName = "Back"
+            elseif keyCode == Enum.KeyCode.Tab then
+                keyName = "Tab"
+            elseif keyCode == Enum.KeyCode.Space then
+                keyName = "Space"
+            else
+                keyName = keyCode.Name
+            end
+        end
+        
+        Keybind.Text = keyName or "None"
         
         -- Disconnect old connection
         if keybindConnection then
@@ -727,17 +767,40 @@ Keybind.Parent = Header
         end)
     end
     
-    -- Set up keybind listening
+    -- Set up keybind listening with typewriter animation
     Keybind.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            Keybind.Text = "Press Key..."
+            -- Typewriter animation for "..."
+            local dots = ""
+            local typewriterConnection
+            typewriterConnection = RunService.Heartbeat:Connect(function()
+                dots = dots .. "."
+                if #dots > 3 then
+                    dots = ""
+                end
+                Keybind.Text = dots
+            end)
+            
             Keybind.TextColor3 = Color3.fromRGB(255, 255, 0)
+            
+            -- Smooth scale animation
+            local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            local scaleTween = TweenService:Create(Keybind, scaleInfo, {Size = UDim2.new(0, Keybind.Size.X.Offset * 1.1, 0, Keybind.Size.Y.Offset * 1.1)})
+            scaleTween:Play()
             
             local connection
             connection = UserInputService.InputBegan:Connect(function(input2, gameProcessed)
                 if not gameProcessed and input2.KeyCode ~= Enum.KeyCode.MouseButton1 then
+                    -- Stop typewriter animation
+                    typewriterConnection:Disconnect()
+                    
+                    -- Smooth scale back animation
+                    local scaleBackInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    local scaleBackTween = TweenService:Create(Keybind, scaleBackInfo, {Size = UDim2.new(0, Keybind.Size.X.Offset / 1.1, 0, Keybind.Size.Y.Offset / 1.1)})
+                    scaleBackTween:Play()
+                    
                     updateKeybind(input2.KeyCode)
-                    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     connection:Disconnect()
                 end
             end)
@@ -832,35 +895,35 @@ function Section:CreateToggle(config)
     ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleText.Parent = ToggleComponent
 
-    local Toggle = Instance.new("Frame")
-    Toggle.AnchorPoint = Vector2.new(1, 0.5)
-    Toggle.Name = "Toggle"
-    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
-    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle.Size = UDim2.new(0, 16, 0, 16)
-    Toggle.BorderSizePixel = 0
-    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+local Toggle = Instance.new("Frame")
+Toggle.AnchorPoint = Vector2.new(1, 0.5)
+Toggle.Name = "Toggle"
+Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Size = UDim2.new(0, 16, 0, 16)
+Toggle.BorderSizePixel = 0
+Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     Toggle.Parent = ToggleComponent
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = Toggle
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Toggle
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(26, 26, 26)
-    UIStroke.Parent = Toggle
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Parent = Toggle
 
-    local Check = Instance.new("ImageLabel")
-    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Check.Name = "Check"
-    Check.AnchorPoint = Vector2.new(0.5, 0.5)
-    Check.Image = "rbxassetid://103083009202465"
-    Check.BackgroundTransparency = 1
-    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Check.Size = UDim2.new(0, 10, 0, 12)
-    Check.BorderSizePixel = 0
-    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Check.Parent = Toggle
+local Check = Instance.new("ImageLabel")
+Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Check.Name = "Check"
+Check.AnchorPoint = Vector2.new(0.5, 0.5)
+Check.Image = "rbxassetid://103083009202465"
+Check.BackgroundTransparency = 1
+Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+Check.Size = UDim2.new(0, 10, 0, 12)
+Check.BorderSizePixel = 0
+Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Check.Parent = Toggle
     Check.Visible = false
     
     -- Toggle click functionality
