@@ -733,7 +733,7 @@ Pointer.Parent = Master_Switch
     end
     
     -- Keybind display
-local Keybind = Instance.new("TextLabel")
+local Keybind = Instance.new("TextButton")
 Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
 Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1051,8 +1051,7 @@ Keybind.Parent = Header
     end
     
     -- Set up keybind listening with typewriter animation (LEFT CLICK)
-    Keybind.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    Keybind.MouseButton1Down:Connect(function()
             -- Smooth typewriter animation for "..."
             local dots = ""
             local typewriterConnection
@@ -1118,7 +1117,6 @@ Keybind.Parent = Header
                     connection:Disconnect()
                 end
             end)
-        end
     end)
     
     -- Right-click context menu for keybind modes (RIGHT CLICK)
