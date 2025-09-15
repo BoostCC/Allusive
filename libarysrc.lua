@@ -1122,8 +1122,7 @@ Keybind.Parent = Header
     end)
     
     -- Right-click context menu for keybind modes (RIGHT CLICK)
-    Keybind.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton2 then
+    Keybind.MouseButton2Down:Connect(function()
             -- Create context menu
             local Container = Instance.new("Frame")
             Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1267,7 +1266,6 @@ Keybind.Parent = Header
                     closeConnection:Disconnect()
                 end
             end)
-        end
     end)
     
     -- Initialize keybind
