@@ -441,29 +441,29 @@ local Icon = Instance.new("ImageLabel")
 Icon.ImageColor3 = Color3.fromRGB(78, 78, 78)
 Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Icon.Name = "Icon"
-    Icon.AnchorPoint = Vector2.new(0, 0.5)
+Icon.AnchorPoint = Vector2.new(0, 0.5)
     Icon.Image = config.icon or "rbxassetid://103009339613412"
 Icon.BackgroundTransparency = 1
-    Icon.Position = UDim2.new(0, 6, 0.5, 0)
+Icon.Position = UDim2.new(0, 6, 0.5, 0)
 Icon.Size = UDim2.new(0, 15, 0, 15)
 Icon.BorderSizePixel = 0
 Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Icon.Parent = TabButton
-    
-    local Tab_Name = Instance.new("TextLabel")
-    Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
-    Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+
+local Tab_Name = Instance.new("TextLabel")
+Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
+Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Tab_Name.Text = config.TabText
-    Tab_Name.Name = "Tab_Name"
-    Tab_Name.AnchorPoint = Vector2.new(0, 0.5)
-    Tab_Name.Size = UDim2.new(0, 1, 0, 1)
-    Tab_Name.BackgroundTransparency = 1
-    Tab_Name.Position = UDim2.new(0, 25, 0.5, 0)
-    Tab_Name.BorderSizePixel = 0
-    Tab_Name.AutomaticSize = Enum.AutomaticSize.XY
-    Tab_Name.TextSize = 14
-    Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Tab_Name.Name = "Tab_Name"
+Tab_Name.AnchorPoint = Vector2.new(0, 0.5)
+Tab_Name.Size = UDim2.new(0, 1, 0, 1)
+Tab_Name.BackgroundTransparency = 1
+Tab_Name.Position = UDim2.new(0, 25, 0.5, 0)
+Tab_Name.BorderSizePixel = 0
+Tab_Name.AutomaticSize = Enum.AutomaticSize.XY
+Tab_Name.TextSize = 14
+Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Tab_Name.Parent = TabButton
     
     -- Tab click functionality with smooth animations
@@ -551,8 +551,8 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             iconFadeInTween:Play()
             
             -- Add UIStroke for active tab
-            local UIStroke = Instance.new("UIStroke")
-            UIStroke.Color = Color3.fromRGB(25, 25, 25)
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(25, 25, 25)
             UIStroke.Parent = TabButton
             
             CurrentTab = tab
@@ -563,7 +563,7 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     if not CurrentTab then
         TabButton.BackgroundTransparency = 0
         TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
         Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
         
         -- Add UIStroke for active tab
@@ -666,7 +666,7 @@ Master_Switch.Position = UDim2.new(1, -10, 0.5, 0)
 Master_Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Master_Switch.Size = UDim2.new(0, 30, 0, 18)
 Master_Switch.BorderSizePixel = 0
-        Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
 Master_Switch.Parent = Header
 
 local UICorner = Instance.new("UICorner")
@@ -676,7 +676,7 @@ UICorner.Parent = Master_Switch
 local Pointer = Instance.new("Frame")
 Pointer.AnchorPoint = Vector2.new(0, 0.5)
 Pointer.Name = "Pointer"
-        Pointer.Position = UDim2.new(0, 3, 0.5, 0)
+Pointer.Position = UDim2.new(0, 3, 0.5, 0)
 Pointer.BorderColor3 = Color3.fromRGB(20, 20, 20)
 Pointer.Size = UDim2.new(0, 12, 0, 12)
 Pointer.BorderSizePixel = 0
@@ -733,7 +733,7 @@ Pointer.Parent = Master_Switch
     end
     
     -- Keybind display
-local Keybind = Instance.new("TextButton")
+local Keybind = Instance.new("TextLabel")
 Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
 Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1050,8 +1050,9 @@ Keybind.Parent = Header
         end)
     end
     
-    -- Set up keybind listening with typewriter animation (LEFT CLICK)
-    Keybind.MouseButton1Down:Connect(function()
+    -- Set up keybind listening with typewriter animation
+    Keybind.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             -- Smooth typewriter animation for "..."
             local dots = ""
             local typewriterConnection
@@ -1117,15 +1118,17 @@ Keybind.Parent = Header
                     connection:Disconnect()
                 end
             end)
+        end
     end)
     
-    -- Right-click context menu for keybind modes (RIGHT CLICK)
-    Keybind.MouseButton2Down:Connect(function()
+    -- Right-click context menu for keybind modes
+    Keybind.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton2 then
             -- Create context menu
             local Container = Instance.new("Frame")
             Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
             Container.Size = UDim2.new(0, 82, 0, 73)
-            Container.Name = "KeybindContextMenu"
+            Container.Name = "Container"
             Container.Position = UDim2.new(0.5972850322723389, 0, 0.8358209133148193, 0)
             Container.BorderSizePixel = 0
             Container.ZIndex = 50
@@ -1137,17 +1140,17 @@ Keybind.Parent = Header
             UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             UIListLayout.Parent = Container
 
-            local UIPadding = Instance.new("UIPadding")
+local UIPadding = Instance.new("UIPadding")
             UIPadding.PaddingBottom = UDim.new(0, 8)
             UIPadding.PaddingTop = UDim.new(0, 5)
             UIPadding.Parent = Container
 
-            local UICorner = Instance.new("UICorner")
-            UICorner.CornerRadius = UDim.new(0, 4)
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
             UICorner.Parent = Container
 
-            local UIStroke = Instance.new("UIStroke")
-            UIStroke.Color = Color3.fromRGB(26, 26, 26)
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
             UIStroke.Parent = Container
 
             -- Hold option
@@ -1225,37 +1228,6 @@ Keybind.Parent = Header
             AlwaysText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             AlwaysText.Parent = AlwaysFrame
 
-            -- Add click functionality to each option
-            HoldFrame.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    -- Set to Hold mode
-                    HoldText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    Container:Destroy()
-                end
-            end)
-
-            ToggleFrame.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    -- Set to Toggle mode (default)
-                    HoldText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    Container:Destroy()
-                end
-            end)
-
-            AlwaysFrame.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    -- Set to Always On mode
-                    HoldText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                    AlwaysText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    Container:Destroy()
-                end
-            end)
-
             -- Close context menu when clicking outside
             local closeConnection
             closeConnection = UserInputService.InputBegan:Connect(function(input)
@@ -1264,6 +1236,7 @@ Keybind.Parent = Header
                     closeConnection:Disconnect()
                 end
             end)
+        end
     end)
     
     -- Initialize keybind
