@@ -422,9 +422,10 @@ function Window:CreateTab(config)
     tab.config = config
     tab.sections = {left = {}, right = {}}
     
-    -- Create tab button
+    -- Create tab button (inactive state by default)
     local TabButton = Instance.new("Frame")
     TabButton.Name = "Tab_" .. config.TabText
+    TabButton.BackgroundTransparency = 1
     TabButton.Position = UDim2.new(0.0873015895485878, 0, 0.022522522136569023, 0)
     TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
     TabButton.Size = UDim2.new(0, 107, 0, 25)
@@ -436,11 +437,8 @@ local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(0, 4)
     UICorner.Parent = TabButton
 
-local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(25, 25, 25)
-    UIStroke.Parent = TabButton
-
 local Icon = Instance.new("ImageLabel")
+Icon.ImageColor3 = Color3.fromRGB(78, 78, 78)
 Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Icon.Name = "Icon"
     Icon.AnchorPoint = Vector2.new(0, 0.5)
@@ -454,7 +452,7 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     
     local Tab_Name = Instance.new("TextLabel")
     Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
     Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Tab_Name.Text = config.TabText
     Tab_Name.Name = "Tab_Name"
@@ -490,24 +488,25 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 end
             end
             
-            -- Update tab appearance
+            -- Update tab appearance - set all tabs to inactive
             for _, child in pairs(TabContainer:GetChildren()) do
                 if child:IsA("Frame") and child.Name:find("Tab_") then
-                    child.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                    child.BackgroundTransparency = 1
                     child:FindFirstChild("Tab_Name").TextColor3 = Color3.fromRGB(78, 78, 78)
                     child:FindFirstChild("Icon").ImageColor3 = Color3.fromRGB(78, 78, 78)
-                    if child:FindFirstChild("UIStroke") then
-                        child:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
-                    end
                 end
             end
             
+            -- Set this tab to active
+            TabButton.BackgroundTransparency = 0
             TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
             Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-            if TabButton:FindFirstChild("UIStroke") then
-                TabButton:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
-            end
+            
+            -- Add UIStroke for active tab
+            local UIStroke = Instance.new("UIStroke")
+            UIStroke.Color = Color3.fromRGB(25, 25, 25)
+            UIStroke.Parent = TabButton
             
             CurrentTab = tab
         end
@@ -515,12 +514,16 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     
     -- Set as first tab if none selected
     if not CurrentTab then
+        TabButton.BackgroundTransparency = 0
         TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
         Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-        if TabButton:FindFirstChild("UIStroke") then
-            TabButton:FindFirstChild("UIStroke").Color = Color3.fromRGB(25, 25, 25)
-        end
+        
+        -- Add UIStroke for active tab
+        local UIStroke = Instance.new("UIStroke")
+        UIStroke.Color = Color3.fromRGB(25, 25, 25)
+        UIStroke.Parent = TabButton
+        
         CurrentTab = tab
     end
     
@@ -661,8 +664,9 @@ Pointer.Parent = Master_Switch
                         component.state = masterSwitchState
                         if component.toggle then
                             if masterSwitchState then
-                                component.toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(255, 255, 255)
+                                -- Keep the dark toggle look when active
+                                component.toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                                component.toggle:FindFirstChild("UIStroke").Color = Color3.fromRGB(26, 26, 26)
                                 component.text.TextColor3 = Color3.fromRGB(255, 255, 255)
                                 component.check.Visible = true
                             else
