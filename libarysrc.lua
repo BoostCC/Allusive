@@ -470,42 +470,29 @@ Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             -- Smooth fade out animation for all sections
-            local fadeOutPromises = {}
-            for _, section in pairs(Container:GetChildren()) do
-                if section:IsA("Frame") and section.Name:find("Section_") then
-                    local fadeOutInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-                    local fadeOutTween = TweenService:Create(section, fadeOutInfo, {BackgroundTransparency = 1})
-                    fadeOutTween:Play()
-                    table.insert(fadeOutPromises, fadeOutTween)
+            for _, child in ipairs(Container:GetChildren()) do
+                if child:IsA("Frame") and child.Name:sub(1,8) == "Section_" then
+                    child.Visible = false
                 end
             end
             
-            -- Wait for fade out to complete, then show new sections
-            local function showNewSections()
-                -- Show this tab's sections with smooth fade in
-                for _, section in pairs(tab.sections.left) do
-                    if section.frame then
-                        section.frame.BackgroundTransparency = 1
-                        section.frame.Visible = true
-                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
-                        fadeInTween:Play()
-                    end
-                end
-                for _, section in pairs(tab.sections.right) do
-                    if section.frame then
-                        section.frame.BackgroundTransparency = 1
-                        section.frame.Visible = true
-                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
-                        fadeInTween:Play()
-                    end
+            -- Show this tab's sections with smooth fade in
+            for _, section in pairs(tab.sections.left) do
+                if section.frame then
+                    section.frame.Visible = true
+                    section.frame.BackgroundTransparency = 1
+                    local fadeInInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0}):Play()
                 end
             end
-            
-            -- Delay showing new sections until fade out completes
-            task.wait(0.15)
-            showNewSections()
+            for _, section in pairs(tab.sections.right) do
+                if section.frame then
+                    section.frame.Visible = true
+                    section.frame.BackgroundTransparency = 1
+                    local fadeInInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0}):Play()
+                end
+            end
             
             -- Smooth tab appearance animations
             for _, child in pairs(TabContainer:GetChildren()) do
@@ -593,6 +580,7 @@ function Tab:CreateSection(config)
     SectionFrame.BorderSizePixel = 0
     SectionFrame.AutomaticSize = Enum.AutomaticSize.Y
     SectionFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+    SectionFrame.Visible = false
     SectionFrame.Parent = Container
 
 local UICorner = Instance.new("UICorner")
