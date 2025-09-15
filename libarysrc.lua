@@ -752,12 +752,14 @@ Keybind.Parent = Header
     -- Keybind functionality
     local currentKeybind = Enum.KeyCode.Space
     local currentMouseButton = nil
+    local currentControllerKey = nil
+    local currentControllerNumber = nil
     local keybindConnection = nil
     
     local function updateKeybind(keyCode)
         currentKeybind = keyCode
         
-        -- Convert keycode to readable name using STARHUB mapping
+        -- Convert keycode to readable name with comprehensive mapping
         local keyName = nil
         
         -- Handle keyboard input (including shift keys)
@@ -768,7 +770,7 @@ Keybind.Parent = Header
                 return
             end
             
-            -- Simplify keyboard key names
+            -- Comprehensive keyboard key mapping
             if keyCode == Enum.KeyCode.LeftShift then
                 keyName = "LShift"
             elseif keyCode == Enum.KeyCode.RightShift then
@@ -791,6 +793,134 @@ Keybind.Parent = Header
                 keyName = "Tab"
             elseif keyCode == Enum.KeyCode.Space then
                 keyName = "Space"
+            elseif keyCode == Enum.KeyCode.CapsLock then
+                keyName = "Caps"
+            elseif keyCode == Enum.KeyCode.Insert then
+                keyName = "Ins"
+            elseif keyCode == Enum.KeyCode.Delete then
+                keyName = "Del"
+            elseif keyCode == Enum.KeyCode.Home then
+                keyName = "Home"
+            elseif keyCode == Enum.KeyCode.End then
+                keyName = "End"
+            elseif keyCode == Enum.KeyCode.PageUp then
+                keyName = "PgUp"
+            elseif keyCode == Enum.KeyCode.PageDown then
+                keyName = "PgDn"
+            elseif keyCode == Enum.KeyCode.Up then
+                keyName = "Up"
+            elseif keyCode == Enum.KeyCode.Down then
+                keyName = "Down"
+            elseif keyCode == Enum.KeyCode.Left then
+                keyName = "Left"
+            elseif keyCode == Enum.KeyCode.Right then
+                keyName = "Right"
+            elseif keyCode == Enum.KeyCode.NumLock then
+                keyName = "NumLock"
+            elseif keyCode == Enum.KeyCode.ScrollLock then
+                keyName = "Scroll"
+            elseif keyCode == Enum.KeyCode.Pause then
+                keyName = "Pause"
+            elseif keyCode == Enum.KeyCode.Print then
+                keyName = "Print"
+            elseif keyCode == Enum.KeyCode.F1 then
+                keyName = "F1"
+            elseif keyCode == Enum.KeyCode.F2 then
+                keyName = "F2"
+            elseif keyCode == Enum.KeyCode.F3 then
+                keyName = "F3"
+            elseif keyCode == Enum.KeyCode.F4 then
+                keyName = "F4"
+            elseif keyCode == Enum.KeyCode.F5 then
+                keyName = "F5"
+            elseif keyCode == Enum.KeyCode.F6 then
+                keyName = "F6"
+            elseif keyCode == Enum.KeyCode.F7 then
+                keyName = "F7"
+            elseif keyCode == Enum.KeyCode.F8 then
+                keyName = "F8"
+            elseif keyCode == Enum.KeyCode.F9 then
+                keyName = "F9"
+            elseif keyCode == Enum.KeyCode.F10 then
+                keyName = "F10"
+            elseif keyCode == Enum.KeyCode.F11 then
+                keyName = "F11"
+            elseif keyCode == Enum.KeyCode.F12 then
+                keyName = "F12"
+            elseif keyCode == Enum.KeyCode.Semicolon then
+                keyName = ";"
+            elseif keyCode == Enum.KeyCode.Quote then
+                keyName = "'"
+            elseif keyCode == Enum.KeyCode.Comma then
+                keyName = ","
+            elseif keyCode == Enum.KeyCode.Period then
+                keyName = "."
+            elseif keyCode == Enum.KeyCode.Slash then
+                keyName = "/"
+            elseif keyCode == Enum.KeyCode.Backslash then
+                keyName = "\\"
+            elseif keyCode == Enum.KeyCode.LeftBracket then
+                keyName = "["
+            elseif keyCode == Enum.KeyCode.RightBracket then
+                keyName = "]"
+            elseif keyCode == Enum.KeyCode.Equals then
+                keyName = "="
+            elseif keyCode == Enum.KeyCode.Minus then
+                keyName = "-"
+            elseif keyCode == Enum.KeyCode.Grave then
+                keyName = "`"
+            elseif keyCode == Enum.KeyCode.Zero then
+                keyName = "0"
+            elseif keyCode == Enum.KeyCode.One then
+                keyName = "1"
+            elseif keyCode == Enum.KeyCode.Two then
+                keyName = "2"
+            elseif keyCode == Enum.KeyCode.Three then
+                keyName = "3"
+            elseif keyCode == Enum.KeyCode.Four then
+                keyName = "4"
+            elseif keyCode == Enum.KeyCode.Five then
+                keyName = "5"
+            elseif keyCode == Enum.KeyCode.Six then
+                keyName = "6"
+            elseif keyCode == Enum.KeyCode.Seven then
+                keyName = "7"
+            elseif keyCode == Enum.KeyCode.Eight then
+                keyName = "8"
+            elseif keyCode == Enum.KeyCode.Nine then
+                keyName = "9"
+            elseif keyCode == Enum.KeyCode.NumPadZero then
+                keyName = "Num0"
+            elseif keyCode == Enum.KeyCode.NumPadOne then
+                keyName = "Num1"
+            elseif keyCode == Enum.KeyCode.NumPadTwo then
+                keyName = "Num2"
+            elseif keyCode == Enum.KeyCode.NumPadThree then
+                keyName = "Num3"
+            elseif keyCode == Enum.KeyCode.NumPadFour then
+                keyName = "Num4"
+            elseif keyCode == Enum.KeyCode.NumPadFive then
+                keyName = "Num5"
+            elseif keyCode == Enum.KeyCode.NumPadSix then
+                keyName = "Num6"
+            elseif keyCode == Enum.KeyCode.NumPadSeven then
+                keyName = "Num7"
+            elseif keyCode == Enum.KeyCode.NumPadEight then
+                keyName = "Num8"
+            elseif keyCode == Enum.KeyCode.NumPadNine then
+                keyName = "Num9"
+            elseif keyCode == Enum.KeyCode.NumPadMinus then
+                keyName = "Num-"
+            elseif keyCode == Enum.KeyCode.NumPadPlus then
+                keyName = "Num+"
+            elseif keyCode == Enum.KeyCode.NumPadMultiply then
+                keyName = "Num*"
+            elseif keyCode == Enum.KeyCode.NumPadDivide then
+                keyName = "Num/"
+            elseif keyCode == Enum.KeyCode.NumPadDecimal then
+                keyName = "Num."
+            elseif keyCode == Enum.KeyCode.NumPadEnter then
+                keyName = "NumEnter"
             else
                 keyName = keyCode.Name
             end
@@ -855,6 +985,71 @@ Keybind.Parent = Header
         end)
     end
     
+    local function updateKeybindController(gamepadKey, controllerNumber)
+        currentControllerKey = gamepadKey
+        currentControllerNumber = controllerNumber
+        
+        -- Convert controller key to readable name
+        local controllerName = nil
+        if gamepadKey == Enum.KeyCode.ButtonA then
+            controllerName = "A"
+        elseif gamepadKey == Enum.KeyCode.ButtonB then
+            controllerName = "B"
+        elseif gamepadKey == Enum.KeyCode.ButtonX then
+            controllerName = "X"
+        elseif gamepadKey == Enum.KeyCode.ButtonY then
+            controllerName = "Y"
+        elseif gamepadKey == Enum.KeyCode.ButtonStart then
+            controllerName = "Start"
+        elseif gamepadKey == Enum.KeyCode.ButtonSelect then
+            controllerName = "Select"
+        elseif gamepadKey == Enum.KeyCode.ButtonL1 then
+            controllerName = "LB"
+        elseif gamepadKey == Enum.KeyCode.ButtonR1 then
+            controllerName = "RB"
+        elseif gamepadKey == Enum.KeyCode.ButtonL2 then
+            controllerName = "LT"
+        elseif gamepadKey == Enum.KeyCode.ButtonR2 then
+            controllerName = "RT"
+        elseif gamepadKey == Enum.KeyCode.ButtonL3 then
+            controllerName = "LS"
+        elseif gamepadKey == Enum.KeyCode.ButtonR3 then
+            controllerName = "RS"
+        elseif gamepadKey == Enum.KeyCode.DPadLeft then
+            controllerName = "DLeft"
+        elseif gamepadKey == Enum.KeyCode.DPadRight then
+            controllerName = "DRight"
+        elseif gamepadKey == Enum.KeyCode.DPadUp then
+            controllerName = "DUp"
+        elseif gamepadKey == Enum.KeyCode.DPadDown then
+            controllerName = "DDown"
+        else
+            controllerName = gamepadKey.Name
+        end
+        
+        Keybind.Text = "P" .. controllerNumber .. "_" .. controllerName
+        
+        -- Disconnect old connection
+        if keybindConnection then
+            keybindConnection:Disconnect()
+        end
+        
+        -- Create new connection for controller input
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed and input.UserInputType == Enum.UserInputType["Gamepad" .. controllerNumber] and input.KeyCode == currentControllerKey then
+                -- Toggle all toggles in this section
+                for _, component in pairs(section.components) do
+                    if component.toggle and component.state ~= nil then
+                        component.state = not component.state
+                        if component.config.Callback then
+                            component.config.Callback(component.state)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
     -- Set up keybind listening with typewriter animation
     Keybind.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -901,10 +1096,144 @@ Keybind.Parent = Header
                         updateKeybindMouse("RMB")
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton3 then
                         updateKeybindMouse("MMB")
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad1 then
+                        updateKeybindController(input2.KeyCode, 1)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad2 then
+                        updateKeybindController(input2.KeyCode, 2)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad3 then
+                        updateKeybindController(input2.KeyCode, 3)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad4 then
+                        updateKeybindController(input2.KeyCode, 4)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad5 then
+                        updateKeybindController(input2.KeyCode, 5)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad6 then
+                        updateKeybindController(input2.KeyCode, 6)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad7 then
+                        updateKeybindController(input2.KeyCode, 7)
+                    elseif input2.UserInputType == Enum.UserInputType.Gamepad8 then
+                        updateKeybindController(input2.KeyCode, 8)
                     end
                     
                     Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     connection:Disconnect()
+                end
+            end)
+        end
+    end)
+    
+    -- Right-click context menu for keybind modes
+    Keybind.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton2 then
+            -- Create context menu
+            local Container = Instance.new("Frame")
+            Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            Container.Size = UDim2.new(0, 82, 0, 73)
+            Container.Name = "Container"
+            Container.Position = UDim2.new(0.5972850322723389, 0, 0.8358209133148193, 0)
+            Container.BorderSizePixel = 0
+            Container.ZIndex = 50
+            Container.AutomaticSize = Enum.AutomaticSize.XY
+            Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            Container.Parent = ScreenGui
+
+            local UIListLayout = Instance.new("UIListLayout")
+            UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            UIListLayout.Parent = Container
+
+            local UIPadding = Instance.new("UIPadding")
+            UIPadding.PaddingBottom = UDim.new(0, 8)
+            UIPadding.PaddingTop = UDim.new(0, 5)
+            UIPadding.Parent = Container
+
+            local UICorner = Instance.new("UICorner")
+            UICorner.CornerRadius = UDim.new(0, 4)
+            UICorner.Parent = Container
+
+            local UIStroke = Instance.new("UIStroke")
+            UIStroke.Color = Color3.fromRGB(26, 26, 26)
+            UIStroke.Parent = Container
+
+            -- Hold option
+            local HoldFrame = Instance.new("Frame")
+            HoldFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+            HoldFrame.Position = UDim2.new(0.3027423918247223, 0, 0.1666666716337204, 0)
+            HoldFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            HoldFrame.Size = UDim2.new(0, 82, 0, 20)
+            HoldFrame.BorderSizePixel = 0
+            HoldFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            HoldFrame.Parent = Container
+
+            local HoldText = Instance.new("TextLabel")
+            HoldText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+            HoldText.TextColor3 = Color3.fromRGB(255, 255, 255)
+            HoldText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            HoldText.Text = "Hold"
+            HoldText.AnchorPoint = Vector2.new(0.5, 0.5)
+            HoldText.Size = UDim2.new(0, 1, 0, 1)
+            HoldText.BackgroundTransparency = 1
+            HoldText.Position = UDim2.new(0.5, 0, 0.5, 0)
+            HoldText.BorderSizePixel = 0
+            HoldText.AutomaticSize = Enum.AutomaticSize.XY
+            HoldText.TextSize = 16
+            HoldText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            HoldText.Parent = HoldFrame
+
+            -- Toggle option
+            local ToggleFrame = Instance.new("Frame")
+            ToggleFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+            ToggleFrame.Position = UDim2.new(0.2998863160610199, 0, 0.5, 0)
+            ToggleFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            ToggleFrame.Size = UDim2.new(0, 82, 0, 20)
+            ToggleFrame.BorderSizePixel = 0
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            ToggleFrame.Parent = Container
+
+            local ToggleText = Instance.new("TextLabel")
+            ToggleText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+            ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+            ToggleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            ToggleText.Text = "Toggle"
+            ToggleText.AnchorPoint = Vector2.new(0.5, 0.5)
+            ToggleText.Size = UDim2.new(0, 1, 0, 1)
+            ToggleText.BackgroundTransparency = 1
+            ToggleText.Position = UDim2.new(0.5, 0, 0.5, 0)
+            ToggleText.BorderSizePixel = 0
+            ToggleText.AutomaticSize = Enum.AutomaticSize.XY
+            ToggleText.TextSize = 16
+            ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ToggleText.Parent = ToggleFrame
+
+            -- Always On option
+            local AlwaysFrame = Instance.new("Frame")
+            AlwaysFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+            AlwaysFrame.Position = UDim2.new(0.2998863160610199, 0, 0.8333333134651184, 0)
+            AlwaysFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            AlwaysFrame.Size = UDim2.new(0, 82, 0, 20)
+            AlwaysFrame.BorderSizePixel = 0
+            AlwaysFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            AlwaysFrame.Parent = Container
+
+            local AlwaysText = Instance.new("TextLabel")
+            AlwaysText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+            AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
+            AlwaysText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            AlwaysText.Text = "Always On"
+            AlwaysText.AnchorPoint = Vector2.new(0.5, 0.5)
+            AlwaysText.Size = UDim2.new(0, 1, 0, 1)
+            AlwaysText.BackgroundTransparency = 1
+            AlwaysText.Position = UDim2.new(0.5, 0, 0.5, 0)
+            AlwaysText.BorderSizePixel = 0
+            AlwaysText.AutomaticSize = Enum.AutomaticSize.XY
+            AlwaysText.TextSize = 16
+            AlwaysText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            AlwaysText.Parent = AlwaysFrame
+
+            -- Close context menu when clicking outside
+            local closeConnection
+            closeConnection = UserInputService.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 then
+                    Container:Destroy()
+                    closeConnection:Disconnect()
                 end
             end)
         end
