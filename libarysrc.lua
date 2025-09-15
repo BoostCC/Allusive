@@ -700,6 +700,7 @@ Keybind.Parent = Header
 
     -- Keybind functionality
     local currentKeybind = Enum.KeyCode.Space
+    local currentMouseButton = nil
     local keybindConnection = nil
     
     local function updateKeybind(keyCode)
@@ -751,15 +752,51 @@ Keybind.Parent = Header
             keybindConnection:Disconnect()
         end
         
-        -- Create new connection
+        -- Create new connection for keyboard input
         keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if not gameProcessed and input.KeyCode == currentKeybind then
+            if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == currentKeybind then
                 -- Toggle all toggles in this section
                 for _, component in pairs(section.components) do
                     if component.toggle and component.state ~= nil then
                         component.state = not component.state
                         if component.config.Callback then
                             component.config.Callback(component.state)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    local function updateKeybindMouse(mouseButton)
+        currentMouseButton = mouseButton
+        Keybind.Text = mouseButton
+        
+        -- Disconnect old connection
+        if keybindConnection then
+            keybindConnection:Disconnect()
+        end
+        
+        -- Create new connection for mouse input
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed then
+                local shouldTrigger = false
+                if mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    shouldTrigger = true
+                elseif mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2 then
+                    shouldTrigger = true
+                elseif mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3 then
+                    shouldTrigger = true
+                end
+                
+                if shouldTrigger then
+                    -- Toggle all toggles in this section
+                    for _, component in pairs(section.components) do
+                        if component.toggle and component.state ~= nil then
+                            component.state = not component.state
+                            if component.config.Callback then
+                                component.config.Callback(component.state)
+                            end
                         end
                     end
                 end
@@ -790,7 +827,7 @@ Keybind.Parent = Header
             
             local connection
             connection = UserInputService.InputBegan:Connect(function(input2, gameProcessed)
-                if not gameProcessed and input2.KeyCode ~= Enum.KeyCode.MouseButton1 then
+                if not gameProcessed then
                     -- Stop typewriter animation
                     typewriterConnection:Disconnect()
                     
@@ -799,8 +836,18 @@ Keybind.Parent = Header
                     local scaleBackTween = TweenService:Create(Keybind, scaleBackInfo, {Size = UDim2.new(0, Keybind.Size.X.Offset / 1.1, 0, Keybind.Size.Y.Offset / 1.1)})
                     scaleBackTween:Play()
                     
-                    updateKeybind(input2.KeyCode)
-Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    -- Handle different input types properly
+                    if input2.UserInputType == Enum.UserInputType.Keyboard then
+                        updateKeybind(input2.KeyCode)
+                    elseif input2.UserInputType == Enum.UserInputType.MouseButton1 then
+                        updateKeybindMouse("LMB")
+                    elseif input2.UserInputType == Enum.UserInputType.MouseButton2 then
+                        updateKeybindMouse("RMB")
+                    elseif input2.UserInputType == Enum.UserInputType.MouseButton3 then
+                        updateKeybindMouse("MMB")
+                    end
+                    
+                    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     connection:Disconnect()
                 end
             end)
@@ -933,9 +980,9 @@ Check.Parent = Toggle
             
             -- Animate toggle
             if toggle.state then
-                -- Turn on animation
-                Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                UIStroke.Color = Color3.fromRGB(255, 255, 255)
+                -- Turn on animation - keep original colors as specified
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
                 ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
                 Check.Visible = true
                 
