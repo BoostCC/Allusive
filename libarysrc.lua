@@ -1492,6 +1492,7 @@ function Section:CreateKeybind(config)
 			keybind.twConn:Disconnect()
 			keybind.twConn = nil
 		end
+		listening = false
 	end
 
 	local function applyActiveState(isActive)
@@ -1509,6 +1510,7 @@ function Section:CreateKeybind(config)
 		local lastUpdate = 0
 		local startTime = tick()
 		keybind.twConn = RunService.Heartbeat:Connect(function()
+			if not listening then return end
 			local t = tick()
 			if t - lastUpdate >= 0.5 then
 				dots = (#dots < 3) and (dots .. ".") or ""
@@ -1517,24 +1519,18 @@ function Section:CreateKeybind(config)
 			end
 			if t - startTime > 12 then
 				stopTypewriter()
-				listening = false
 			end
 		end)
 		local conn
 		conn = UserInputService.InputBegan:Connect(function(input, gp)
-			-- Always stop the typewriter immediately on any input
 			stopTypewriter()
 			if gp then
-				-- Even if processed by the game, end listening to avoid stuck dots
 				if conn then conn:Disconnect() end
-				listening = false
 				return
 			end
 			if input.UserInputType == Enum.UserInputType.Keyboard then
 				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
-					-- Ignore WASD but also exit listening state cleanly
 					if conn then conn:Disconnect() end
-					listening = false
 					return
 				end
 				KeybindLabel.Text = input.KeyCode.Name
@@ -1554,7 +1550,9 @@ function Section:CreateKeybind(config)
 				updateKeybindController(input.KeyCode, gpIdx)
 			end
 			if conn then conn:Disconnect() end
-			listening = false
+		end)
+		UserInputService.InputEnded:Connect(function()
+			stopTypewriter()
 		end)
 	end
 
