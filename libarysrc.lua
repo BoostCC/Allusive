@@ -1050,7 +1050,7 @@ Keybind.Parent = Header
         end)
     end
     
-    -- Set up keybind listening with typewriter animation
+    -- Set up keybind listening with typewriter animation (LEFT CLICK)
     Keybind.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             -- Smooth typewriter animation for "..."
@@ -1121,14 +1121,14 @@ Keybind.Parent = Header
         end
     end)
     
-    -- Right-click context menu for keybind modes
+    -- Right-click context menu for keybind modes (RIGHT CLICK)
     Keybind.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton2 then
             -- Create context menu
             local Container = Instance.new("Frame")
             Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
             Container.Size = UDim2.new(0, 82, 0, 73)
-            Container.Name = "Container"
+            Container.Name = "KeybindContextMenu"
             Container.Position = UDim2.new(0.5972850322723389, 0, 0.8358209133148193, 0)
             Container.BorderSizePixel = 0
             Container.ZIndex = 50
@@ -1227,6 +1227,37 @@ Keybind.Parent = Header
             AlwaysText.TextSize = 16
             AlwaysText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             AlwaysText.Parent = AlwaysFrame
+
+            -- Add click functionality to each option
+            HoldFrame.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    -- Set to Hold mode
+                    HoldText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    Container:Destroy()
+                end
+            end)
+
+            ToggleFrame.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    -- Set to Toggle mode (default)
+                    HoldText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    Container:Destroy()
+                end
+            end)
+
+            AlwaysFrame.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    -- Set to Always On mode
+                    HoldText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    AlwaysText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    Container:Destroy()
+                end
+            end)
 
             -- Close context menu when clicking outside
             local closeConnection
