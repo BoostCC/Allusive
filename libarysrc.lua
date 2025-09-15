@@ -1487,6 +1487,12 @@ function Section:CreateKeybind(config)
 	UICorner.Parent = KeybindLabel
 
 	local listening = false
+	local function stopTypewriter()
+		if keybind.twConn then
+			keybind.twConn:Disconnect()
+			keybind.twConn = nil
+		end
+	end
 
 	local function applyActiveState(isActive)
 		keybind.active = isActive
@@ -1498,23 +1504,39 @@ function Section:CreateKeybind(config)
 	local function listenForKey()
 		if listening then return end
 		listening = true
+		stopTypewriter()
 		local dots = ""
 		local lastUpdate = 0
-		local twConn
-		twConn = RunService.Heartbeat:Connect(function()
+		local startTime = tick()
+		keybind.twConn = RunService.Heartbeat:Connect(function()
 			local t = tick()
 			if t - lastUpdate >= 0.5 then
-				dots = dots .. "."
-				if #dots > 3 then dots = "" end
+				dots = (#dots < 3) and (dots .. ".") or ""
 				KeybindLabel.Text = dots
 				lastUpdate = t
+			end
+			if t - startTime > 12 then
+				stopTypewriter()
+				listening = false
 			end
 		end)
 		local conn
 		conn = UserInputService.InputBegan:Connect(function(input, gp)
-			if gp then return end
+			-- Always stop the typewriter immediately on any input
+			stopTypewriter()
+			if gp then
+				-- Even if processed by the game, end listening to avoid stuck dots
+				if conn then conn:Disconnect() end
+				listening = false
+				return
+			end
 			if input.UserInputType == Enum.UserInputType.Keyboard then
-				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then return end
+				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
+					-- Ignore WASD but also exit listening state cleanly
+					if conn then conn:Disconnect() end
+					listening = false
+					return
+				end
 				KeybindLabel.Text = input.KeyCode.Name
 				updateKeybind(input.KeyCode)
 			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1531,7 +1553,6 @@ function Section:CreateKeybind(config)
 				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
 				updateKeybindController(input.KeyCode, gpIdx)
 			end
-			if twConn then twConn:Disconnect() end
 			if conn then conn:Disconnect() end
 			listening = false
 		end)
