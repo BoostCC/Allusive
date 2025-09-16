@@ -1300,13 +1300,28 @@ local UIListLayout = Instance.new("UIListLayout")
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     UIListLayout.Parent = OptionsContainer
 
+    local function closeDropdown()
+        open = false
+        -- Smooth icon rotation back
+        local rotateInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+        TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
+        
+        -- Smooth dropdown close animation
+        local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+        TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
+        closeInfo.Completed:Connect(function()
+            OptionsContainer.Visible = false
+        end)
+    end
+
     local function renderOptions()
         for _,child in ipairs(OptionsContainer:GetChildren()) do
             if child:IsA("Frame") and child.Name == "OptionRow" then
                 child:Destroy()
             end
         end
-        for _,opt in ipairs(dd.options) do
+        
+        for i, opt in ipairs(dd.options) do
             local row = Instance.new("Frame")
             row.Name = "OptionRow"
             row.AnchorPoint = Vector2.new(0.5, 0)
@@ -1314,6 +1329,9 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             row.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             row.BorderSizePixel = 0
             row.Parent = OptionsContainer
+            
+            -- Start with transparent for animation
+            row.BackgroundTransparency = 1
             
             local isSelected = dd.multiSelect and table.find(dd.selectedItems, opt) or (opt == dd.selected)
             
@@ -1331,7 +1349,6 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             tl.TextSize = 16
             tl.Parent = row
             
-            
             if dd.multiSelect then
                 local checkmark = Instance.new("ImageLabel")
                 checkmark.Name = "Checkmark"
@@ -1343,10 +1360,33 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                 checkmark.Size = UDim2.new(0, 12, 0, 12)
                 checkmark.Visible = isSelected
                 checkmark.Parent = row
+                
+                -- Animate checkmark appearance
+                if isSelected then
+                    checkmark.Size = UDim2.new(0, 0, 0, 0)
+                    local checkAnim = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                    TweenService:Create(checkmark, checkAnim, {Size = UDim2.new(0, 12, 0, 12)}):Play()
+                end
             end
+            
+            -- Animate row appearance with stagger
+            local delay = (i - 1) * 0.05
+            local fadeIn = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+            local fadeInTween = TweenService:Create(row, fadeIn, {BackgroundTransparency = 0})
+            
+            if delay > 0 then
+                wait(delay)
+            end
+            fadeInTween:Play()
             
             row.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    -- Smooth selection animation
+                    local selectAnim = TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                    TweenService:Create(row, selectAnim, {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
+                    
+                    wait(0.1)
+                    
                     if dd.multiSelect then
                         local index = table.find(dd.selectedItems, opt)
                         if index then
@@ -1359,18 +1399,14 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                     else
                         dd.selected = opt
                         Dropdown_Options.Text = tostring(opt)
-                        OptionsContainer.Visible = false
-                        -- Smooth icon rotation back
-                        local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-                        TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
-                        -- Smooth dropdown close animation
-                        local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-                        TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
-                        closeInfo.Completed:Connect(function()
-                            OptionsContainer.Visible = false
-                        end)
+                        closeDropdown()
                         if dd.callback then dd.callback(opt) end
                     end
+                    
+                    -- Reset row color
+                    local resetAnim = TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                    TweenService:Create(row, resetAnim, {BackgroundColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+                    
                     renderOptions()
                 end
             end)
@@ -1380,6 +1416,8 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     renderOptions()
 
     local open = false
+    local clickOutsideConnection = nil
+    
     Dropdown.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             open = not open
@@ -1394,23 +1432,44 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                 OptionsContainer.Visible = true
                 
                 -- Smooth icon rotation
-                local rotateInfo = TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
                 TweenService:Create(Icon, rotateInfo, {Rotation = 180}):Play()
                 
                 -- Smooth dropdown open animation with bounce
-                local openInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                local openInfo = TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
                 TweenService:Create(OptionsContainer, openInfo, {Size = UDim2.new(0, 210, 0, math.min(#dd.options * 20 + 13, 120))}):Play()
-            else
-                -- Smooth icon rotation back
-                local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-                TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
                 
-                -- Smooth dropdown close animation
-                local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-                TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
-                closeInfo.Completed:Connect(function()
-                    OptionsContainer.Visible = false
+                -- Set up click outside detection
+                if clickOutsideConnection then
+                    clickOutsideConnection:Disconnect()
+                end
+                clickOutsideConnection = UserInputService.InputBegan:Connect(function(input2)
+                    if input2.UserInputType == Enum.UserInputType.MouseButton1 then
+                        local mousePos = UserInputService:GetMouseLocation()
+                        local dropdownPos = OptionsContainer.AbsolutePosition
+                        local dropdownSize = OptionsContainer.AbsoluteSize
+                        local dropdownFrame = Dropdown.AbsolutePosition
+                        local dropdownFrameSize = Dropdown.AbsoluteSize
+                        
+                        -- Check if click is outside both dropdown and options
+                        local outsideDropdown = not (mousePos.X >= dropdownFrame.X and mousePos.X <= dropdownFrame.X + dropdownFrameSize.X and
+                                                   mousePos.Y >= dropdownFrame.Y and mousePos.Y <= dropdownFrame.Y + dropdownFrameSize.Y)
+                        local outsideOptions = not (mousePos.X >= dropdownPos.X and mousePos.X <= dropdownPos.X + dropdownSize.X and
+                                                  mousePos.Y >= dropdownPos.Y and mousePos.Y <= dropdownPos.Y + dropdownSize.Y)
+                        
+                        if outsideDropdown and outsideOptions then
+                            closeDropdown()
+                            clickOutsideConnection:Disconnect()
+                            clickOutsideConnection = nil
+                        end
+                    end
                 end)
+            else
+                closeDropdown()
+                if clickOutsideConnection then
+                    clickOutsideConnection:Disconnect()
+                    clickOutsideConnection = nil
+                end
             end
         end
     end)
