@@ -40,7 +40,7 @@ end
 local function tweenTransparencyTo(root, toOriginal, duration)
     local tweens = {}
     local function applyOne(obj)
-        local info = TweenInfo.new(duration or 0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local info = TweenInfo.new(duration or 0.22, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
         local props = {}
         local okBG = pcall(function()
             if obj:GetAttribute("__origBackgroundTransparency") ~= nil then
@@ -436,8 +436,8 @@ function libary:CreateWindow(config)
     local function hideUI()
         print("hideUI called, MainFrame.Visible:", MainFrame.Visible)
         if not MainFrame.Visible then return end
-        local tweens = tweenTransparencyTo(MainFrame, false, 0.12)
-        task.delay(0.12, function()
+        local tweens = tweenTransparencyTo(MainFrame, false, 0.22)
+        task.delay(0.23, function()
             MainFrame.Visible = false
             print("MainFrame hidden")
             tweenTransparencyTo(MainFrame, true, 0) -- reset to originals for next open
@@ -451,7 +451,7 @@ function libary:CreateWindow(config)
         MainFrame.Visible = true
         print("MainFrame shown")
         tweenTransparencyTo(MainFrame, false, 0) -- start transparent
-        tweenTransparencyTo(MainFrame, true, 0.12) -- fade in
+        tweenTransparencyTo(MainFrame, true, 0.22) -- fade in
     end
 
     local function toggleUI()
