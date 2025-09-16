@@ -1212,7 +1212,7 @@ local Dropdown_Label = Instance.new("TextLabel")
 Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Dropdown_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
 Dropdown_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Dropdown_Label.Text = dd.text
+    Dropdown_Label.Text = tostring(dd.text)
 Dropdown_Label.Name = "Dropdown_Label"
 Dropdown_Label.Size = UDim2.new(0, 1, 0, 1)
 Dropdown_Label.BackgroundTransparency = 1
@@ -1347,10 +1347,10 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             OptionsContainer.Visible = open
             Icon.Rotation = open and 180 or 0
             if open then
-                -- Position globally below the dropdown
                 local absPos = Dropdown.AbsolutePosition
                 local absSize = Dropdown.AbsoluteSize
-                OptionsContainer.Position = UDim2.fromOffset(absPos.X, absPos.Y + absSize.Y + 1)
+                local parentAbs = MainFrame.AbsolutePosition
+                OptionsContainer.Position = UDim2.fromOffset(absPos.X - parentAbs.X, absPos.Y - parentAbs.Y + absSize.Y + 1)
                 OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
             end
         end
