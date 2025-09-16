@@ -19,7 +19,14 @@ local function captureOriginalTransparency(instance)
     pcall(function() if instance.BackgroundTransparency ~= nil then instance:SetAttribute("__origBackgroundTransparency", instance.BackgroundTransparency) end end)
     pcall(function() if instance.TextTransparency ~= nil then instance:SetAttribute("__origTextTransparency", instance.TextTransparency) end end)
     pcall(function() if instance.ImageTransparency ~= nil then instance:SetAttribute("__origImageTransparency", instance.ImageTransparency) end end)
-    pcall(function() if instance.Transparency ~= nil then instance:SetAttribute("__origTransparency", instance.Transparency) end end)
+    pcall(function()
+        if instance.Transparency ~= nil then
+            local current = instance.Transparency
+            if typeof(current) == "number" then
+                instance:SetAttribute("__origTransparency", current)
+            end
+        end
+    end)
     instance:SetAttribute("__origCaptured", true)
 end
 
@@ -54,7 +61,9 @@ local function tweenTransparencyTo(root, toOriginal, duration)
             if obj.ClassName == "UIStroke" then
                 props.Transparency = toOriginal and (obj:GetAttribute("__origTransparency") or 0) or 1
             elseif obj:GetAttribute("__origTransparency") ~= nil then
-                props.Transparency = toOriginal and obj:GetAttribute("__origTransparency") or 1
+                if typeof(obj.Transparency) == "number" then
+                    props.Transparency = toOriginal and obj:GetAttribute("__origTransparency") or 1
+                end
             end
         end)
         if next(props) then
