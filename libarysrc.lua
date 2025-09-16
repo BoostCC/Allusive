@@ -1197,78 +1197,78 @@ function Section:CreateDropdown(config)
     dd.selected = dd.config.Default or dd.options[1]
     dd.callback = dd.config.Callback
 
-    local Dropdown_Componenet = Instance.new("Frame")
-    Dropdown_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Dropdown_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-    Dropdown_Componenet.BackgroundTransparency = 1
+local Dropdown_Componenet = Instance.new("Frame")
+Dropdown_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dropdown_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Dropdown_Componenet.BackgroundTransparency = 1
     Dropdown_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-    Dropdown_Componenet.Name = "Dropdown_Componenet"
-    Dropdown_Componenet.Size = UDim2.new(0, 228, 0, 55)
-    Dropdown_Componenet.BorderSizePixel = 0
-    Dropdown_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Dropdown_Componenet.Parent = self.holder
+Dropdown_Componenet.Name = "Dropdown_Componenet"
+Dropdown_Componenet.Size = UDim2.new(0, 228, 0, 55)
+Dropdown_Componenet.BorderSizePixel = 0
+Dropdown_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Dropdown_Componenet.Parent = MainFrame
 
-    local Dropdown_Label = Instance.new("TextLabel")
-    Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Dropdown_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Dropdown_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Dropdown_Label = Instance.new("TextLabel")
+Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Dropdown_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Dropdown_Label.Text = dd.text
-    Dropdown_Label.Name = "Dropdown_Label"
-    Dropdown_Label.Size = UDim2.new(0, 1, 0, 1)
-    Dropdown_Label.BackgroundTransparency = 1
-    Dropdown_Label.Position = UDim2.new(0, 8, 0, 0)
-    Dropdown_Label.BorderSizePixel = 0
-    Dropdown_Label.AutomaticSize = Enum.AutomaticSize.XY
-    Dropdown_Label.TextSize = 14
-    Dropdown_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Dropdown_Label.Parent = Dropdown_Componenet
+Dropdown_Label.Name = "Dropdown_Label"
+Dropdown_Label.Size = UDim2.new(0, 1, 0, 1)
+Dropdown_Label.BackgroundTransparency = 1
+Dropdown_Label.Position = UDim2.new(0, 8, 0, 0)
+Dropdown_Label.BorderSizePixel = 0
+Dropdown_Label.AutomaticSize = Enum.AutomaticSize.XY
+Dropdown_Label.TextSize = 14
+Dropdown_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown_Label.Parent = Dropdown_Componenet
 
-    local Dropdown = Instance.new("Frame")
-    Dropdown.AnchorPoint = Vector2.new(0.5, 0)
-    Dropdown.Name = "Dropdown"
-    Dropdown.Position = UDim2.new(0.5, 0, 0, 20)
-    Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Dropdown.Size = UDim2.new(0, 212, 0, 30)
-    Dropdown.BorderSizePixel = 0
-    Dropdown.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Dropdown.Parent = Dropdown_Componenet
+local Dropdown = Instance.new("Frame")
+Dropdown.AnchorPoint = Vector2.new(0.5, 0)
+Dropdown.Name = "Dropdown"
+Dropdown.Position = UDim2.new(0.5, 0, 0, 20)
+Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dropdown.Size = UDim2.new(0, 212, 0, 30)
+Dropdown.BorderSizePixel = 0
+Dropdown.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Dropdown.Parent = Dropdown_Componenet
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = Dropdown
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Dropdown
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(26, 26, 26)
-    UIStroke.Parent = Dropdown
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Parent = Dropdown
 
-    local Dropdown_Options = Instance.new("TextLabel")
-    Dropdown_Options.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Dropdown_Options.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Dropdown_Options.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Dropdown_Options = Instance.new("TextLabel")
+Dropdown_Options.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Dropdown_Options.TextColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown_Options.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Dropdown_Options.Text = tostring(dd.selected or "")
-    Dropdown_Options.Name = "Dropdown_Options"
-    Dropdown_Options.AnchorPoint = Vector2.new(0, 0.5)
-    Dropdown_Options.Size = UDim2.new(0, 1, 0, 1)
-    Dropdown_Options.BackgroundTransparency = 1
-    Dropdown_Options.Position = UDim2.new(0, 10, 0.5, 0)
-    Dropdown_Options.BorderSizePixel = 0
-    Dropdown_Options.AutomaticSize = Enum.AutomaticSize.XY
-    Dropdown_Options.TextSize = 14
-    Dropdown_Options.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Dropdown_Options.Parent = Dropdown
+Dropdown_Options.Name = "Dropdown_Options"
+Dropdown_Options.AnchorPoint = Vector2.new(0, 0.5)
+Dropdown_Options.Size = UDim2.new(0, 1, 0, 1)
+Dropdown_Options.BackgroundTransparency = 1
+Dropdown_Options.Position = UDim2.new(0, 10, 0.5, 0)
+Dropdown_Options.BorderSizePixel = 0
+Dropdown_Options.AutomaticSize = Enum.AutomaticSize.XY
+Dropdown_Options.TextSize = 14
+Dropdown_Options.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown_Options.Parent = Dropdown
 
-    local Icon = Instance.new("ImageLabel")
-    Icon.ScaleType = Enum.ScaleType.Fit
-    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Icon.Name = "Icon"
-    Icon.AnchorPoint = Vector2.new(1, 0.5)
+local Icon = Instance.new("ImageLabel")
+Icon.ScaleType = Enum.ScaleType.Fit
+Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Icon.Name = "Icon"
+Icon.AnchorPoint = Vector2.new(1, 0.5)
     Icon.Image = dd.config.Icon or "rbxassetid://95652893039727"
-    Icon.BackgroundTransparency = 1
-    Icon.Position = UDim2.new(1, -8, 0.5, 0)
-    Icon.Size = UDim2.new(0, 15, 0, 15)
-    Icon.BorderSizePixel = 0
-    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Icon.Parent = Dropdown
+Icon.BackgroundTransparency = 1
+Icon.Position = UDim2.new(1, -8, 0.5, 0)
+Icon.Size = UDim2.new(0, 15, 0, 15)
+Icon.BorderSizePixel = 0
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.Parent = Dropdown
 
     -- Options container rendered in detached layer so it escapes section clipping
     local OptionsContainer = Instance.new("Frame")
@@ -1285,7 +1285,7 @@ function Section:CreateDropdown(config)
     ocStroke.Color = Color3.fromRGB(26, 26, 26)
     ocStroke.Parent = OptionsContainer
 
-    local UIPadding = Instance.new("UIPadding")
+local UIPadding = Instance.new("UIPadding")
     UIPadding.PaddingBottom = UDim.new(0, 8)
     UIPadding.PaddingTop = UDim.new(0, 5)
     UIPadding.Parent = OptionsContainer
@@ -1294,8 +1294,8 @@ function Section:CreateDropdown(config)
     ocCorner.CornerRadius = UDim.new(0, 4)
     ocCorner.Parent = OptionsContainer
 
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     UIListLayout.Parent = OptionsContainer
 
     local function renderOptions()
