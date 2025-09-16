@@ -1930,31 +1930,39 @@ UIGradient.Color = ColorSequence.new{
     end
 
     local function hsvToRgb(h, s, v)
-        local r, g, b
-        local i = math.floor(h * 6)
-        local f = h * 6 - i
-        local p = v * (1 - s)
-        local q = v * (1 - f * s)
-        local t = v * (1 - (1 - f) * s)
+        h = h * 360
+        local c = v * s
+        local x = c * (1 - math.abs((h / 60) % 2 - 1))
+        local m = v - c
         
-        if i == 0 then
-            r, g, b = v, t, p
-        elseif i == 1 then
-            r, g, b = q, v, p
-        elseif i == 2 then
-            r, g, b = p, v, t
-        elseif i == 3 then
-            r, g, b = p, q, v
-        elseif i == 4 then
-            r, g, b = t, p, v
-        else
-            r, g, b = v, p, q
+        local r, g, b = 0, 0, 0
+        
+        if h >= 0 and h < 60 then
+            r, g, b = c, x, 0
+        elseif h >= 60 and h < 120 then
+            r, g, b = x, c, 0
+        elseif h >= 120 and h < 180 then
+            r, g, b = 0, c, x
+        elseif h >= 180 and h < 240 then
+            r, g, b = 0, x, c
+        elseif h >= 240 and h < 300 then
+            r, g, b = x, 0, c
+        elseif h >= 300 and h < 360 then
+            r, g, b = c, 0, x
         end
         
-        return Color3.fromRGB(math.floor(r * 255), math.floor(g * 255), math.floor(b * 255))
+        return Color3.fromRGB(
+            math.floor((r + m) * 255),
+            math.floor((g + m) * 255),
+            math.floor((b + m) * 255)
+        )
     end
 
     local function rgbToHsv(r, g, b)
+        r = r / 255
+        g = g / 255
+        b = b / 255
+        
         local max = math.max(r, g, b)
         local min = math.min(r, g, b)
         local diff = max - min
@@ -1977,17 +1985,20 @@ UIGradient.Color = ColorSequence.new{
         return h, s, v
     end
 
-    local currentHue = 0
-    local currentSat = 1
-    local currentVal = 1
+    -- Initialize with default color
+    local r, g, b = colorToggle.defaultColor.R, colorToggle.defaultColor.G, colorToggle.defaultColor.B
+    local h, s, v = rgbToHsv(r * 255, g * 255, b * 255)
+    local currentHue = h
+    local currentSat = s
+    local currentVal = v
 
     -- Color picker interaction
     local colorPickerDragging = false
     local huePickerDragging = false
 
     -- Initialize picker positions
-    ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
-    HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+    ColorPicker.Position = UDim2.new(currentSat, -5, currentVal, -5)
+    HuePicker.Position = UDim2.new(0.5, -5, currentHue, -5)
 
     Colorframe.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
