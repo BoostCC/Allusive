@@ -1206,7 +1206,7 @@ Dropdown_Componenet.Name = "Dropdown_Componenet"
 Dropdown_Componenet.Size = UDim2.new(0, 228, 0, 55)
 Dropdown_Componenet.BorderSizePixel = 0
 Dropdown_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Componenet.Parent = MainFrame
+	Dropdown_Componenet.Parent = self.holder
 
 local Dropdown_Label = Instance.new("TextLabel")
 Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
@@ -1279,7 +1279,7 @@ Icon.Parent = Dropdown
     OptionsContainer.AutomaticSize = Enum.AutomaticSize.Y
     OptionsContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     OptionsContainer.Visible = false
-    OptionsContainer.Parent = DropdownLayer
+    OptionsContainer.Parent = MainFrame
 
     local ocStroke = Instance.new("UIStroke")
     ocStroke.Color = Color3.fromRGB(26, 26, 26)
