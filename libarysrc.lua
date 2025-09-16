@@ -1353,20 +1353,21 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             if dd.multiSelect then
                 local checkmark = Instance.new("ImageLabel")
                 checkmark.Name = "Checkmark"
-                checkmark.Image = "rbxassetid://103083009202465"
+                checkmark.Image = "rbxassetid://139958444428790"
                 checkmark.ImageColor3 = Color3.fromRGB(255, 255, 255)
                 checkmark.BackgroundTransparency = 1
-                checkmark.AnchorPoint = Vector2.new(1, 0.5)
-                checkmark.Position = UDim2.new(1, -8, 0.5, 0)
-                checkmark.Size = UDim2.new(0, 12, 0, 12)
-                checkmark.Visible = isSelected
+                checkmark.AnchorPoint = Vector2.new(0.5, 0.5)
+                checkmark.Size = UDim2.new(0, 15, 0, 16)
                 checkmark.Parent = row
                 
-                -- Animate checkmark appearance
+                -- Initially hide check icon and position it to the right (STARHUB style)
+                checkmark.ImageTransparency = 1
+                checkmark.Position = UDim2.new(1.2, 0, 0.5, 0)
+                
                 if isSelected then
-                    checkmark.Size = UDim2.new(0, 0, 0, 0)
-                    local checkAnim = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                    TweenService:Create(checkmark, checkAnim, {Size = UDim2.new(0, 12, 0, 12)}):Play()
+                    -- Selected - show check icon with smooth slide-in animation
+                    checkmark.Position = UDim2.new(0.9070789217948914, 0, 0.5, 0)
+                    checkmark.ImageTransparency = 0
                 end
             end
             
@@ -1390,11 +1391,31 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                     
                     if dd.multiSelect then
                         local index = table.find(dd.selectedItems, opt)
+                        local checkIcon = row:FindFirstChild("Checkmark")
+                        local textLabel = row:FindFirstChild("TextLabel")
+                        
                         if index then
+                            -- Remove from selection - STARHUB style slide out
                             table.remove(dd.selectedItems, index)
+                            textLabel.TextColor3 = Color3.fromRGB(76, 76, 76)
+                            
+                            local slideOut = TweenService:Create(checkIcon, TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+                                Position = UDim2.new(1.2, 0, 0.5, 0),
+                                ImageTransparency = 1
+                            })
+                            slideOut:Play()
                         else
+                            -- Add to selection - STARHUB style slide in
                             table.insert(dd.selectedItems, opt)
+                            textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                            
+                            local slideIn = TweenService:Create(checkIcon, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                                Position = UDim2.new(0.9070789217948914, 0, 0.5, 0),
+                                ImageTransparency = 0
+                            })
+                            slideIn:Play()
                         end
+                        
                         Dropdown_Options.Text = #dd.selectedItems > 0 and table.concat(dd.selectedItems, ", ") or "Select options..."
                         if dd.callback then dd.callback(dd.selectedItems) end
                     else
