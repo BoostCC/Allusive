@@ -1984,6 +1984,10 @@ UIGradient.Color = ColorSequence.new{
     local colorPickerDragging = false
     local huePickerDragging = false
 
+    -- Initialize picker positions
+    ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+
     Colorframe.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             colorPickerDragging = true
@@ -2023,7 +2027,9 @@ UIGradient.Color = ColorSequence.new{
         end
     end)
 
-    UserInputService.InputChanged:Connect(function(input)
+    -- Global mouse tracking for dragging
+    local mouseConnection
+    mouseConnection = UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
             if colorPickerDragging then
                 local mousePos = UserInputService:GetMouseLocation()
