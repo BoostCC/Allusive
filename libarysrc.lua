@@ -1919,6 +1919,7 @@ UIGradient.Color = ColorSequence.new{
     local function updateColor(newColor)
         colorToggle.color = newColor
         Color_Frame.BackgroundColor3 = newColor
+        Color_Frame.ImageColor3 = newColor
         if colorToggle.callback then
             colorToggle.callback(colorToggle.state, newColor)
         end
@@ -2004,8 +2005,8 @@ UIGradient.Color = ColorSequence.new{
             local newColor = hsvToRgb(currentHue, currentSat, currentVal)
             updateColor(newColor)
             
-            -- Update picker position
-            ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
+            -- Update picker position (account for anchor point)
+            ColorPicker.Position = UDim2.new(currentSat, -5, currentVal, -5)
         end
     end)
 
@@ -2022,8 +2023,8 @@ UIGradient.Color = ColorSequence.new{
             local newColor = hsvToRgb(currentHue, currentSat, currentVal)
             updateColor(newColor)
             
-            -- Update hue picker position
-            HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+            -- Update hue picker position (account for anchor point)
+            HuePicker.Position = UDim2.new(0.5, -5, currentHue, -5)
         end
     end)
 
@@ -2045,8 +2046,8 @@ UIGradient.Color = ColorSequence.new{
                 local newColor = hsvToRgb(currentHue, currentSat, currentVal)
                 updateColor(newColor)
                 
-                -- Update picker position
-                ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
+                -- Update picker position (account for anchor point)
+                ColorPicker.Position = UDim2.new(currentSat, -5, currentVal, -5)
             elseif huePickerDragging then
                 local mousePos = UserInputService:GetMouseLocation()
                 local huePos = Hue.AbsolutePosition
@@ -2058,8 +2059,8 @@ UIGradient.Color = ColorSequence.new{
                 local newColor = hsvToRgb(currentHue, currentSat, currentVal)
                 updateColor(newColor)
                 
-                -- Update hue picker position
-                HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+                -- Update hue picker position (account for anchor point)
+                HuePicker.Position = UDim2.new(0.5, -5, currentHue, -5)
             end
         end
     end)
@@ -2128,13 +2129,16 @@ UIGradient.Color = ColorSequence.new{
     -- Click outside to close color picker
     UserInputService.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 and Container.Visible then
-            local mousePos = UserInputService:GetMouseLocation()
-            local containerPos = Container.AbsolutePosition
-            local containerSize = Container.AbsoluteSize
-            
-            if not (mousePos.X >= containerPos.X and mousePos.X <= containerPos.X + containerSize.X and
-                   mousePos.Y >= containerPos.Y and mousePos.Y <= containerPos.Y + containerSize.Y) then
-                closeColorPicker()
+            -- Don't close if we're dragging the color picker or hue slider
+            if not colorPickerDragging and not huePickerDragging then
+                local mousePos = UserInputService:GetMouseLocation()
+                local containerPos = Container.AbsolutePosition
+                local containerSize = Container.AbsoluteSize
+                
+                if not (mousePos.X >= containerPos.X and mousePos.X <= containerPos.X + containerSize.X and
+                       mousePos.Y >= containerPos.Y and mousePos.Y <= containerPos.Y + containerSize.Y) then
+                    closeColorPicker()
+                end
             end
         end
     end)
