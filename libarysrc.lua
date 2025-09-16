@@ -466,63 +466,34 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Tab_Name.Parent = TabButton
     
-    -- Tab click functionality with smooth animations
+    -- Tab click functionality
     TabButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            -- Smooth fade out animation for all sections
-            local fadeOutPromises = {}
+            -- Hide all sections
             for _, section in pairs(Container:GetChildren()) do
                 if section:IsA("Frame") and section.Name:find("Section_") then
-                    local fadeOutInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-                    local fadeOutTween = TweenService:Create(section, fadeOutInfo, {BackgroundTransparency = 1})
-                    fadeOutTween:Play()
-                    table.insert(fadeOutPromises, fadeOutTween)
+                    section.Visible = false
                 end
             end
             
-            -- Wait for fade out to complete, then show new sections
-            local function showNewSections()
-                -- Show this tab's sections with smooth fade in
-                for _, section in pairs(tab.sections.left) do
-                    if section.frame then
-                        section.frame.BackgroundTransparency = 1
-                        section.frame.Visible = true
-                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
-                        fadeInTween:Play()
-                    end
+            -- Show this tab's sections
+            for _, section in pairs(tab.sections.left) do
+                if section.frame then
+                    section.frame.Visible = true
                 end
-                for _, section in pairs(tab.sections.right) do
-                    if section.frame then
-                        section.frame.BackgroundTransparency = 1
-                        section.frame.Visible = true
-                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
-                        fadeInTween:Play()
-                    end
+            end
+            for _, section in pairs(tab.sections.right) do
+                if section.frame then
+                    section.frame.Visible = true
                 end
             end
             
-            -- Delay showing new sections until fade out completes
-            task.wait(0.15)
-            showNewSections()
-            
-            -- Smooth tab appearance animations
+            -- Update tab appearance - set all tabs to inactive
             for _, child in pairs(TabContainer:GetChildren()) do
                 if child:IsA("Frame") and child.Name:find("Tab_") then
-                    -- Smooth fade to inactive state
-                    local fadeOutInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                    local fadeOutTween = TweenService:Create(child, fadeOutInfo, {BackgroundTransparency = 1})
-                    fadeOutTween:Play()
-                    
-                    local textFadeOutInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                    local textFadeOutTween = TweenService:Create(child:FindFirstChild("Tab_Name"), textFadeOutInfo, {TextColor3 = Color3.fromRGB(78, 78, 78)})
-                    textFadeOutTween:Play()
-                    
-                    local iconFadeOutInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                    local iconFadeOutTween = TweenService:Create(child:FindFirstChild("Icon"), iconFadeOutInfo, {ImageColor3 = Color3.fromRGB(78, 78, 78)})
-                    iconFadeOutTween:Play()
-                    
+                    child.BackgroundTransparency = 1
+                    child:FindFirstChild("Tab_Name").TextColor3 = Color3.fromRGB(78, 78, 78)
+                    child:FindFirstChild("Icon").ImageColor3 = Color3.fromRGB(78, 78, 78)
                     -- Remove UIStroke if it exists
                     local existingStroke = child:FindFirstChild("UIStroke")
                     if existingStroke then
@@ -537,21 +508,14 @@ Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 currentStroke:Destroy()
             end
             
-            -- Smooth fade to active state
-            local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-            local fadeInTween = TweenService:Create(TabButton, fadeInInfo, {BackgroundTransparency = 0})
-            fadeInTween:Play()
-            
-            local textFadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-            local textFadeInTween = TweenService:Create(Tab_Name, textFadeInInfo, {TextColor3 = Color3.fromRGB(255, 255, 255)})
-            textFadeInTween:Play()
-            
-            local iconFadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-            local iconFadeInTween = TweenService:Create(Icon, iconFadeInInfo, {ImageColor3 = Color3.fromRGB(255, 255, 255)})
-            iconFadeInTween:Play()
+            -- Set this tab to active
+            TabButton.BackgroundTransparency = 0
+            TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
             
             -- Add UIStroke for active tab
-local UIStroke = Instance.new("UIStroke")
+            local UIStroke = Instance.new("UIStroke")
             UIStroke.Color = Color3.fromRGB(25, 25, 25)
             UIStroke.Parent = TabButton
             
@@ -567,7 +531,7 @@ local UIStroke = Instance.new("UIStroke")
         Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
         
         -- Add UIStroke for active tab
-local UIStroke = Instance.new("UIStroke")
+        local UIStroke = Instance.new("UIStroke")
         UIStroke.Color = Color3.fromRGB(25, 25, 25)
         UIStroke.Parent = TabButton
         
@@ -858,20 +822,15 @@ Keybind.Parent = Header
     -- Set up keybind listening with typewriter animation
     Keybind.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            -- Smooth typewriter animation for "..."
+            -- Typewriter animation for "..."
             local dots = ""
             local typewriterConnection
-            local lastUpdate = 0
             typewriterConnection = RunService.Heartbeat:Connect(function()
-                local currentTime = tick()
-                if currentTime - lastUpdate >= 0.5 then -- Slower, smoother timing
-                    dots = dots .. "."
-                    if #dots > 3 then
-                        dots = ""
-                    end
-                    Keybind.Text = dots
-                    lastUpdate = currentTime
+                dots = dots .. "."
+                if #dots > 3 then
+                    dots = ""
                 end
+                Keybind.Text = dots
             end)
             
             Keybind.TextColor3 = Color3.fromRGB(255, 255, 0)
