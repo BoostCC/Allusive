@@ -1392,7 +1392,7 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                     if dd.multiSelect then
                         local index = table.find(dd.selectedItems, opt)
                         local checkIcon = row:FindFirstChild("Checkmark")
-                        local textLabel = row:FindFirstChild("TextLabel")
+                        local textLabel = tl
                         
                         if index then
                             -- Remove from selection - STARHUB style slide out
