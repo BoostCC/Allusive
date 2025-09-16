@@ -1308,8 +1308,9 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
         
         -- Smooth dropdown close animation
         local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-        TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
-        closeInfo.Completed:Connect(function()
+        local closeTween = TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)})
+        closeTween:Play()
+        closeTween.Completed:Connect(function()
             OptionsContainer.Visible = false
         end)
     end
