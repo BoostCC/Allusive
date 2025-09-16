@@ -1196,6 +1196,8 @@ function Section:CreateDropdown(config)
     dd.options = dd.config.Options or {"Option 1","Option 2"}
     dd.selected = dd.config.Default or dd.options[1]
     dd.callback = dd.config.Callback
+    dd.multiSelect = dd.config.MultiSelect or false
+    dd.selectedItems = dd.multiSelect and (dd.config.SelectedItems or {}) or {}
 
 local Dropdown_Componenet = Instance.new("Frame")
 Dropdown_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1245,7 +1247,7 @@ local Dropdown_Options = Instance.new("TextLabel")
 Dropdown_Options.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 Dropdown_Options.TextColor3 = Color3.fromRGB(255, 255, 255)
 Dropdown_Options.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Dropdown_Options.Text = tostring(dd.selected or "")
+Dropdown_Options.Text = dd.multiSelect and (#dd.selectedItems > 0 and table.concat(dd.selectedItems, ", ") or "Select options...") or tostring(dd.selected or "")
 Dropdown_Options.Name = "Dropdown_Options"
 Dropdown_Options.AnchorPoint = Vector2.new(0, 0.5)
 Dropdown_Options.Size = UDim2.new(0, 1, 0, 1)
@@ -1312,9 +1314,12 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             row.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             row.BorderSizePixel = 0
             row.Parent = OptionsContainer
+            
+            local isSelected = dd.multiSelect and table.find(dd.selectedItems, opt) or (opt == dd.selected)
+            
             local tl = Instance.new("TextLabel")
             tl.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-            tl.TextColor3 = (opt == dd.selected) and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(76, 76, 76)
+            tl.TextColor3 = isSelected and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(76, 76, 76)
             tl.BorderColor3 = Color3.fromRGB(0, 0, 0)
             tl.Text = tostring(opt)
             tl.AnchorPoint = Vector2.new(0, 0.5)
@@ -1325,14 +1330,48 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             tl.AutomaticSize = Enum.AutomaticSize.XY
             tl.TextSize = 16
             tl.Parent = row
+            
+            
+            if dd.multiSelect then
+                local checkmark = Instance.new("ImageLabel")
+                checkmark.Name = "Checkmark"
+                checkmark.Image = "rbxassetid://103083009202465"
+                checkmark.ImageColor3 = Color3.fromRGB(255, 255, 255)
+                checkmark.BackgroundTransparency = 1
+                checkmark.AnchorPoint = Vector2.new(1, 0.5)
+                checkmark.Position = UDim2.new(1, -8, 0.5, 0)
+                checkmark.Size = UDim2.new(0, 12, 0, 12)
+                checkmark.Visible = isSelected
+                checkmark.Parent = row
+            end
+            
             row.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dd.selected = opt
-                    Dropdown_Options.Text = tostring(opt)
-                    OptionsContainer.Visible = false
-                    Icon.Rotation = 0
+                    if dd.multiSelect then
+                        local index = table.find(dd.selectedItems, opt)
+                        if index then
+                            table.remove(dd.selectedItems, index)
+                        else
+                            table.insert(dd.selectedItems, opt)
+                        end
+                        Dropdown_Options.Text = #dd.selectedItems > 0 and table.concat(dd.selectedItems, ", ") or "Select options..."
+                        if dd.callback then dd.callback(dd.selectedItems) end
+                    else
+                        dd.selected = opt
+                        Dropdown_Options.Text = tostring(opt)
+                        OptionsContainer.Visible = false
+                        -- Smooth icon rotation back
+                        local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                        TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
+                        -- Smooth dropdown close animation
+                        local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+                        TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
+                        closeInfo.Completed:Connect(function()
+                            OptionsContainer.Visible = false
+                        end)
+                        if dd.callback then dd.callback(opt) end
+                    end
                     renderOptions()
-                    if dd.callback then dd.callback(opt) end
                 end
             end)
         end
@@ -1344,14 +1383,34 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     Dropdown.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             open = not open
-            OptionsContainer.Visible = open
-            Icon.Rotation = open and 180 or 0
+            
             if open then
+                -- Position and show dropdown
                 local absPos = Dropdown.AbsolutePosition
                 local absSize = Dropdown.AbsoluteSize
                 local parentAbs = MainFrame.AbsolutePosition
                 OptionsContainer.Position = UDim2.fromOffset(absPos.X - parentAbs.X, absPos.Y - parentAbs.Y + absSize.Y + 1)
                 OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
+                OptionsContainer.Visible = true
+                
+                -- Smooth icon rotation
+                local rotateInfo = TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                TweenService:Create(Icon, rotateInfo, {Rotation = 180}):Play()
+                
+                -- Smooth dropdown open animation with bounce
+                local openInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                TweenService:Create(OptionsContainer, openInfo, {Size = UDim2.new(0, 210, 0, math.min(#dd.options * 20 + 13, 120))}):Play()
+            else
+                -- Smooth icon rotation back
+                local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
+                
+                -- Smooth dropdown close animation
+                local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+                TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)}):Play()
+                closeInfo.Completed:Connect(function()
+                    OptionsContainer.Visible = false
+                end)
             end
         end
     end)
@@ -1360,12 +1419,34 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     dd.container = OptionsContainer
     dd.label = Dropdown_Options
     function dd:Set(value)
-        dd.selected = value
-        Dropdown_Options.Text = tostring(value)
+        if dd.multiSelect then
+            dd.selectedItems = value or {}
+            Dropdown_Options.Text = #dd.selectedItems > 0 and table.concat(dd.selectedItems, ", ") or "Select options..."
+        else
+            dd.selected = value
+            Dropdown_Options.Text = tostring(value)
+        end
         renderOptions()
     end
     function dd:Get()
-        return dd.selected
+        return dd.multiSelect and dd.selectedItems or dd.selected
+    end
+    function dd:AddOption(option)
+        table.insert(dd.options, option)
+        renderOptions()
+    end
+    function dd:RemoveOption(option)
+        local index = table.find(dd.options, option)
+        if index then
+            table.remove(dd.options, index)
+            if dd.multiSelect then
+                local selectedIndex = table.find(dd.selectedItems, option)
+                if selectedIndex then
+                    table.remove(dd.selectedItems, selectedIndex)
+                end
+            end
+            renderOptions()
+        end
     end
 
     table.insert(self.components, dd)
