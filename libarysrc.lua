@@ -1183,188 +1183,333 @@ function Section:CreateTextInput(config)
 end
 
 function Section:CreateDropdown(config)
-	local dd = {}
-	dd.config = config or {}
-	dd.text = dd.config.DropdownText or "Dropdown"
-	dd.options = dd.config.Options or {"Option 1","Option 2"}
-	dd.selected = dd.config.Default or dd.options[1]
+    local dd = {}
+    dd.config = config or {}
+    dd.text = dd.config.DropdownText or "Dropdown"
+    dd.options = dd.config.Options or {"Option 1","Option 2"}
+    dd.selected = dd.config.Default or dd.options[1]
+    dd.callback = dd.config.Callback
 
-	local Dropdown_Componenet = Instance.new("Frame")
-	Dropdown_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Dropdown_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-	Dropdown_Componenet.BackgroundTransparency = 1
-	Dropdown_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-	Dropdown_Componenet.Name = "Dropdown_Componenet"
-	Dropdown_Componenet.Size = UDim2.new(0, 228, 0, 55)
-	Dropdown_Componenet.BorderSizePixel = 0
-	Dropdown_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Componenet.Parent = self.holder
+    local Dropdown_Componenet = Instance.new("Frame")
+    Dropdown_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Dropdown_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+    Dropdown_Componenet.BackgroundTransparency = 1
+    Dropdown_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+    Dropdown_Componenet.Name = "Dropdown_Componenet"
+    Dropdown_Componenet.Size = UDim2.new(0, 228, 0, 55)
+    Dropdown_Componenet.BorderSizePixel = 0
+    Dropdown_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Dropdown_Componenet.Parent = self.holder
 
-	local Dropdown_Label = Instance.new("TextLabel")
-	Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	Dropdown_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Dropdown_Label.Text = dd.text
-	Dropdown_Label.Name = "Dropdown_Label"
-	Dropdown_Label.Size = UDim2.new(0, 1, 0, 1)
-	Dropdown_Label.BackgroundTransparency = 1
-	Dropdown_Label.Position = UDim2.new(0, 8, 0, 0)
-	Dropdown_Label.BorderSizePixel = 0
-	Dropdown_Label.AutomaticSize = Enum.AutomaticSize.XY
-	Dropdown_Label.TextSize = 14
-	Dropdown_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Label.Parent = Dropdown_Componenet
+    local Dropdown_Label = Instance.new("TextLabel")
+    Dropdown_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Dropdown_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Dropdown_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Dropdown_Label.Text = dd.text
+    Dropdown_Label.Name = "Dropdown_Label"
+    Dropdown_Label.Size = UDim2.new(0, 1, 0, 1)
+    Dropdown_Label.BackgroundTransparency = 1
+    Dropdown_Label.Position = UDim2.new(0, 8, 0, 0)
+    Dropdown_Label.BorderSizePixel = 0
+    Dropdown_Label.AutomaticSize = Enum.AutomaticSize.XY
+    Dropdown_Label.TextSize = 14
+    Dropdown_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Dropdown_Label.Parent = Dropdown_Componenet
 
-	local Dropdown = Instance.new("Frame")
-	Dropdown.AnchorPoint = Vector2.new(0.5, 0)
-	Dropdown.Name = "Dropdown"
-	Dropdown.Position = UDim2.new(0.5, 0, 0, 20)
-	Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Dropdown.Size = UDim2.new(0, 212, 0, 30)
-	Dropdown.BorderSizePixel = 0
-	Dropdown.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	Dropdown.Parent = Dropdown_Componenet
+    local Dropdown = Instance.new("Frame")
+    Dropdown.AnchorPoint = Vector2.new(0.5, 0)
+    Dropdown.Name = "Dropdown"
+    Dropdown.Position = UDim2.new(0.5, 0, 0, 20)
+    Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Dropdown.Size = UDim2.new(0, 212, 0, 30)
+    Dropdown.BorderSizePixel = 0
+    Dropdown.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Dropdown.Parent = Dropdown_Componenet
 
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0, 4)
-	UICorner.Parent = Dropdown
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Dropdown
 
-	local UIStroke = Instance.new("UIStroke")
-	UIStroke.Color = Color3.fromRGB(26, 26, 26)
-	UIStroke.Parent = Dropdown
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+    UIStroke.Parent = Dropdown
 
-	local Dropdown_Options = Instance.new("TextLabel")
-	Dropdown_Options.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	Dropdown_Options.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Options.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Dropdown_Options.Text = dd.selected
-	Dropdown_Options.Name = "Dropdown_Options"
-	Dropdown_Options.AnchorPoint = Vector2.new(0, 0.5)
-	Dropdown_Options.Size = UDim2.new(0, 1, 0, 1)
-	Dropdown_Options.BackgroundTransparency = 1
-	Dropdown_Options.Position = UDim2.new(0, 10, 0.5, 0)
-	Dropdown_Options.BorderSizePixel = 0
-	Dropdown_Options.AutomaticSize = Enum.AutomaticSize.XY
-	Dropdown_Options.TextSize = 14
-	Dropdown_Options.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Dropdown_Options.Parent = Dropdown
+    local Dropdown_Options = Instance.new("TextLabel")
+    Dropdown_Options.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Dropdown_Options.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Dropdown_Options.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Dropdown_Options.Text = tostring(dd.selected or "")
+    Dropdown_Options.Name = "Dropdown_Options"
+    Dropdown_Options.AnchorPoint = Vector2.new(0, 0.5)
+    Dropdown_Options.Size = UDim2.new(0, 1, 0, 1)
+    Dropdown_Options.BackgroundTransparency = 1
+    Dropdown_Options.Position = UDim2.new(0, 10, 0.5, 0)
+    Dropdown_Options.BorderSizePixel = 0
+    Dropdown_Options.AutomaticSize = Enum.AutomaticSize.XY
+    Dropdown_Options.TextSize = 14
+    Dropdown_Options.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Dropdown_Options.Parent = Dropdown
 
-	local Icon = Instance.new("ImageLabel")
-	Icon.ScaleType = Enum.ScaleType.Fit
-	Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Icon.Name = "Icon"
-	Icon.AnchorPoint = Vector2.new(1, 0.5)
-	Icon.Image = dd.config.Icon or "rbxassetid://95652893039727"
-	Icon.BackgroundTransparency = 1
-	Icon.Position = UDim2.new(1, -8, 0.5, 0)
-	Icon.Size = UDim2.new(0, 15, 0, 15)
-	Icon.BorderSizePixel = 0
-	Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Icon.Parent = Dropdown
+    local Icon = Instance.new("ImageLabel")
+    Icon.ScaleType = Enum.ScaleType.Fit
+    Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Icon.Name = "Icon"
+    Icon.AnchorPoint = Vector2.new(1, 0.5)
+    Icon.Image = dd.config.Icon or "rbxassetid://95652893039727"
+    Icon.BackgroundTransparency = 1
+    Icon.Position = UDim2.new(1, -8, 0.5, 0)
+    Icon.Size = UDim2.new(0, 15, 0, 15)
+    Icon.BorderSizePixel = 0
+    Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Icon.Parent = Dropdown
 
-	local OptionsContainer = Instance.new("Frame")
-	OptionsContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
-	OptionsContainer.Name = "Container"
-	OptionsContainer.Position = UDim2.new(0.5, 0, 0, 55)
-	OptionsContainer.AnchorPoint = Vector2.new(0.5, 0)
-	OptionsContainer.BorderSizePixel = 0
-	OptionsContainer.ZIndex = 50
-	OptionsContainer.AutomaticSize = Enum.AutomaticSize.Y
-	OptionsContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	OptionsContainer.Visible = false
-	OptionsContainer.Parent = Dropdown_Componenet
+    local OptionsContainer = Instance.new("Frame")
+    OptionsContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
+    OptionsContainer.Name = "Container"
+    OptionsContainer.Position = UDim2.new(0.5, 0, 0, 55)
+    OptionsContainer.AnchorPoint = Vector2.new(0.5, 0)
+    OptionsContainer.BorderSizePixel = 0
+    OptionsContainer.ZIndex = 50
+    OptionsContainer.AutomaticSize = Enum.AutomaticSize.Y
+    OptionsContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    OptionsContainer.Visible = false
+    OptionsContainer.Parent = Dropdown_Componenet
 
-	local ocStroke = Instance.new("UIStroke")
-	ocStroke.Color = Color3.fromRGB(26, 26, 26)
-	ocStroke.Parent = OptionsContainer
+    local ocStroke = Instance.new("UIStroke")
+    ocStroke.Color = Color3.fromRGB(26, 26, 26)
+    ocStroke.Parent = OptionsContainer
 
-	local UIPadding = Instance.new("UIPadding")
-	UIPadding.PaddingBottom = UDim.new(0, 8)
-	UIPadding.PaddingTop = UDim.new(0, 5)
-	UIPadding.Parent = OptionsContainer
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.PaddingBottom = UDim.new(0, 8)
+    UIPadding.PaddingTop = UDim.new(0, 5)
+    UIPadding.Parent = OptionsContainer
 
-	local ocCorner = Instance.new("UICorner")
-	ocCorner.CornerRadius = UDim.new(0, 4)
-	ocCorner.Parent = OptionsContainer
+    local ocCorner = Instance.new("UICorner")
+    ocCorner.CornerRadius = UDim.new(0, 4)
+    ocCorner.Parent = OptionsContainer
 
-	local UIListLayout = Instance.new("UIListLayout")
-	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	UIListLayout.Parent = OptionsContainer
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Parent = OptionsContainer
 
-	local function renderOptions()
-		for _,child in ipairs(OptionsContainer:GetChildren()) do
-			if child:IsA("Frame") and child.Name == "OptionRow" then
-				child:Destroy()
-			end
-		end
-		for _,opt in ipairs(dd.options) do
-			local row = Instance.new("Frame")
-			row.Name = "OptionRow"
-			row.AnchorPoint = Vector2.new(0.5, 0)
-			row.Size = UDim2.new(0, 210, 0, 20)
-			row.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-			row.BorderSizePixel = 0
-			row.Parent = OptionsContainer
-			local tl = Instance.new("TextLabel")
-			tl.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-			tl.TextColor3 = opt == dd.selected and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(76, 76, 76)
-			tl.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			tl.Text = tostring(opt)
-			tl.AnchorPoint = Vector2.new(0, 0.5)
-			tl.Size = UDim2.new(0, 1, 0, 1)
-			tl.BackgroundTransparency = 1
-			tl.Position = UDim2.new(0.035, 0, 0.5, 0)
-			tl.BorderSizePixel = 0
-			tl.AutomaticSize = Enum.AutomaticSize.XY
-			tl.TextSize = 16
-			tl.Parent = row
-			row.InputBegan:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					dd.selected = opt
-					Dropdown_Options.Text = tostring(opt)
-					OptionsContainer.Visible = false
-					Icon.Rotation = 0
-					renderOptions()
-					if dd.config.Callback then dd.config.Callback(opt) end
-				end
-			end)
-		end
-	end
+    local function renderOptions()
+        for _,child in ipairs(OptionsContainer:GetChildren()) do
+            if child:IsA("Frame") and child.Name == "OptionRow" then
+                child:Destroy()
+            end
+        end
+        for _,opt in ipairs(dd.options) do
+            local row = Instance.new("Frame")
+            row.Name = "OptionRow"
+            row.AnchorPoint = Vector2.new(0.5, 0)
+            row.Size = UDim2.new(0, 210, 0, 20)
+            row.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            row.BorderSizePixel = 0
+            row.Parent = OptionsContainer
+            local tl = Instance.new("TextLabel")
+            tl.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+            tl.TextColor3 = (opt == dd.selected) and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(76, 76, 76)
+            tl.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            tl.Text = tostring(opt)
+            tl.AnchorPoint = Vector2.new(0, 0.5)
+            tl.Size = UDim2.new(0, 1, 0, 1)
+            tl.BackgroundTransparency = 1
+            tl.Position = UDim2.new(0.035, 0, 0.5, 0)
+            tl.BorderSizePixel = 0
+            tl.AutomaticSize = Enum.AutomaticSize.XY
+            tl.TextSize = 16
+            tl.Parent = row
+            row.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dd.selected = opt
+                    Dropdown_Options.Text = tostring(opt)
+                    OptionsContainer.Visible = false
+                    Icon.Rotation = 0
+                    renderOptions()
+                    if dd.callback then dd.callback(opt) end
+                end
+            end)
+        end
+    end
 
-	renderOptions()
+    renderOptions()
 
-	local open = false
-	Dropdown.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			open = not open
-			OptionsContainer.Visible = open
-			Icon.Rotation = open and 180 or 0
-		end
-	end)
+    local open = false
+    Dropdown.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            open = not open
+            OptionsContainer.Visible = open
+            Icon.Rotation = open and 180 or 0
+        end
+    end)
 
-	dd.component = Dropdown_Componenet
-	dd.container = OptionsContainer
-	dd.label = Dropdown_Options
-	function dd:Set(value)
-		dd.selected = value
-		Dropdown_Options.Text = tostring(value)
-		renderOptions()
-	end
-	function dd:Get()
-		return dd.selected
-	end
+    dd.component = Dropdown_Componenet
+    dd.container = OptionsContainer
+    dd.label = Dropdown_Options
+    function dd:Set(value)
+        dd.selected = value
+        Dropdown_Options.Text = tostring(value)
+        renderOptions()
+    end
+    function dd:Get()
+        return dd.selected
+    end
 
-	table.insert(self.components, dd)
-	return dd
+    table.insert(self.components, dd)
+    return dd
 end
 
 function Section:CreateKeybind(config)
-    print("Dropdown created:", config.DropdownText)
-    return {}
+	local keybind = {}
+	keybind.config = config or {}
+	keybind.text = keybind.config.KeybindText or "Keybind"
+	keybind.mode = "toggle"
+	keybind.active = false
+
+local Keybind_Componenet = Instance.new("Frame")
+Keybind_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keybind_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Keybind_Componenet.BackgroundTransparency = 1
+Keybind_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+Keybind_Componenet.Name = "Keybind_Componenet"
+Keybind_Componenet.Size = UDim2.new(0, 228, 0, 30)
+Keybind_Componenet.BorderSizePixel = 0
+Keybind_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Keybind_Componenet.Parent = self.holder
+
+local Toggle_Text = Instance.new("TextLabel")
+Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle_Text.Text = keybind.text
+Toggle_Text.Name = "Toggle_Text"
+Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+Toggle_Text.BackgroundTransparency = 1
+Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+Toggle_Text.BorderSizePixel = 0
+Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+Toggle_Text.TextSize = 14
+Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.Parent = Keybind_Componenet
+
+	local KeybindLabel = Instance.new("TextLabel")
+	KeybindLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	KeybindLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	KeybindLabel.Text = "Space"
+	KeybindLabel.BorderSizePixel = 0
+	KeybindLabel.AnchorPoint = Vector2.new(1, 0.5)
+	KeybindLabel.Size = UDim2.new(0, 1, 0, 1)
+	KeybindLabel.Name = "Keybind"
+	KeybindLabel.Position = UDim2.new(1, -6, 0.5, 0)
+	KeybindLabel.AutomaticSize = Enum.AutomaticSize.XY
+	KeybindLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+	KeybindLabel.TextSize = 14
+	KeybindLabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	KeybindLabel.Parent = Keybind_Componenet
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0, 3)
+UIPadding.PaddingBottom = UDim.new(0, 3)
+UIPadding.PaddingRight = UDim.new(0, 6)
+UIPadding.PaddingLeft = UDim.new(0, 6)
+	UIPadding.Parent = KeybindLabel
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+	UICorner.Parent = KeybindLabel
+
+	local listening = false
+	local function stopTypewriter()
+		if keybind.twConn then
+			keybind.twConn:Disconnect()
+			keybind.twConn = nil
+		end
+		listening = false
+	end
+
+	local function applyActiveState(isActive)
+		keybind.active = isActive
+		if keybind.config.Callback then
+			keybind.config.Callback(isActive)
+		end
+	end
+
+	local function listenForKey()
+		if listening then return end
+		listening = true
+		stopTypewriter()
+		local dots = ""
+		local lastUpdate = 0
+		local startTime = tick()
+		keybind.twConn = RunService.Heartbeat:Connect(function()
+			if not listening then return end
+			local t = tick()
+			if t - lastUpdate >= 0.5 then
+				dots = (#dots < 3) and (dots .. ".") or ""
+				KeybindLabel.Text = dots
+				lastUpdate = t
+			end
+			if t - startTime > 12 then
+				stopTypewriter()
+			end
+		end)
+		local conn
+		conn = UserInputService.InputBegan:Connect(function(input, gp)
+			stopTypewriter()
+			if gp then
+				if conn then conn:Disconnect() end
+				return
+			end
+			if input.UserInputType == Enum.UserInputType.Keyboard then
+				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
+					if conn then conn:Disconnect() end
+					return
+				end
+				KeybindLabel.Text = input.KeyCode.Name
+				updateKB(input.KeyCode)
+			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
+				KeybindLabel.Text = "LMB"
+				updateMouse("LMB")
+			elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+				KeybindLabel.Text = "RMB"
+				updateMouse("RMB")
+			elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
+				KeybindLabel.Text = "MMB"
+				updateMouse("MMB")
+			elseif tostring(input.UserInputType):find("Gamepad") then
+				KeybindLabel.Text = input.KeyCode.Name
+				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
+				updateController(input.KeyCode, gpIdx)
+			end
+			if conn then conn:Disconnect() end
+		end)
+		UserInputService.InputEnded:Connect(function()
+			stopTypewriter()
+		end)
+	end
+
+	KeybindLabel.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			listenForKey()
+		elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+			-- open the existing context menu hook defined earlier
+			KeybindLabel.Text = KeybindLabel.Text
+		end
+	end)
+
+	-- Default
+	updateKB(Enum.KeyCode.Space)
+
+	-- Register component to section to allow master switch and keybind section toggles
+	keybind.component = Keybind_Componenet
+	keybind.label = KeybindLabel
+	table.insert(self.components, keybind)
+
+	return keybind
 end
-
-
 
 function Section:CreateColorpicker(config)
     print("Colorpicker created:", config.ColorpickerText)
