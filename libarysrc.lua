@@ -32,6 +32,13 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game.CoreGui
 
+-- Detached popup layer for elements that must render outside sections (e.g., dropdown lists)
+local DropdownLayer = Instance.new("ScreenGui")
+DropdownLayer.Name = "AllusiveDropdownLayer"
+DropdownLayer.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+DropdownLayer.ResetOnSpawn = false
+DropdownLayer.Parent = game.CoreGui
+
 local MainFrame = Instance.new("Frame")
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Name = "MainFrame"
@@ -1263,18 +1270,16 @@ function Section:CreateDropdown(config)
     Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Icon.Parent = Dropdown
 
+    -- Options container rendered in detached layer so it escapes section clipping
     local OptionsContainer = Instance.new("Frame")
     OptionsContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
     OptionsContainer.Name = "Container"
-    OptionsContainer.Position = UDim2.new(0.5, 0, 0, 55)
-    OptionsContainer.AnchorPoint = Vector2.new(0.5, 0)
     OptionsContainer.BorderSizePixel = 0
-    OptionsContainer.ZIndex = 50
+    OptionsContainer.ZIndex = 500
     OptionsContainer.AutomaticSize = Enum.AutomaticSize.Y
     OptionsContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     OptionsContainer.Visible = false
-    OptionsContainer.Parent = Dropdown_Componenet
+    OptionsContainer.Parent = DropdownLayer
 
     local ocStroke = Instance.new("UIStroke")
     ocStroke.Color = Color3.fromRGB(26, 26, 26)
@@ -1341,6 +1346,13 @@ function Section:CreateDropdown(config)
             open = not open
             OptionsContainer.Visible = open
             Icon.Rotation = open and 180 or 0
+            if open then
+                -- Position globally below the dropdown
+                local absPos = Dropdown.AbsolutePosition
+                local absSize = Dropdown.AbsoluteSize
+                OptionsContainer.Position = UDim2.fromOffset(absPos.X, absPos.Y + absSize.Y + 1)
+                OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
+            end
         end
     end)
 
