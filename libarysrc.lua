@@ -13,71 +13,6 @@ local Dragging = false
 local DragStart = nil
 local DragStartPosition = nil
 
--- Helpers for quick UI fade in/out
-local function captureOriginalTransparency(instance)
-    if instance:GetAttribute("__origCaptured") then return end
-    pcall(function() if instance.BackgroundTransparency ~= nil then instance:SetAttribute("__origBackgroundTransparency", instance.BackgroundTransparency) end end)
-    pcall(function() if instance.TextTransparency ~= nil then instance:SetAttribute("__origTextTransparency", instance.TextTransparency) end end)
-    pcall(function() if instance.ImageTransparency ~= nil then instance:SetAttribute("__origImageTransparency", instance.ImageTransparency) end end)
-    pcall(function()
-        if instance.Transparency ~= nil then
-            local current = instance.Transparency
-            if typeof(current) == "number" then
-                instance:SetAttribute("__origTransparency", current)
-            end
-        end
-    end)
-    instance:SetAttribute("__origCaptured", true)
-end
-
-local function traverseCapture(root)
-    captureOriginalTransparency(root)
-    for _, child in ipairs(root:GetDescendants()) do
-        captureOriginalTransparency(child)
-    end
-end
-
-local function tweenTransparencyTo(root, toOriginal, duration)
-    local tweens = {}
-    local function applyOne(obj)
-        local info = TweenInfo.new(duration or 0.22, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-        local props = {}
-        local okBG = pcall(function()
-            if obj:GetAttribute("__origBackgroundTransparency") ~= nil then
-                props.BackgroundTransparency = toOriginal and obj:GetAttribute("__origBackgroundTransparency") or 1
-            end
-        end)
-        local okText = pcall(function()
-            if obj:GetAttribute("__origTextTransparency") ~= nil then
-                props.TextTransparency = toOriginal and obj:GetAttribute("__origTextTransparency") or 1
-            end
-        end)
-        local okImage = pcall(function()
-            if obj:GetAttribute("__origImageTransparency") ~= nil then
-                props.ImageTransparency = toOriginal and obj:GetAttribute("__origImageTransparency") or 1
-            end
-        end)
-        local okStroke = pcall(function()
-            if obj.ClassName == "UIStroke" then
-                props.Transparency = toOriginal and (obj:GetAttribute("__origTransparency") or 0) or 1
-            elseif obj:GetAttribute("__origTransparency") ~= nil then
-                if typeof(obj.Transparency) == "number" then
-                    props.Transparency = toOriginal and obj:GetAttribute("__origTransparency") or 1
-                end
-            end
-        end)
-        if next(props) then
-            table.insert(tweens, TweenService:Create(obj, info, props))
-        end
-    end
-    applyOne(root)
-    for _, d in ipairs(root:GetDescendants()) do
-        applyOne(d)
-    end
-    for _, t in ipairs(tweens) do t:Play() end
-    return tweens
-end
-
 local libary_config = {
     ToggleState = {},
     SliderProgress = {},
@@ -426,52 +361,17 @@ function libary:CreateWindow(config)
         Player_Membership.Text = window.config.Player_Membership
     end
     
-    -- Set up keybind (Insert fallback) with fade in/out
-    local configuredKeyCode = nil
+    -- Set up keybind
     if window.config.interface_keybind then
-        configuredKeyCode = Enum.KeyCode[window.config.interface_keybind]
-    end
-
-    traverseCapture(MainFrame)
-    local function hideUI()
-        print("hideUI called, MainFrame.Visible:", MainFrame.Visible)
-        if not MainFrame.Visible then return end
-        local tweens = tweenTransparencyTo(MainFrame, false, 0.22)
-        task.delay(0.23, function()
-            MainFrame.Visible = false
-            print("MainFrame hidden")
-            tweenTransparencyTo(MainFrame, true, 0) -- reset to originals for next open
-        end)
-    end
-
-    local function showUI()
-        print("showUI called, MainFrame.Visible:", MainFrame.Visible)
-        if MainFrame.Visible then return end
-        tweenTransparencyTo(MainFrame, true, 0) -- ensure originals captured
-        MainFrame.Visible = true
-        print("MainFrame shown")
-        tweenTransparencyTo(MainFrame, false, 0) -- start transparent
-        tweenTransparencyTo(MainFrame, true, 0.22) -- fade in
-    end
-
-    local function toggleUI()
-        print("toggleUI called, MainFrame.Visible:", MainFrame.Visible)
-        if MainFrame.Visible then hideUI() else showUI() end
-    end
-
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if gameProcessed then return end
-        if input.UserInputType == Enum.UserInputType.Keyboard then
-            print("Key pressed:", input.KeyCode.Name)
-            if input.KeyCode == Enum.KeyCode.Insert then
-                print("Insert pressed - toggling UI")
-                toggleUI()
-            elseif configuredKeyCode and input.KeyCode == configuredKeyCode then
-                print("Configured key pressed - toggling UI")
-                toggleUI()
-            end
+        local keybind = Enum.KeyCode[window.config.interface_keybind]
+        if keybind then
+            UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                if not gameProcessed and input.KeyCode == keybind then
+                    MainFrame.Visible = not MainFrame.Visible
+                end
+            end)
         end
-    end)
+    end
     
     -- Set up exit button
     Exit_Button.InputBegan:Connect(function(input)
