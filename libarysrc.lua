@@ -425,32 +425,40 @@ function libary:CreateWindow(config)
 
     traverseCapture(MainFrame)
     local function hideUI()
+        print("hideUI called, MainFrame.Visible:", MainFrame.Visible)
         if not MainFrame.Visible then return end
         local tweens = tweenTransparencyTo(MainFrame, false, 0.12)
         task.delay(0.12, function()
             MainFrame.Visible = false
+            print("MainFrame hidden")
             tweenTransparencyTo(MainFrame, true, 0) -- reset to originals for next open
         end)
     end
 
     local function showUI()
+        print("showUI called, MainFrame.Visible:", MainFrame.Visible)
         if MainFrame.Visible then return end
         tweenTransparencyTo(MainFrame, true, 0) -- ensure originals captured
         MainFrame.Visible = true
+        print("MainFrame shown")
         tweenTransparencyTo(MainFrame, false, 0) -- start transparent
         tweenTransparencyTo(MainFrame, true, 0.12) -- fade in
     end
 
     local function toggleUI()
+        print("toggleUI called, MainFrame.Visible:", MainFrame.Visible)
         if MainFrame.Visible then hideUI() else showUI() end
     end
 
     UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if gameProcessed then return end
         if input.UserInputType == Enum.UserInputType.Keyboard then
+            print("Key pressed:", input.KeyCode.Name)
             if input.KeyCode == Enum.KeyCode.Insert then
+                print("Insert pressed - toggling UI")
                 toggleUI()
             elseif configuredKeyCode and input.KeyCode == configuredKeyCode then
+                print("Configured key pressed - toggling UI")
                 toggleUI()
             end
         end
