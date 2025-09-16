@@ -1727,8 +1727,305 @@ function Section:CreateButton(config)
 end
 
 function Section:AddColorToggle(config)
-    print("ColorToggle created:", config)
-    return {}
+    local colorToggle = {}
+    colorToggle.config = config or {}
+    colorToggle.text = colorToggle.config.Text or "Color Toggle"
+    colorToggle.defaultColor = colorToggle.config.DefaultColor or Color3.fromRGB(255, 255, 255)
+    colorToggle.colorpickerIcon = colorToggle.config.Colorpicker_Icon or "rbxassetid://121639239565210"
+    colorToggle.callback = colorToggle.config.Callback
+    
+    colorToggle.state = false
+    colorToggle.color = colorToggle.defaultColor
+    
+    local Toggle_Componenet = Instance.new("Frame")
+    Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+    Toggle_Componenet.BackgroundTransparency = 1
+    Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+    Toggle_Componenet.Name = "Toggle_Componenet"
+    Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
+    Toggle_Componenet.BorderSizePixel = 0
+    Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle_Componenet.Parent = self.holder
+
+    local Toggle_Text = Instance.new("TextLabel")
+    Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+    Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle_Text.Text = colorToggle.text
+    Toggle_Text.Name = "Toggle_Text"
+    Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+    Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+    Toggle_Text.BackgroundTransparency = 1
+    Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+    Toggle_Text.BorderSizePixel = 0
+    Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+    Toggle_Text.TextSize = 14
+    Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle_Text.Parent = Toggle_Componenet
+
+    local Toggle = Instance.new("Frame")
+    Toggle.AnchorPoint = Vector2.new(1, 0.5)
+    Toggle.Name = "Toggle"
+    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.Size = UDim2.new(0, 16, 0, 16)
+    Toggle.BorderSizePixel = 0
+    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Toggle.Parent = Toggle_Componenet
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Toggle
+
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+    UIStroke.Parent = Toggle
+
+    local Check = Instance.new("ImageLabel")
+    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Check.Name = "Check"
+    Check.AnchorPoint = Vector2.new(0.5, 0.5)
+    Check.Image = "rbxassetid://103083009202465"
+    Check.BackgroundTransparency = 1
+    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Check.Size = UDim2.new(0, 10, 0, 12)
+    Check.BorderSizePixel = 0
+    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Check.Visible = false
+    Check.Parent = Toggle
+
+    local Color_Frame = Instance.new("ImageLabel")
+    Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Color_Frame.Name = "Color_Frame"
+    Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
+    Color_Frame.Image = colorToggle.colorpickerIcon
+    Color_Frame.BackgroundTransparency = 1
+    Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
+    Color_Frame.Size = UDim2.new(0, 15, 0, 15)
+    Color_Frame.BorderSizePixel = 0
+    Color_Frame.BackgroundColor3 = colorToggle.color
+    Color_Frame.Parent = Toggle_Componenet
+
+    -- Color picker container (initially hidden)
+    local Container = Instance.new("Frame")
+    Container.Name = "Container"
+    Container.Position = UDim2.new(0.07462084293365479, 0, 0.7636815905570984, 0)
+    Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Container.Size = UDim2.new(0, 197, 0, 143)
+    Container.BorderSizePixel = 0
+    Container.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+    Container.Visible = false
+    Container.ZIndex = 1000
+    Container.Parent = MainFrame
+
+    local Colorframe = Instance.new("Frame")
+    Colorframe.Name = "Colorframe"
+    Colorframe.Position = UDim2.new(0.03479499742388725, 0, 0.03896091878414154, 0)
+    Colorframe.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Colorframe.Size = UDim2.new(0, 183, 0, 107)
+    Colorframe.BorderSizePixel = 0
+    Colorframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Colorframe.Parent = Container
+
+    local Value = Instance.new("ImageLabel")
+    Value.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Value.Name = "Value"
+    Value.AnchorPoint = Vector2.new(0.5, 0.5)
+    Value.Image = "http://www.roblox.com/asset/?id=14684563800"
+    Value.BackgroundTransparency = 1
+    Value.Position = UDim2.new(0.49350759387016296, 0, 0.4711485207080841, 0)
+    Value.Size = UDim2.new(0, 185, 0, 114)
+    Value.BorderSizePixel = 0
+    Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Value.Parent = Colorframe
+
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 4)
+    UICorner2.Parent = Value
+
+    local Hue = Instance.new("ImageButton")
+    Hue.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Hue.Size = UDim2.new(0.061389729380607605, -1, 1.7670859098434448, -8)
+    Hue.Rotation = 90
+    Hue.Image = "http://www.roblox.com/asset/?id=14684557999"
+    Hue.Name = "Hue"
+    Hue.Position = UDim2.new(0.46975407004356384, 0, 1.1288152933120728, 0)
+    Hue.AnchorPoint = Vector2.new(0, 0.5)
+    Hue.BorderSizePixel = 0
+    Hue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Hue.Parent = Colorframe
+
+    local UICorner3 = Instance.new("UICorner")
+    UICorner3.CornerRadius = UDim.new(0, 30)
+    UICorner3.Parent = Hue
+
+    local HuePicker = Instance.new("Frame")
+    HuePicker.AnchorPoint = Vector2.new(0.5, 0)
+    HuePicker.Name = "Picker"
+    HuePicker.Position = UDim2.new(0.5, 0, 0, 0)
+    HuePicker.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    HuePicker.Size = UDim2.new(0, 10, 0, 10)
+    HuePicker.BorderSizePixel = 0
+    HuePicker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    HuePicker.Parent = Hue
+
+    local UICorner4 = Instance.new("UICorner")
+    UICorner4.CornerRadius = UDim.new(0, 50)
+    UICorner4.Parent = HuePicker
+
+    local UIStroke2 = Instance.new("UIStroke")
+    UIStroke2.Color = Color3.fromRGB(255, 255, 255)
+    UIStroke2.Parent = HuePicker
+
+    local ColorPicker = Instance.new("Frame")
+    ColorPicker.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ColorPicker.AnchorPoint = Vector2.new(0.5, 0.5)
+    ColorPicker.BackgroundTransparency = 1
+    ColorPicker.Position = UDim2.new(0.5, 0, 0.5, 0)
+    ColorPicker.Name = "Picker"
+    ColorPicker.Size = UDim2.new(0, 10, 0, 10)
+    ColorPicker.BorderSizePixel = 0
+    ColorPicker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ColorPicker.Parent = Colorframe
+
+    local UICorner5 = Instance.new("UICorner")
+    UICorner5.CornerRadius = UDim.new(0, 50)
+    UICorner5.Parent = ColorPicker
+
+    local UIStroke3 = Instance.new("UIStroke")
+    UIStroke3.Color = Color3.fromRGB(255, 255, 255)
+    UIStroke3.Parent = ColorPicker
+
+    local UICorner6 = Instance.new("UICorner")
+    UICorner6.CornerRadius = UDim.new(0, 4)
+    UICorner6.Parent = Colorframe
+
+    local UIGradient = Instance.new("UIGradient")
+    UIGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 4))
+    }
+    UIGradient.Parent = Colorframe
+
+    local UICorner7 = Instance.new("UICorner")
+    UICorner7.CornerRadius = UDim.new(0, 4)
+    UICorner7.Parent = Container
+
+    local function updateColor(newColor)
+        colorToggle.color = newColor
+        Color_Frame.BackgroundColor3 = newColor
+        if colorToggle.callback then
+            colorToggle.callback(colorToggle.state, newColor)
+        end
+    end
+
+    local function closeColorPicker()
+        Container.Visible = false
+    end
+
+    -- Toggle click functionality
+    Toggle_Componenet.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            colorToggle.state = not colorToggle.state
+            
+            -- Animate toggle
+            if colorToggle.state then
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Check.Visible = true
+                
+                -- Smooth scale animation
+                local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
+                scaleTween:Play()
+            else
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+                
+                -- Smooth scale out animation
+                local scaleInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 0, 0, 0)})
+                scaleTween:Play()
+                
+                scaleTween.Completed:Connect(function()
+                    Check.Visible = false
+                end)
+            end
+            
+            if colorToggle.callback then
+                colorToggle.callback(colorToggle.state, colorToggle.color)
+            end
+        end
+    end)
+
+    -- Color frame click to open color picker
+    Color_Frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Container.Visible = not Container.Visible
+            
+            if Container.Visible then
+                -- Position color picker near the color frame
+                local colorFramePos = Color_Frame.AbsolutePosition
+                local mainFramePos = MainFrame.AbsolutePosition
+                Container.Position = UDim2.fromOffset(
+                    colorFramePos.X - mainFramePos.X - 50,
+                    colorFramePos.Y - mainFramePos.Y + 25
+                )
+            end
+        end
+    end)
+
+    -- Click outside to close color picker
+    UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and Container.Visible then
+            local mousePos = UserInputService:GetMouseLocation()
+            local containerPos = Container.AbsolutePosition
+            local containerSize = Container.AbsoluteSize
+            
+            if not (mousePos.X >= containerPos.X and mousePos.X <= containerPos.X + containerSize.X and
+                   mousePos.Y >= containerPos.Y and mousePos.Y <= containerPos.Y + containerSize.Y) then
+                closeColorPicker()
+            end
+        end
+    end)
+
+    colorToggle.component = Toggle_Componenet
+    colorToggle.toggle = Toggle
+    colorToggle.check = Check
+    colorToggle.text = Toggle_Text
+    colorToggle.colorFrame = Color_Frame
+    colorToggle.colorPicker = Container
+    
+    function colorToggle:Set(state, color)
+        colorToggle.state = state
+        if color then
+            colorToggle.color = color
+            Color_Frame.BackgroundColor3 = color
+        end
+        
+        -- Update visual state
+        if state then
+            Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            UIStroke.Color = Color3.fromRGB(26, 26, 26)
+            Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Check.Visible = true
+        else
+            Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            UIStroke.Color = Color3.fromRGB(26, 26, 26)
+            Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+            Check.Visible = false
+        end
+    end
+    
+    function colorToggle:Get()
+        return colorToggle.state, colorToggle.color
+    end
+
+    table.insert(self.components, colorToggle)
+    return colorToggle
 end
 
 function Tab:CreateConfigSection(config)
