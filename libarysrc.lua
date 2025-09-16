@@ -417,34 +417,44 @@ function libary:CreateWindow(config)
         Player_Membership.Text = window.config.Player_Membership
     end
     
-    -- Set up keybind
+    -- Set up keybind (Insert fallback) with fade in/out
+    local configuredKeyCode = nil
     if window.config.interface_keybind then
-        local keybind = Enum.KeyCode[window.config.interface_keybind]
-        if keybind then
-            -- prepare capture of original transparencies once
-            traverseCapture(MainFrame)
-            UserInputService.InputBegan:Connect(function(input, gameProcessed)
-                if not gameProcessed and input.KeyCode == keybind then
-                    if MainFrame.Visible then
-                        -- fade out then hide
-                        tweenTransparencyTo(MainFrame, false, 0.12)
-                        task.delay(0.12, function()
-                            MainFrame.Visible = false
-                            -- restore transparencies for next open
-                            tweenTransparencyTo(MainFrame, true, 0)
-                        end)
-                    else
-                        -- ensure original transparency baseline
-                        tweenTransparencyTo(MainFrame, true, 0)
-                        MainFrame.Visible = true
-                        -- start from transparent then fade in
-                        tweenTransparencyTo(MainFrame, false, 0)
-                        tweenTransparencyTo(MainFrame, true, 0.12)
-                    end
-                end
-            end)
-        end
+        configuredKeyCode = Enum.KeyCode[window.config.interface_keybind]
     end
+
+    traverseCapture(MainFrame)
+    local function hideUI()
+        if not MainFrame.Visible then return end
+        local tweens = tweenTransparencyTo(MainFrame, false, 0.12)
+        task.delay(0.12, function()
+            MainFrame.Visible = false
+            tweenTransparencyTo(MainFrame, true, 0) -- reset to originals for next open
+        end)
+    end
+
+    local function showUI()
+        if MainFrame.Visible then return end
+        tweenTransparencyTo(MainFrame, true, 0) -- ensure originals captured
+        MainFrame.Visible = true
+        tweenTransparencyTo(MainFrame, false, 0) -- start transparent
+        tweenTransparencyTo(MainFrame, true, 0.12) -- fade in
+    end
+
+    local function toggleUI()
+        if MainFrame.Visible then hideUI() else showUI() end
+    end
+
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.Insert then
+                toggleUI()
+            elseif configuredKeyCode and input.KeyCode == configuredKeyCode then
+                toggleUI()
+            end
+        end
+    end)
     
     -- Set up exit button
     Exit_Button.InputBegan:Connect(function(input)
