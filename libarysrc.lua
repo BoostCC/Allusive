@@ -1190,89 +1190,89 @@ function Section:CreateSlider(config)
     slider.callback = slider.config.Callback
     
     slider.value = slider.default
-    
-    local Slider_Componenet = Instance.new("Frame")
-    Slider_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Slider_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-    Slider_Componenet.BackgroundTransparency = 1
+
+local Slider_Componenet = Instance.new("Frame")
+Slider_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Slider_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Slider_Componenet.BackgroundTransparency = 1
     Slider_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-    Slider_Componenet.Name = "Slider_Componenet"
-    Slider_Componenet.Size = UDim2.new(0, 228, 0, 35)
-    Slider_Componenet.BorderSizePixel = 0
-    Slider_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Componenet.Name = "Slider_Componenet"
+Slider_Componenet.Size = UDim2.new(0, 228, 0, 35)
+Slider_Componenet.BorderSizePixel = 0
+Slider_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Slider_Componenet.Parent = self.holder
 
-    local Slider_Label = Instance.new("TextLabel")
-    Slider_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Slider_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Slider_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Slider_Label = Instance.new("TextLabel")
+Slider_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Slider_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Slider_Label.Text = slider.text
-    Slider_Label.Name = "Slider_Label"
-    Slider_Label.Size = UDim2.new(0, 1, 0, 1)
-    Slider_Label.BackgroundTransparency = 1
-    Slider_Label.Position = UDim2.new(0, 8, 0, 0)
-    Slider_Label.BorderSizePixel = 0
-    Slider_Label.AutomaticSize = Enum.AutomaticSize.XY
-    Slider_Label.TextSize = 14
-    Slider_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Slider_Label.Parent = Slider_Componenet
+Slider_Label.Name = "Slider_Label"
+Slider_Label.Size = UDim2.new(0, 1, 0, 1)
+Slider_Label.BackgroundTransparency = 1
+Slider_Label.Position = UDim2.new(0, 8, 0, 0)
+Slider_Label.BorderSizePixel = 0
+Slider_Label.AutomaticSize = Enum.AutomaticSize.XY
+Slider_Label.TextSize = 14
+Slider_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Label.Parent = Slider_Componenet
 
-    local Slider_BG = Instance.new("Frame")
-    Slider_BG.AnchorPoint = Vector2.new(0.5, 1)
-    Slider_BG.Name = "Slider_BG"
-    Slider_BG.Position = UDim2.new(0.5, 0, 1, -10)
-    Slider_BG.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Slider_BG.Size = UDim2.new(0, 214, 0, 6)
-    Slider_BG.BorderSizePixel = 0
-    Slider_BG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Slider_BG.Parent = Slider_Componenet
+local Slider_BG = Instance.new("Frame")
+Slider_BG.AnchorPoint = Vector2.new(0.5, 1)
+Slider_BG.Name = "Slider_BG"
+Slider_BG.Position = UDim2.new(0.5, 0, 1, -10)
+Slider_BG.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Slider_BG.Size = UDim2.new(0, 214, 0, 6)
+Slider_BG.BorderSizePixel = 0
+Slider_BG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Slider_BG.Parent = Slider_Componenet
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 50)
-    UICorner.Parent = Slider_BG
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 50)
+UICorner.Parent = Slider_BG
 
-    local Slider_Progress = Instance.new("Frame")
-    Slider_Progress.AnchorPoint = Vector2.new(0, 0.5)
-    Slider_Progress.Name = "Slider_Progress"
-    Slider_Progress.Position = UDim2.new(0, 0, 0.5, 0)
-    Slider_Progress.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Slider_Progress.Size = UDim2.new(0, 116, 0, 6)
-    Slider_Progress.BorderSizePixel = 0
-    Slider_Progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Slider_Progress.Parent = Slider_BG
+local Slider_Progress = Instance.new("Frame")
+Slider_Progress.AnchorPoint = Vector2.new(0, 0.5)
+Slider_Progress.Name = "Slider_Progress"
+Slider_Progress.Position = UDim2.new(0, 0, 0.5, 0)
+Slider_Progress.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Slider_Progress.Size = UDim2.new(0, 116, 0, 6)
+Slider_Progress.BorderSizePixel = 0
+Slider_Progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Progress.Parent = Slider_BG
 
     local UICorner2 = Instance.new("UICorner")
     UICorner2.CornerRadius = UDim.new(0, 50)
     UICorner2.Parent = Slider_Progress
 
-    local Pointer = Instance.new("Frame")
-    Pointer.AnchorPoint = Vector2.new(1, 0.5)
-    Pointer.Name = "Pointer"
-    Pointer.Position = UDim2.new(1, 0, 0.5, 0)
-    Pointer.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Pointer.Size = UDim2.new(0, 12, 0, 12)
-    Pointer.BorderSizePixel = 0
-    Pointer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Pointer.Parent = Slider_Progress
+local Pointer = Instance.new("Frame")
+Pointer.AnchorPoint = Vector2.new(1, 0.5)
+Pointer.Name = "Pointer"
+Pointer.Position = UDim2.new(1, 0, 0.5, 0)
+Pointer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Pointer.Size = UDim2.new(0, 12, 0, 12)
+Pointer.BorderSizePixel = 0
+Pointer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Pointer.Parent = Slider_Progress
 
     local UICorner3 = Instance.new("UICorner")
     UICorner3.Parent = Pointer
 
-    local Slider_Value = Instance.new("TextLabel")
-    Slider_Value.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Slider_Value.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Slider_Value.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Slider_Value = Instance.new("TextLabel")
+Slider_Value.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Slider_Value.TextColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Value.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Slider_Value.Text = tostring(slider.value)
-    Slider_Value.Name = "Slider_Value"
-    Slider_Value.AnchorPoint = Vector2.new(1, 0)
-    Slider_Value.Size = UDim2.new(0, 1, 0, 1)
-    Slider_Value.BackgroundTransparency = 1
-    Slider_Value.Position = UDim2.new(1, -9, 0, 0)
-    Slider_Value.BorderSizePixel = 0
-    Slider_Value.AutomaticSize = Enum.AutomaticSize.XY
-    Slider_Value.TextSize = 14
-    Slider_Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Slider_Value.Parent = Slider_Componenet
+Slider_Value.Name = "Slider_Value"
+Slider_Value.AnchorPoint = Vector2.new(1, 0)
+Slider_Value.Size = UDim2.new(0, 1, 0, 1)
+Slider_Value.BackgroundTransparency = 1
+Slider_Value.Position = UDim2.new(1, -9, 0, 0)
+Slider_Value.BorderSizePixel = 0
+Slider_Value.AutomaticSize = Enum.AutomaticSize.XY
+Slider_Value.TextSize = 14
+Slider_Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Slider_Value.Parent = Slider_Componenet
 
     local function updateSlider(value)
         slider.value = math.clamp(value, slider.min, slider.max)
@@ -1736,76 +1736,76 @@ function Section:AddColorToggle(config)
     
     colorToggle.state = false
     colorToggle.color = colorToggle.defaultColor
-    
-    local Toggle_Componenet = Instance.new("Frame")
-    Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-    Toggle_Componenet.BackgroundTransparency = 1
-    Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-    Toggle_Componenet.Name = "Toggle_Componenet"
-    Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
-    Toggle_Componenet.BorderSizePixel = 0
-    Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+local Toggle_Componenet = Instance.new("Frame")
+Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Toggle_Componenet.BackgroundTransparency = 1
+Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+Toggle_Componenet.Name = "Toggle_Componenet"
+Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
+Toggle_Componenet.BorderSizePixel = 0
+Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Toggle_Componenet.Parent = self.holder
 
-    local Toggle_Text = Instance.new("TextLabel")
-    Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
-    Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Toggle_Text = Instance.new("TextLabel")
+Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Toggle_Text.Text = colorToggle.text
-    Toggle_Text.Name = "Toggle_Text"
-    Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
-    Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
-    Toggle_Text.BackgroundTransparency = 1
-    Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
-    Toggle_Text.BorderSizePixel = 0
-    Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
-    Toggle_Text.TextSize = 14
-    Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Toggle_Text.Parent = Toggle_Componenet
+Toggle_Text.Name = "Toggle_Text"
+Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+Toggle_Text.BackgroundTransparency = 1
+Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+Toggle_Text.BorderSizePixel = 0
+Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+Toggle_Text.TextSize = 14
+Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.Parent = Toggle_Componenet
 
-    local Toggle = Instance.new("Frame")
-    Toggle.AnchorPoint = Vector2.new(1, 0.5)
-    Toggle.Name = "Toggle"
-    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
-    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle.Size = UDim2.new(0, 16, 0, 16)
-    Toggle.BorderSizePixel = 0
-    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Toggle.Parent = Toggle_Componenet
+local Toggle = Instance.new("Frame")
+Toggle.AnchorPoint = Vector2.new(1, 0.5)
+Toggle.Name = "Toggle"
+Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Size = UDim2.new(0, 16, 0, 16)
+Toggle.BorderSizePixel = 0
+Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Toggle.Parent = Toggle_Componenet
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = Toggle
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Toggle
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(26, 26, 26)
-    UIStroke.Parent = Toggle
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Parent = Toggle
 
-    local Check = Instance.new("ImageLabel")
-    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Check.Name = "Check"
-    Check.AnchorPoint = Vector2.new(0.5, 0.5)
-    Check.Image = "rbxassetid://103083009202465"
-    Check.BackgroundTransparency = 1
-    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Check.Size = UDim2.new(0, 10, 0, 12)
-    Check.BorderSizePixel = 0
-    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local Check = Instance.new("ImageLabel")
+Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Check.Name = "Check"
+Check.AnchorPoint = Vector2.new(0.5, 0.5)
+Check.Image = "rbxassetid://103083009202465"
+Check.BackgroundTransparency = 1
+Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+Check.Size = UDim2.new(0, 10, 0, 12)
+Check.BorderSizePixel = 0
+Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Check.Visible = false
-    Check.Parent = Toggle
+Check.Parent = Toggle
 
-    local Color_Frame = Instance.new("ImageLabel")
-    Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Color_Frame.Name = "Color_Frame"
-    Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
+local Color_Frame = Instance.new("ImageLabel")
+Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Color_Frame.Name = "Color_Frame"
+Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
     Color_Frame.Image = colorToggle.colorpickerIcon
-    Color_Frame.BackgroundTransparency = 1
-    Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
-    Color_Frame.Size = UDim2.new(0, 15, 0, 15)
-    Color_Frame.BorderSizePixel = 0
+Color_Frame.BackgroundTransparency = 1
+Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
+Color_Frame.Size = UDim2.new(0, 15, 0, 15)
+Color_Frame.BorderSizePixel = 0
     Color_Frame.BackgroundColor3 = colorToggle.color
-    Color_Frame.Parent = Toggle_Componenet
+Color_Frame.Parent = Toggle_Componenet
 
     -- Color picker container (initially hidden)
     local Container = Instance.new("Frame")
@@ -1901,8 +1901,8 @@ function Section:AddColorToggle(config)
     UICorner6.CornerRadius = UDim.new(0, 4)
     UICorner6.Parent = Colorframe
 
-    local UIGradient = Instance.new("UIGradient")
-    UIGradient.Color = ColorSequence.new{
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 4))
     }
@@ -1911,6 +1911,10 @@ function Section:AddColorToggle(config)
     local UICorner7 = Instance.new("UICorner")
     UICorner7.CornerRadius = UDim.new(0, 4)
     UICorner7.Parent = Container
+
+    local ContainerStroke = Instance.new("UIStroke")
+    ContainerStroke.Color = Color3.fromRGB(25, 25, 25)
+    ContainerStroke.Parent = Container
 
     local function updateColor(newColor)
         colorToggle.color = newColor
@@ -1923,6 +1927,143 @@ function Section:AddColorToggle(config)
     local function closeColorPicker()
         Container.Visible = false
     end
+
+    local function hsvToRgb(h, s, v)
+        local r, g, b
+        local i = math.floor(h * 6)
+        local f = h * 6 - i
+        local p = v * (1 - s)
+        local q = v * (1 - f * s)
+        local t = v * (1 - (1 - f) * s)
+        
+        if i == 0 then
+            r, g, b = v, t, p
+        elseif i == 1 then
+            r, g, b = q, v, p
+        elseif i == 2 then
+            r, g, b = p, v, t
+        elseif i == 3 then
+            r, g, b = p, q, v
+        elseif i == 4 then
+            r, g, b = t, p, v
+        else
+            r, g, b = v, p, q
+        end
+        
+        return Color3.fromRGB(math.floor(r * 255), math.floor(g * 255), math.floor(b * 255))
+    end
+
+    local function rgbToHsv(r, g, b)
+        local max = math.max(r, g, b)
+        local min = math.min(r, g, b)
+        local diff = max - min
+        
+        local h = 0
+        if diff ~= 0 then
+            if max == r then
+                h = ((g - b) / diff) % 6
+            elseif max == g then
+                h = (b - r) / diff + 2
+            else
+                h = (r - g) / diff + 4
+            end
+        end
+        h = h / 6
+        
+        local s = max == 0 and 0 or diff / max
+        local v = max
+        
+        return h, s, v
+    end
+
+    local currentHue = 0
+    local currentSat = 1
+    local currentVal = 1
+
+    -- Color picker interaction
+    local colorPickerDragging = false
+    local huePickerDragging = false
+
+    Colorframe.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            colorPickerDragging = true
+            local mousePos = UserInputService:GetMouseLocation()
+            local framePos = Colorframe.AbsolutePosition
+            local frameSize = Colorframe.AbsoluteSize
+            
+            local relativeX = math.clamp((mousePos.X - framePos.X) / frameSize.X, 0, 1)
+            local relativeY = math.clamp((mousePos.Y - framePos.Y) / frameSize.Y, 0, 1)
+            
+            currentSat = relativeX
+            currentVal = 1 - relativeY
+            
+            local newColor = hsvToRgb(currentHue, currentSat, currentVal)
+            updateColor(newColor)
+            
+            -- Update picker position
+            ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
+        end
+    end)
+
+    Hue.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            huePickerDragging = true
+            local mousePos = UserInputService:GetMouseLocation()
+            local huePos = Hue.AbsolutePosition
+            local hueSize = Hue.AbsoluteSize
+            
+            local relativeY = math.clamp((mousePos.Y - huePos.Y) / hueSize.Y, 0, 1)
+            currentHue = relativeY
+            
+            local newColor = hsvToRgb(currentHue, currentSat, currentVal)
+            updateColor(newColor)
+            
+            -- Update hue picker position
+            HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            if colorPickerDragging then
+                local mousePos = UserInputService:GetMouseLocation()
+                local framePos = Colorframe.AbsolutePosition
+                local frameSize = Colorframe.AbsoluteSize
+                
+                local relativeX = math.clamp((mousePos.X - framePos.X) / frameSize.X, 0, 1)
+                local relativeY = math.clamp((mousePos.Y - framePos.Y) / frameSize.Y, 0, 1)
+                
+                currentSat = relativeX
+                currentVal = 1 - relativeY
+                
+                local newColor = hsvToRgb(currentHue, currentSat, currentVal)
+                updateColor(newColor)
+                
+                -- Update picker position
+                ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
+            elseif huePickerDragging then
+                local mousePos = UserInputService:GetMouseLocation()
+                local huePos = Hue.AbsolutePosition
+                local hueSize = Hue.AbsoluteSize
+                
+                local relativeY = math.clamp((mousePos.Y - huePos.Y) / hueSize.Y, 0, 1)
+                currentHue = relativeY
+                
+                local newColor = hsvToRgb(currentHue, currentSat, currentVal)
+                updateColor(newColor)
+                
+                -- Update hue picker position
+                HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+            end
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            colorPickerDragging = false
+            huePickerDragging = false
+        end
+    end)
 
     -- Toggle click functionality
     Toggle_Componenet.InputBegan:Connect(function(input)
