@@ -1180,8 +1180,179 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
 end
 
 function Section:CreateSlider(config)
-    print("Slider created:", config.SliderText)
-    return {}
+    local slider = {}
+    slider.config = config or {}
+    slider.text = slider.config.SliderText or "Slider"
+    slider.min = slider.config.Min or 0
+    slider.max = slider.config.Max or 100
+    slider.default = slider.config.Default or 50
+    slider.precision = slider.config.Precision or 1
+    slider.callback = slider.config.Callback
+    
+    slider.value = slider.default
+    
+    local Slider_Componenet = Instance.new("Frame")
+    Slider_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+    Slider_Componenet.BackgroundTransparency = 1
+    Slider_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+    Slider_Componenet.Name = "Slider_Componenet"
+    Slider_Componenet.Size = UDim2.new(0, 228, 0, 35)
+    Slider_Componenet.BorderSizePixel = 0
+    Slider_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Componenet.Parent = self.holder
+
+    local Slider_Label = Instance.new("TextLabel")
+    Slider_Label.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Slider_Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider_Label.Text = slider.text
+    Slider_Label.Name = "Slider_Label"
+    Slider_Label.Size = UDim2.new(0, 1, 0, 1)
+    Slider_Label.BackgroundTransparency = 1
+    Slider_Label.Position = UDim2.new(0, 8, 0, 0)
+    Slider_Label.BorderSizePixel = 0
+    Slider_Label.AutomaticSize = Enum.AutomaticSize.XY
+    Slider_Label.TextSize = 14
+    Slider_Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Label.Parent = Slider_Componenet
+
+    local Slider_BG = Instance.new("Frame")
+    Slider_BG.AnchorPoint = Vector2.new(0.5, 1)
+    Slider_BG.Name = "Slider_BG"
+    Slider_BG.Position = UDim2.new(0.5, 0, 1, -10)
+    Slider_BG.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider_BG.Size = UDim2.new(0, 214, 0, 6)
+    Slider_BG.BorderSizePixel = 0
+    Slider_BG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Slider_BG.Parent = Slider_Componenet
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 50)
+    UICorner.Parent = Slider_BG
+
+    local Slider_Progress = Instance.new("Frame")
+    Slider_Progress.AnchorPoint = Vector2.new(0, 0.5)
+    Slider_Progress.Name = "Slider_Progress"
+    Slider_Progress.Position = UDim2.new(0, 0, 0.5, 0)
+    Slider_Progress.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider_Progress.Size = UDim2.new(0, 116, 0, 6)
+    Slider_Progress.BorderSizePixel = 0
+    Slider_Progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Progress.Parent = Slider_BG
+
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 50)
+    UICorner2.Parent = Slider_Progress
+
+    local Pointer = Instance.new("Frame")
+    Pointer.AnchorPoint = Vector2.new(1, 0.5)
+    Pointer.Name = "Pointer"
+    Pointer.Position = UDim2.new(1, 0, 0.5, 0)
+    Pointer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Pointer.Size = UDim2.new(0, 12, 0, 12)
+    Pointer.BorderSizePixel = 0
+    Pointer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Pointer.Parent = Slider_Progress
+
+    local UICorner3 = Instance.new("UICorner")
+    UICorner3.Parent = Pointer
+
+    local Slider_Value = Instance.new("TextLabel")
+    Slider_Value.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Slider_Value.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Value.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider_Value.Text = tostring(slider.value)
+    Slider_Value.Name = "Slider_Value"
+    Slider_Value.AnchorPoint = Vector2.new(1, 0)
+    Slider_Value.Size = UDim2.new(0, 1, 0, 1)
+    Slider_Value.BackgroundTransparency = 1
+    Slider_Value.Position = UDim2.new(1, -9, 0, 0)
+    Slider_Value.BorderSizePixel = 0
+    Slider_Value.AutomaticSize = Enum.AutomaticSize.XY
+    Slider_Value.TextSize = 14
+    Slider_Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Slider_Value.Parent = Slider_Componenet
+
+    local function updateSlider(value)
+        slider.value = math.clamp(value, slider.min, slider.max)
+        local percentage = (slider.value - slider.min) / (slider.max - slider.min)
+        local progressWidth = 214 * percentage
+        
+        -- Smooth animation for progress bar
+        local progressInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+        TweenService:Create(Slider_Progress, progressInfo, {Size = UDim2.new(0, progressWidth, 0, 6)}):Play()
+        
+        -- Update value display
+        Slider_Value.Text = tostring(slider.value)
+        
+        -- Call callback
+        if slider.callback then
+            slider.callback(slider.value)
+        end
+    end
+
+    -- Set initial value
+    updateSlider(slider.default)
+
+    -- Mouse interaction
+    local dragging = false
+    local connection
+
+    Slider_BG.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            
+            -- Calculate new value based on mouse position
+            local mousePos = UserInputService:GetMouseLocation()
+            local sliderPos = Slider_BG.AbsolutePosition
+            local sliderSize = Slider_BG.AbsoluteSize
+            local relativeX = mousePos.X - sliderPos.X
+            local percentage = math.clamp(relativeX / sliderSize.X, 0, 1)
+            local newValue = slider.min + (percentage * (slider.max - slider.min))
+            
+            -- Round to precision
+            newValue = math.floor(newValue / slider.precision + 0.5) * slider.precision
+            updateSlider(newValue)
+        end
+    end)
+
+    connection = UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mousePos = UserInputService:GetMouseLocation()
+            local sliderPos = Slider_BG.AbsolutePosition
+            local sliderSize = Slider_BG.AbsoluteSize
+            local relativeX = mousePos.X - sliderPos.X
+            local percentage = math.clamp(relativeX / sliderSize.X, 0, 1)
+            local newValue = slider.min + (percentage * (slider.max - slider.min))
+            
+            -- Round to precision
+            newValue = math.floor(newValue / slider.precision + 0.5) * slider.precision
+            updateSlider(newValue)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    slider.component = Slider_Componenet
+    slider.progress = Slider_Progress
+    slider.pointer = Pointer
+    slider.valueLabel = Slider_Value
+    
+    function slider:Set(value)
+        updateSlider(value)
+    end
+    
+    function slider:Get()
+        return slider.value
+    end
+
+    table.insert(self.components, slider)
+    return slider
 end
 
 function Section:CreateTextInput(config)
