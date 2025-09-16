@@ -441,73 +441,71 @@ local Icon = Instance.new("ImageLabel")
 Icon.ImageColor3 = Color3.fromRGB(78, 78, 78)
 Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Icon.Name = "Icon"
-Icon.AnchorPoint = Vector2.new(0, 0.5)
+    Icon.AnchorPoint = Vector2.new(0, 0.5)
     Icon.Image = config.icon or "rbxassetid://103009339613412"
 Icon.BackgroundTransparency = 1
-Icon.Position = UDim2.new(0, 6, 0.5, 0)
+    Icon.Position = UDim2.new(0, 6, 0.5, 0)
 Icon.Size = UDim2.new(0, 15, 0, 15)
 Icon.BorderSizePixel = 0
 Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Icon.Parent = TabButton
-
-local Tab_Name = Instance.new("TextLabel")
-Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
-Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Tab_Name.Text = config.TabText
-Tab_Name.Name = "Tab_Name"
-Tab_Name.AnchorPoint = Vector2.new(0, 0.5)
-Tab_Name.Size = UDim2.new(0, 1, 0, 1)
-Tab_Name.BackgroundTransparency = 1
-Tab_Name.Position = UDim2.new(0, 25, 0.5, 0)
-Tab_Name.BorderSizePixel = 0
-Tab_Name.AutomaticSize = Enum.AutomaticSize.XY
-Tab_Name.TextSize = 14
-Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Tab_Name.Parent = TabButton
     
-    -- Helper to activate this tab: hide all sections, then show only this tab's sections
-    local function activateThisTab()
-        for _, child in ipairs(Container:GetChildren()) do
-            if child:IsA("Frame") and child.Name:sub(1,8) == "Section_" then
-                child.Visible = false
-            end
-        end
-        for _, s in ipairs(tab.sections.left) do
-            if s.frame then s.frame.Visible = true end
-        end
-        for _, s in ipairs(tab.sections.right) do
-            if s.frame then s.frame.Visible = true end
-        end
-    end
+    local Tab_Name = Instance.new("TextLabel")
+    Tab_Name.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Tab_Name.TextColor3 = Color3.fromRGB(78, 78, 78)
+    Tab_Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Tab_Name.Text = config.TabText
+    Tab_Name.Name = "Tab_Name"
+    Tab_Name.AnchorPoint = Vector2.new(0, 0.5)
+    Tab_Name.Size = UDim2.new(0, 1, 0, 1)
+    Tab_Name.BackgroundTransparency = 1
+    Tab_Name.Position = UDim2.new(0, 25, 0.5, 0)
+    Tab_Name.BorderSizePixel = 0
+    Tab_Name.AutomaticSize = Enum.AutomaticSize.XY
+    Tab_Name.TextSize = 14
+    Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Tab_Name.Parent = TabButton
     
     -- Tab click functionality with smooth animations
     TabButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             -- Smooth fade out animation for all sections
-            for _, child in ipairs(Container:GetChildren()) do
-                if child:IsA("Frame") and child.Name:sub(1,8) == "Section_" then
-                    child.Visible = false
+            local fadeOutPromises = {}
+            for _, section in pairs(Container:GetChildren()) do
+                if section:IsA("Frame") and section.Name:find("Section_") then
+                    local fadeOutInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+                    local fadeOutTween = TweenService:Create(section, fadeOutInfo, {BackgroundTransparency = 1})
+                    fadeOutTween:Play()
+                    table.insert(fadeOutPromises, fadeOutTween)
                 end
             end
             
-            -- Show this tab's sections with smooth fade in
-            for _, section in pairs(tab.sections.left) do
-                if section.frame then
-                    section.frame.Visible = true
-                    section.frame.BackgroundTransparency = 1
-                    local fadeInInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                    TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0}):Play()
+            -- Wait for fade out to complete, then show new sections
+            local function showNewSections()
+                -- Show this tab's sections with smooth fade in
+                for _, section in pairs(tab.sections.left) do
+                    if section.frame then
+                        section.frame.BackgroundTransparency = 1
+                        section.frame.Visible = true
+                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
+                        fadeInTween:Play()
+                    end
+                end
+                for _, section in pairs(tab.sections.right) do
+                    if section.frame then
+                        section.frame.BackgroundTransparency = 1
+                        section.frame.Visible = true
+                        local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                        local fadeInTween = TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0})
+                        fadeInTween:Play()
+                    end
                 end
             end
-            for _, section in pairs(tab.sections.right) do
-                if section.frame then
-                    section.frame.Visible = true
-                    section.frame.BackgroundTransparency = 1
-                    local fadeInInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                    TweenService:Create(section.frame, fadeInInfo, {BackgroundTransparency = 0}):Play()
-                end
-            end
+            
+            -- Delay showing new sections until fade out completes
+            task.wait(0.15)
+            showNewSections()
             
             -- Smooth tab appearance animations
             for _, child in pairs(TabContainer:GetChildren()) do
@@ -554,7 +552,7 @@ Tab_Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             
             -- Add UIStroke for active tab
 local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(25, 25, 25)
+            UIStroke.Color = Color3.fromRGB(25, 25, 25)
             UIStroke.Parent = TabButton
             
             CurrentTab = tab
@@ -567,11 +565,13 @@ UIStroke.Color = Color3.fromRGB(25, 25, 25)
         TabButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         Tab_Name.TextColor3 = Color3.fromRGB(255, 255, 255)
         Icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-        local UIStroke = Instance.new("UIStroke")
+        
+        -- Add UIStroke for active tab
+local UIStroke = Instance.new("UIStroke")
         UIStroke.Color = Color3.fromRGB(25, 25, 25)
         UIStroke.Parent = TabButton
+        
         CurrentTab = tab
-        activateThisTab()
     end
     
     table.insert(self.tabs, tab)
@@ -593,7 +593,6 @@ function Tab:CreateSection(config)
     SectionFrame.BorderSizePixel = 0
     SectionFrame.AutomaticSize = Enum.AutomaticSize.Y
     SectionFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    SectionFrame.Visible = false
     SectionFrame.Parent = Container
 
 local UICorner = Instance.new("UICorner")
@@ -667,7 +666,7 @@ Master_Switch.Position = UDim2.new(1, -10, 0.5, 0)
 Master_Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Master_Switch.Size = UDim2.new(0, 30, 0, 18)
 Master_Switch.BorderSizePixel = 0
-Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
+        Master_Switch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
 Master_Switch.Parent = Header
 
 local UICorner = Instance.new("UICorner")
@@ -677,7 +676,7 @@ UICorner.Parent = Master_Switch
 local Pointer = Instance.new("Frame")
 Pointer.AnchorPoint = Vector2.new(0, 0.5)
 Pointer.Name = "Pointer"
-Pointer.Position = UDim2.new(0, 3, 0.5, 0)
+        Pointer.Position = UDim2.new(0, 3, 0.5, 0)
 Pointer.BorderColor3 = Color3.fromRGB(20, 20, 20)
 Pointer.Size = UDim2.new(0, 12, 0, 12)
 Pointer.BorderSizePixel = 0
@@ -751,59 +750,110 @@ Keybind.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
 Keybind.Parent = Header
 
     -- Keybind functionality
+    local currentKeybind = Enum.KeyCode.Space
+    local currentMouseButton = nil
     local keybindConnection = nil
-    local currentKeybind : Enum.KeyCode? = nil
-    local currentMouseButton : string? = nil
-    local currentControllerKey : Enum.KeyCode? = nil
-    local currentControllerNumber : number? = nil
-
-    local function disconnectKeybind()
-        if keybindConnection then keybindConnection:Disconnect() keybindConnection = nil end
-    end
-
-    local function updateKB(keyCode)
+    
+    local function updateKeybind(keyCode)
         currentKeybind = keyCode
-        Keybind.Text = keyCode and keyCode.Name or "None"
-        disconnectKeybind()
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
-            if gp then return end
-            if input.UserInputType == Enum.UserInputType.Keyboard and currentKeybind and input.KeyCode == currentKeybind then
-                -- toggle behavior by default
-                applyActiveState(not keybind.active)
+        
+        -- Convert keycode to readable name using STARHUB mapping
+        local keyName = nil
+        
+        -- Handle keyboard input (including shift keys)
+        if keyCode and keyCode.Name then
+            -- Skip WASD movement keys
+            if keyCode == Enum.KeyCode.W or keyCode == Enum.KeyCode.A or 
+               keyCode == Enum.KeyCode.S or keyCode == Enum.KeyCode.D then
+                return
+            end
+            
+            -- Simplify keyboard key names
+            if keyCode == Enum.KeyCode.LeftShift then
+                keyName = "LShift"
+            elseif keyCode == Enum.KeyCode.RightShift then
+                keyName = "RShift"
+            elseif keyCode == Enum.KeyCode.LeftControl then
+                keyName = "LCtrl"
+            elseif keyCode == Enum.KeyCode.RightControl then
+                keyName = "RCtrl"
+            elseif keyCode == Enum.KeyCode.LeftAlt then
+                keyName = "LAlt"
+            elseif keyCode == Enum.KeyCode.RightAlt then
+                keyName = "RAlt"
+            elseif keyCode == Enum.KeyCode.Return then
+                keyName = "Enter"
+            elseif keyCode == Enum.KeyCode.Escape then
+                keyName = "Esc"
+            elseif keyCode == Enum.KeyCode.Backspace then
+                keyName = "Back"
+            elseif keyCode == Enum.KeyCode.Tab then
+                keyName = "Tab"
+            elseif keyCode == Enum.KeyCode.Space then
+                keyName = "Space"
+            else
+                keyName = keyCode.Name
+            end
+        end
+        
+        Keybind.Text = keyName or "None"
+        
+        -- Disconnect old connection
+        if keybindConnection then
+            keybindConnection:Disconnect()
+        end
+        
+        -- Create new connection for keyboard input
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == currentKeybind then
+                -- Toggle all toggles in this section
+                for _, component in pairs(section.components) do
+                    if component.toggle and component.state ~= nil then
+                        component.state = not component.state
+                        if component.config.Callback then
+                            component.config.Callback(component.state)
+                        end
+                    end
+                end
             end
         end)
     end
-
-    local function updateMouse(mouseButton)
+    
+    local function updateKeybindMouse(mouseButton)
         currentMouseButton = mouseButton
         Keybind.Text = mouseButton
-        disconnectKeybind()
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
-            if gp then return end
-            local hit = (mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1)
-                or (mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2)
-                or (mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3)
-            if hit then
-                applyActiveState(not keybind.active)
+        
+        -- Disconnect old connection
+        if keybindConnection then
+            keybindConnection:Disconnect()
+        end
+        
+        -- Create new connection for mouse input
+        keybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed then
+                local shouldTrigger = false
+                if mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    shouldTrigger = true
+                elseif mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2 then
+                    shouldTrigger = true
+                elseif mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3 then
+                    shouldTrigger = true
+                end
+                
+                if shouldTrigger then
+                    -- Toggle all toggles in this section
+                    for _, component in pairs(section.components) do
+                        if component.toggle and component.state ~= nil then
+                            component.state = not component.state
+                            if component.config.Callback then
+                                component.config.Callback(component.state)
+                            end
+                        end
+                    end
+                end
             end
         end)
     end
-
-    local function updateController(gamepadKey, controllerNumber)
-        currentControllerKey = gamepadKey
-        currentControllerNumber = controllerNumber
-        Keybind.Text = "P" .. tostring(controllerNumber) .. "_" .. gamepadKey.Name
-        disconnectKeybind()
-        keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
-            if gp then return end
-            if currentControllerNumber and input.UserInputType == Enum.UserInputType["Gamepad" .. currentControllerNumber] and currentControllerKey and input.KeyCode == currentControllerKey then
-                applyActiveState(not keybind.active)
-            end
-        end)
-    end
-
-    -- replace earlier default
-    updateKB(Enum.KeyCode.Space)
     
     -- Set up keybind listening with typewriter animation
     Keybind.InputBegan:Connect(function(input)
@@ -844,158 +894,24 @@ Keybind.Parent = Header
                     
                     -- Handle different input types properly
                     if input2.UserInputType == Enum.UserInputType.Keyboard then
-                        updateKB(input2.KeyCode)
+                        updateKeybind(input2.KeyCode)
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton1 then
-                        updateMouse("LMB")
+                        updateKeybindMouse("LMB")
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton2 then
-                        updateMouse("RMB")
+                        updateKeybindMouse("RMB")
                     elseif input2.UserInputType == Enum.UserInputType.MouseButton3 then
-                        updateMouse("MMB")
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad1 then
-                        updateController(input2.KeyCode, 1)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad2 then
-                        updateController(input2.KeyCode, 2)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad3 then
-                        updateController(input2.KeyCode, 3)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad4 then
-                        updateController(input2.KeyCode, 4)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad5 then
-                        updateController(input2.KeyCode, 5)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad6 then
-                        updateController(input2.KeyCode, 6)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad7 then
-                        updateController(input2.KeyCode, 7)
-                    elseif input2.UserInputType == Enum.UserInputType.Gamepad8 then
-                        updateController(input2.KeyCode, 8)
+                        updateKeybindMouse("MMB")
                     end
                     
-                    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     connection:Disconnect()
                 end
             end)
         end
     end)
     
-    -- Right-click context menu for keybind modes
-    Keybind.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton2 then
-            -- Create context menu
-            local Container = Instance.new("Frame")
-            Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            Container.Size = UDim2.new(0, 82, 0, 73)
-            Container.Name = "Container"
-            Container.Position = UDim2.new(0.5972850322723389, 0, 0.8358209133148193, 0)
-            Container.BorderSizePixel = 0
-            Container.ZIndex = 50
-            Container.AutomaticSize = Enum.AutomaticSize.XY
-            Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            Container.Parent = ScreenGui
-
-            local UIListLayout = Instance.new("UIListLayout")
-            UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-            UIListLayout.Parent = Container
-
-local UIPadding = Instance.new("UIPadding")
-            UIPadding.PaddingBottom = UDim.new(0, 8)
-            UIPadding.PaddingTop = UDim.new(0, 5)
-            UIPadding.Parent = Container
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 4)
-            UICorner.Parent = Container
-
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(26, 26, 26)
-            UIStroke.Parent = Container
-
-            -- Hold option
-            local HoldFrame = Instance.new("Frame")
-            HoldFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-            HoldFrame.Position = UDim2.new(0.3027423918247223, 0, 0.1666666716337204, 0)
-            HoldFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            HoldFrame.Size = UDim2.new(0, 82, 0, 20)
-            HoldFrame.BorderSizePixel = 0
-            HoldFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            HoldFrame.Parent = Container
-
-            local HoldText = Instance.new("TextLabel")
-            HoldText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-            HoldText.TextColor3 = Color3.fromRGB(255, 255, 255)
-            HoldText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            HoldText.Text = "Hold"
-            HoldText.AnchorPoint = Vector2.new(0.5, 0.5)
-            HoldText.Size = UDim2.new(0, 1, 0, 1)
-            HoldText.BackgroundTransparency = 1
-            HoldText.Position = UDim2.new(0.5, 0, 0.5, 0)
-            HoldText.BorderSizePixel = 0
-            HoldText.AutomaticSize = Enum.AutomaticSize.XY
-            HoldText.TextSize = 16
-            HoldText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            HoldText.Parent = HoldFrame
-
-            -- Toggle option
-            local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-            ToggleFrame.Position = UDim2.new(0.2998863160610199, 0, 0.5, 0)
-            ToggleFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            ToggleFrame.Size = UDim2.new(0, 82, 0, 20)
-            ToggleFrame.BorderSizePixel = 0
-            ToggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            ToggleFrame.Parent = Container
-
-            local ToggleText = Instance.new("TextLabel")
-            ToggleText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-            ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
-            ToggleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            ToggleText.Text = "Toggle"
-            ToggleText.AnchorPoint = Vector2.new(0.5, 0.5)
-            ToggleText.Size = UDim2.new(0, 1, 0, 1)
-            ToggleText.BackgroundTransparency = 1
-            ToggleText.Position = UDim2.new(0.5, 0, 0.5, 0)
-            ToggleText.BorderSizePixel = 0
-            ToggleText.AutomaticSize = Enum.AutomaticSize.XY
-            ToggleText.TextSize = 16
-            ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ToggleText.Parent = ToggleFrame
-
-            -- Always On option
-            local AlwaysFrame = Instance.new("Frame")
-            AlwaysFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-            AlwaysFrame.Position = UDim2.new(0.2998863160610199, 0, 0.8333333134651184, 0)
-            AlwaysFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            AlwaysFrame.Size = UDim2.new(0, 82, 0, 20)
-            AlwaysFrame.BorderSizePixel = 0
-            AlwaysFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            AlwaysFrame.Parent = Container
-
-            local AlwaysText = Instance.new("TextLabel")
-            AlwaysText.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-            AlwaysText.TextColor3 = Color3.fromRGB(76, 76, 76)
-            AlwaysText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            AlwaysText.Text = "Always On"
-            AlwaysText.AnchorPoint = Vector2.new(0.5, 0.5)
-            AlwaysText.Size = UDim2.new(0, 1, 0, 1)
-            AlwaysText.BackgroundTransparency = 1
-            AlwaysText.Position = UDim2.new(0.5, 0, 0.5, 0)
-            AlwaysText.BorderSizePixel = 0
-            AlwaysText.AutomaticSize = Enum.AutomaticSize.XY
-            AlwaysText.TextSize = 16
-            AlwaysText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            AlwaysText.Parent = AlwaysFrame
-
-            -- Close context menu when clicking outside
-            local closeConnection
-            closeConnection = UserInputService.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 then
-                    Container:Destroy()
-                    closeConnection:Disconnect()
-                end
-            end)
-        end
-    end)
-    
     -- Initialize keybind
-    updateKB(Enum.KeyCode.Space)
+    updateKeybind(Enum.KeyCode.Space)
 
 local UIPadding = Instance.new("UIPadding")
 UIPadding.PaddingTop = UDim.new(0, 3)
@@ -1181,154 +1097,8 @@ function Section:CreateDropdown(config)
 end
 
 function Section:CreateKeybind(config)
-	local keybind = {}
-	keybind.config = config or {}
-	keybind.text = keybind.config.KeybindText or "Keybind"
-	keybind.mode = "toggle"
-	keybind.active = false
-
-	local Keybind_Componenet = Instance.new("Frame")
-	Keybind_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Keybind_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-	Keybind_Componenet.BackgroundTransparency = 1
-	Keybind_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-	Keybind_Componenet.Name = "Keybind_Componenet"
-	Keybind_Componenet.Size = UDim2.new(0, 228, 0, 30)
-	Keybind_Componenet.BorderSizePixel = 0
-	Keybind_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Keybind_Componenet.Parent = self.holder
-
-	local Toggle_Text = Instance.new("TextLabel")
-	Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Toggle_Text.Text = keybind.text
-	Toggle_Text.Name = "Toggle_Text"
-	Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
-	Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
-	Toggle_Text.BackgroundTransparency = 1
-	Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
-	Toggle_Text.BorderSizePixel = 0
-	Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
-	Toggle_Text.TextSize = 14
-	Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle_Text.Parent = Keybind_Componenet
-
-	local KeybindLabel = Instance.new("TextLabel")
-	KeybindLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	KeybindLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	KeybindLabel.Text = "Space"
-	KeybindLabel.BorderSizePixel = 0
-	KeybindLabel.AnchorPoint = Vector2.new(1, 0.5)
-	KeybindLabel.Size = UDim2.new(0, 1, 0, 1)
-	KeybindLabel.Name = "Keybind"
-	KeybindLabel.Position = UDim2.new(1, -6, 0.5, 0)
-	KeybindLabel.AutomaticSize = Enum.AutomaticSize.XY
-	KeybindLabel.TextYAlignment = Enum.TextYAlignment.Bottom
-	KeybindLabel.TextSize = 14
-	KeybindLabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
-	KeybindLabel.Parent = Keybind_Componenet
-
-	local UIPadding = Instance.new("UIPadding")
-	UIPadding.PaddingTop = UDim.new(0, 3)
-	UIPadding.PaddingBottom = UDim.new(0, 3)
-	UIPadding.PaddingRight = UDim.new(0, 6)
-	UIPadding.PaddingLeft = UDim.new(0, 6)
-	UIPadding.Parent = KeybindLabel
-
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0, 4)
-	UICorner.Parent = KeybindLabel
-
-	local listening = false
-	local function stopTypewriter()
-		if keybind.twConn then
-			keybind.twConn:Disconnect()
-			keybind.twConn = nil
-		end
-		listening = false
-	end
-
-	local function applyActiveState(isActive)
-		keybind.active = isActive
-		if keybind.config.Callback then
-			keybind.config.Callback(isActive)
-		end
-	end
-
-	local function listenForKey()
-		if listening then return end
-		listening = true
-		stopTypewriter()
-		local dots = ""
-		local lastUpdate = 0
-		local startTime = tick()
-		keybind.twConn = RunService.Heartbeat:Connect(function()
-			if not listening then return end
-			local t = tick()
-			if t - lastUpdate >= 0.5 then
-				dots = (#dots < 3) and (dots .. ".") or ""
-				KeybindLabel.Text = dots
-				lastUpdate = t
-			end
-			if t - startTime > 12 then
-				stopTypewriter()
-			end
-		end)
-		local conn
-		conn = UserInputService.InputBegan:Connect(function(input, gp)
-			stopTypewriter()
-			if gp then
-				if conn then conn:Disconnect() end
-				return
-			end
-			if input.UserInputType == Enum.UserInputType.Keyboard then
-				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
-					if conn then conn:Disconnect() end
-					return
-				end
-				KeybindLabel.Text = input.KeyCode.Name
-				updateKB(input.KeyCode)
-			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-				KeybindLabel.Text = "LMB"
-				updateMouse("LMB")
-			elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
-				KeybindLabel.Text = "RMB"
-				updateMouse("RMB")
-			elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
-				KeybindLabel.Text = "MMB"
-				updateMouse("MMB")
-			elseif tostring(input.UserInputType):find("Gamepad") then
-				KeybindLabel.Text = input.KeyCode.Name
-				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
-				updateController(input.KeyCode, gpIdx)
-			end
-			if conn then conn:Disconnect() end
-		end)
-		UserInputService.InputEnded:Connect(function()
-			stopTypewriter()
-		end)
-	end
-
-	KeybindLabel.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			listenForKey()
-		elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
-			-- open the existing context menu hook defined earlier
-			KeybindLabel.Text = KeybindLabel.Text
-		end
-	end)
-
-	-- Default
-	updateKB(Enum.KeyCode.Space)
-
-	-- Register component to section to allow master switch and keybind section toggles
-	keybind.component = Keybind_Componenet
-	keybind.label = KeybindLabel
-	table.insert(self.components, keybind)
-
-	return keybind
+    print("Keybind created:", config.KeybindText)
+    return {}
 end
 
 function Section:CreateColorpicker(config)
