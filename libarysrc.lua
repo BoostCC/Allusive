@@ -871,7 +871,7 @@ Keybind.Parent = Header
                         updateController(input2.KeyCode, 8)
                     end
                     
-                    Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     connection:Disconnect()
                 end
             end)
@@ -1047,6 +1047,11 @@ UIListLayout.Parent = Holder
         table.insert(self.sections.right, section)
     end
     
+    -- If this tab is currently active, ensure the new section is visible immediately
+    if CurrentTab == self then
+        SectionFrame.Visible = true
+    end
+
     return section
 end
 
@@ -1124,7 +1129,7 @@ Check.Parent = Toggle
             if toggle.state then
                 -- Turn on animation - keep original colors as specified
                 Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
                 ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
                 Check.Visible = true
                 
@@ -1135,7 +1140,7 @@ Check.Parent = Toggle
             else
                 -- Turn off animation
                 Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
                 ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
                 
                 -- Smooth scale out animation
@@ -1189,32 +1194,32 @@ function Section:CreateKeybind(config)
 	keybind.mode = "toggle"
 	keybind.active = false
 
-	local Keybind_Componenet = Instance.new("Frame")
-	Keybind_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Keybind_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-	Keybind_Componenet.BackgroundTransparency = 1
-	Keybind_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-	Keybind_Componenet.Name = "Keybind_Componenet"
-	Keybind_Componenet.Size = UDim2.new(0, 228, 0, 30)
-	Keybind_Componenet.BorderSizePixel = 0
-	Keybind_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local Keybind_Componenet = Instance.new("Frame")
+Keybind_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keybind_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Keybind_Componenet.BackgroundTransparency = 1
+Keybind_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+Keybind_Componenet.Name = "Keybind_Componenet"
+Keybind_Componenet.Size = UDim2.new(0, 228, 0, 30)
+Keybind_Componenet.BorderSizePixel = 0
+Keybind_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	Keybind_Componenet.Parent = self.holder
 
-	local Toggle_Text = Instance.new("TextLabel")
-	Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Toggle_Text = Instance.new("TextLabel")
+Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Toggle_Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle_Text.Text = keybind.text
-	Toggle_Text.Name = "Toggle_Text"
-	Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
-	Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
-	Toggle_Text.BackgroundTransparency = 1
-	Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
-	Toggle_Text.BorderSizePixel = 0
-	Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
-	Toggle_Text.TextSize = 14
-	Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle_Text.Parent = Keybind_Componenet
+Toggle_Text.Name = "Toggle_Text"
+Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+Toggle_Text.BackgroundTransparency = 1
+Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+Toggle_Text.BorderSizePixel = 0
+Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+Toggle_Text.TextSize = 14
+Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.Parent = Keybind_Componenet
 
 	local KeybindLabel = Instance.new("TextLabel")
 	KeybindLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
@@ -1232,15 +1237,15 @@ function Section:CreateKeybind(config)
 	KeybindLabel.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
 	KeybindLabel.Parent = Keybind_Componenet
 
-	local UIPadding = Instance.new("UIPadding")
-	UIPadding.PaddingTop = UDim.new(0, 3)
-	UIPadding.PaddingBottom = UDim.new(0, 3)
-	UIPadding.PaddingRight = UDim.new(0, 6)
-	UIPadding.PaddingLeft = UDim.new(0, 6)
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0, 3)
+UIPadding.PaddingBottom = UDim.new(0, 3)
+UIPadding.PaddingRight = UDim.new(0, 6)
+UIPadding.PaddingLeft = UDim.new(0, 6)
 	UIPadding.Parent = KeybindLabel
 
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0, 4)
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
 	UICorner.Parent = KeybindLabel
 
 	local listening = false
