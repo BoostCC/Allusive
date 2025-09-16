@@ -1249,6 +1249,10 @@ UICorner.CornerRadius = UDim.new(0, 4)
 	UICorner.Parent = KeybindLabel
 
 	local listening = false
+	local currentKeybind = nil
+	local currentMouseButton = nil
+	local keybindConnection = nil
+	
 	local function stopTypewriter()
 		if keybind.twConn then
 			keybind.twConn:Disconnect()
@@ -1263,6 +1267,51 @@ UICorner.CornerRadius = UDim.new(0, 4)
 			keybind.config.Callback(isActive)
 		end
 	end
+	
+	local function disconnectKeybind()
+		if keybindConnection then
+			keybindConnection:Disconnect()
+			keybindConnection = nil
+		end
+	end
+	
+	local function updateKB(keyCode)
+		currentKeybind = keyCode
+		KeybindLabel.Text = keyCode and keyCode.Name or "None"
+		disconnectKeybind()
+		keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+			if gp then return end
+			if input.UserInputType == Enum.UserInputType.Keyboard and currentKeybind and input.KeyCode == currentKeybind then
+				applyActiveState(not keybind.active)
+			end
+		end)
+	end
+
+	local function updateMouse(mouseButton)
+		currentMouseButton = mouseButton
+		KeybindLabel.Text = mouseButton
+		disconnectKeybind()
+		keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+			if gp then return end
+			local hit = (mouseButton == "LMB" and input.UserInputType == Enum.UserInputType.MouseButton1)
+				or (mouseButton == "RMB" and input.UserInputType == Enum.UserInputType.MouseButton2)
+				or (mouseButton == "MMB" and input.UserInputType == Enum.UserInputType.MouseButton3)
+			if hit then
+				applyActiveState(not keybind.active)
+			end
+		end)
+	end
+	
+	local function updateController(keyCode, gamepadIndex)
+		KeybindLabel.Text = keyCode.Name
+		disconnectKeybind()
+		keybindConnection = UserInputService.InputBegan:Connect(function(input, gp)
+			if gp then return end
+			if input.UserInputType == Enum.UserInputType.Gamepad1 and input.KeyCode == keyCode then
+				applyActiveState(not keybind.active)
+			end
+		end)
+	end
 
 	local function listenForKey()
 		if listening then return end
@@ -1271,6 +1320,7 @@ UICorner.CornerRadius = UDim.new(0, 4)
 		local dots = ""
 		local lastUpdate = 0
 		local startTime = tick()
+		KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
 		keybind.twConn = RunService.Heartbeat:Connect(function()
 			if not listening then return end
 			local t = tick()
@@ -1290,24 +1340,34 @@ UICorner.CornerRadius = UDim.new(0, 4)
 				if conn then conn:Disconnect() end
 				return
 			end
+			
+			local scaleBackInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+			local scaleBackTween = TweenService:Create(KeybindLabel, scaleBackInfo, {Size = UDim2.new(0, KeybindLabel.Size.X.Offset / 1.1, 0, KeybindLabel.Size.Y.Offset / 1.1)})
+			scaleBackTween:Play()
+			
 			if input.UserInputType == Enum.UserInputType.Keyboard then
 				if input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
 					if conn then conn:Disconnect() end
 					return
 				end
 				KeybindLabel.Text = input.KeyCode.Name
+				KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 				updateKB(input.KeyCode)
 			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
 				KeybindLabel.Text = "LMB"
+				KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 				updateMouse("LMB")
 			elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
 				KeybindLabel.Text = "RMB"
+				KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 				updateMouse("RMB")
 			elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
 				KeybindLabel.Text = "MMB"
+				KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 				updateMouse("MMB")
 			elseif tostring(input.UserInputType):find("Gamepad") then
 				KeybindLabel.Text = input.KeyCode.Name
+				KeybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 				local gpIdx = tonumber(tostring(input.UserInputType):match("Gamepad(\d+)")) or 1
 				updateController(input.KeyCode, gpIdx)
 			end
@@ -1320,6 +1380,9 @@ UICorner.CornerRadius = UDim.new(0, 4)
 
 	KeybindLabel.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+			local scaleTween = TweenService:Create(KeybindLabel, scaleInfo, {Size = UDim2.new(0, KeybindLabel.Size.X.Offset * 1.1, 0, KeybindLabel.Size.Y.Offset * 1.1)})
+			scaleTween:Play()
 			listenForKey()
 		elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
 			-- open the existing context menu hook defined earlier
