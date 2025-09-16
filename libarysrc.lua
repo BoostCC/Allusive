@@ -1293,13 +1293,14 @@ function Section:CreateDropdown(config)
 	UIListLayout.Parent = OptionsContainer
 
 	local function renderOptions()
-		OptionsContainer:ClearAllChildren()
-		UIListLayout.Parent = OptionsContainer
-		UIPadding.Parent = OptionsContainer
-		ocCorner.Parent = OptionsContainer
-		ocStroke.Parent = OptionsContainer
+		for _,child in ipairs(OptionsContainer:GetChildren()) do
+			if child:IsA("Frame") and child.Name == "OptionRow" then
+				child:Destroy()
+			end
+		end
 		for _,opt in ipairs(dd.options) do
 			local row = Instance.new("Frame")
+			row.Name = "OptionRow"
 			row.AnchorPoint = Vector2.new(0.5, 0)
 			row.Size = UDim2.new(0, 210, 0, 20)
 			row.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
