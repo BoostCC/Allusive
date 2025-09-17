@@ -1931,7 +1931,7 @@ Color_Frame.Parent = Toggle_Componenet
     local huePickerDragging = false
 
     -- Initialize picker positions
-    Colorframe.BackgroundColor3 = Color3.fromHSV(color.h, 1, 1)
+    Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
     ColorPicker.Position = UDim2.new(1 - color.s, 0, 1 - color.v, 0)
     HuePicker.Position = UDim2.new(0.5, 0, 1 - color.h, 0)
     updateColor()
@@ -1962,7 +1962,7 @@ Color_Frame.Parent = Toggle_Componenet
         HuePicker.Position = UDim2.new(0.5, 0, y / Hue.AbsoluteSize.Y, 0)
         local hue = y / Hue.AbsoluteSize.Y
         color.h = 1 - hue
-        Colorframe.BackgroundColor3 = Color3.fromHSV(color.h, 1, 1)
+        Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
         updateColor()
     end
 
