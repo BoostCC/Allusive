@@ -1909,6 +1909,14 @@ function Section:AddColorToggle(config)
     UICorner6.CornerRadius = UDim.new(0, 4)
     UICorner6.Parent = Colorframe
 
+    -- Add UIGradient to Colorframe to create the hue gradient background
+    local UIGradient = Instance.new("UIGradient")
+    UIGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+    }
+    UIGradient.Parent = Colorframe
+
     local UICorner7 = Instance.new("UICorner")
     UICorner7.CornerRadius = UDim.new(0, 4)
     UICorner7.Parent = Container
@@ -1924,7 +1932,6 @@ function Section:AddColorToggle(config)
     -- Color picker variables
     local mouse = Players.LocalPlayer:GetMouse()
     local color = {}
-    local extra_value = {Color = colorToggle.defaultColor}
     
     -- Initialize color values from default color
     local h, s, v = colorToggle.defaultColor:ToHSV()
@@ -1936,6 +1943,15 @@ function Section:AddColorToggle(config)
     local colorPickerDragging = false
     local huePickerDragging = false
 
+    -- Helper function to update the gradient based on hue
+    local function updateColorFrameGradient()
+        local hueColor = Color3.fromHSV(color.h, 1, 1)
+        UIGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+            ColorSequenceKeypoint.new(1, hueColor)
+        }
+    end
+
     local function updateColor()
         local newColor = Color3.fromHSV(color.h, color.s, color.v)
         colorToggle.color = newColor
@@ -1945,10 +1961,11 @@ function Section:AddColorToggle(config)
         end
     end
 
-    -- Initialize picker positions
+    -- Initialize picker positions and colors
+    updateColorFrameGradient()
     Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
-    ColorPicker.Position = UDim2.new(1 - color.s, 0, 1 - color.v, 0)
-    HuePicker.Position = UDim2.new(0.5, 0, 1 - color.h, 0)
+    ColorPicker.Position = UDim2.new(color.s, 0, 1 - color.v, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, color.h, 0)
     updateColor()
 
     local function updateColorPicker()
@@ -1956,7 +1973,7 @@ function Section:AddColorToggle(config)
         local ColorY = math.clamp(mouse.Y - Colorframe.AbsolutePosition.Y, 0, Colorframe.AbsoluteSize.Y) / Colorframe.AbsoluteSize.Y
         ColorPicker.Position = UDim2.new(ColorX, 0, ColorY, 0)
 
-        color.s = 1 - ColorX
+        color.s = ColorX
         color.v = 1 - ColorY
 
         updateColor()
@@ -1964,9 +1981,11 @@ function Section:AddColorToggle(config)
 
     local function updateHuePicker()
         local y = math.clamp(mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y)
-        HuePicker.Position = UDim2.new(0.5, 0, y / Hue.AbsoluteSize.Y, 0)
-        local hue = y / Hue.AbsoluteSize.Y
-        color.h = 1 - hue
+        local huePercent = y / Hue.AbsoluteSize.Y
+        HuePicker.Position = UDim2.new(0.5, 0, huePercent, 0)
+        
+        color.h = huePercent
+        updateColorFrameGradient()
         Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
         updateColor()
     end
@@ -2085,7 +2104,18 @@ function Section:AddColorToggle(config)
         colorToggle.state = state
         if color then
             colorToggle.color = color
-            Color_Frame.BackgroundColor3 = color
+            Color_Frame.ImageColor3 = color
+            
+            -- Update internal color values
+            local h, s, v = color:ToHSV()
+            color.h = h
+            color.s = s
+            color.v = v
+            
+            -- Update picker positions
+            updateColorFrameGradient()
+            ColorPicker.Position = UDim2.new(s, 0, 1 - v, 0)
+            HuePicker.Position = UDim2.new(0.5, 0, h, 0)
         end
         
         -- Update visual state
