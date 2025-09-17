@@ -1903,7 +1903,6 @@ function Section:AddColorToggle(config)
 
     local UIStroke3 = Instance.new("UIStroke")
     UIStroke3.Color = Color3.fromRGB(255, 255, 255)
-    UIStroke3.Thickness = 2
     UIStroke3.Parent = ColorPicker
 
     local UICorner6 = Instance.new("UICorner")
@@ -1966,7 +1965,7 @@ function Section:AddColorToggle(config)
     updateColorFrameGradient()
     Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
     ColorPicker.Position = UDim2.new(color.s, 0, 1 - color.v, 0)
-    HuePicker.Position = UDim2.new(color.h, 0, 0.5, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, color.h, 0)
     updateColor()
 
     local function updateColorPicker()
@@ -1981,9 +1980,10 @@ function Section:AddColorToggle(config)
     end
 
     local function updateHuePicker()
-        local x = math.clamp(mouse.X - Hue.AbsolutePosition.X, 0, Hue.AbsoluteSize.X)
-        local huePercent = x / Hue.AbsoluteSize.X
-        HuePicker.Position = UDim2.new(huePercent, 0, 0.5, 0)
+        -- Since the hue slider is rotated 90 degrees, we use Y position but map it to horizontal movement
+        local y = math.clamp(mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y)
+        local huePercent = y / Hue.AbsoluteSize.Y
+        HuePicker.Position = UDim2.new(0.5, 0, huePercent, 0)
         
         color.h = huePercent
         updateColorFrameGradient()
@@ -2016,7 +2016,6 @@ function Section:AddColorToggle(config)
         end
     end)
 
-    -- Global mouse tracking for dragging outside elements
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             colorPickerDragging = false
@@ -2117,7 +2116,7 @@ function Section:AddColorToggle(config)
             -- Update picker positions
             updateColorFrameGradient()
             ColorPicker.Position = UDim2.new(s, 0, 1 - v, 0)
-            HuePicker.Position = UDim2.new(h, 0, 0.5, 0)
+            HuePicker.Position = UDim2.new(0.5, 0, h, 0)
         end
         
         -- Update visual state
