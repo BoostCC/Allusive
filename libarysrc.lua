@@ -1971,6 +1971,8 @@ function Section:AddColorToggle(config)
     local function updateColorPicker()
         local ColorX = math.clamp(mouse.X - Colorframe.AbsolutePosition.X, 0, Colorframe.AbsoluteSize.X) / Colorframe.AbsoluteSize.X
         local ColorY = math.clamp(mouse.Y - Colorframe.AbsolutePosition.Y, 0, Colorframe.AbsoluteSize.Y) / Colorframe.AbsoluteSize.Y
+        
+        -- Direct position update for smooth dragging
         ColorPicker.Position = UDim2.new(ColorX, 0, ColorY, 0)
 
         color.s = ColorX
@@ -1982,7 +1984,9 @@ function Section:AddColorToggle(config)
     local function updateHuePicker()
         -- Since the hue slider is rotated 90 degrees, we use Y position but map it to horizontal movement
         local y = math.clamp(mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y)
-        local huePercent = y / Hue.AbsoluteSize.Y
+        local huePercent = math.clamp(y / Hue.AbsoluteSize.Y, 0, 1)
+        
+        -- Direct position update for smooth dragging
         HuePicker.Position = UDim2.new(0.5, 0, huePercent, 0)
         
         color.h = huePercent
