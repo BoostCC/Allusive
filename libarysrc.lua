@@ -1901,12 +1901,6 @@ Color_Frame.Parent = Toggle_Componenet
     UICorner6.CornerRadius = UDim.new(0, 4)
     UICorner6.Parent = Colorframe
 
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 4))
-    }
-    UIGradient.Parent = Colorframe
 
     local UICorner7 = Instance.new("UICorner")
     UICorner7.CornerRadius = UDim.new(0, 4)
@@ -1930,6 +1924,7 @@ UIGradient.Color = ColorSequence.new{
         colorToggle.color = c
         Color_Frame.BackgroundColor3 = c
         Color_Frame.ImageColor3 = c
+        updateSVFrame() -- Update the color frame background
         if colorToggle.callback then
             colorToggle.callback(colorToggle.state, c)
         end
