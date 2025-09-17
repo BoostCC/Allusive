@@ -1726,6 +1726,14 @@ function Section:CreateButton(config)
     return {}
 end
 
+-- Required services - add these at the top of your script
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+-- Make sure MainFrame is defined somewhere in your script
+-- local MainFrame = ... (your main frame reference)
+
 function Section:AddColorToggle(config)
     local colorToggle = {}
     colorToggle.config = config or {}
@@ -1737,75 +1745,75 @@ function Section:AddColorToggle(config)
     colorToggle.state = false
     colorToggle.color = colorToggle.defaultColor
 
-local Toggle_Componenet = Instance.new("Frame")
-Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-Toggle_Componenet.BackgroundTransparency = 1
-Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-Toggle_Componenet.Name = "Toggle_Componenet"
-Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
-Toggle_Componenet.BorderSizePixel = 0
-Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    local Toggle_Componenet = Instance.new("Frame")
+    Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+    Toggle_Componenet.BackgroundTransparency = 1
+    Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+    Toggle_Componenet.Name = "Toggle_Componenet"
+    Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
+    Toggle_Componenet.BorderSizePixel = 0
+    Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Toggle_Componenet.Parent = self.holder
 
-local Toggle_Text = Instance.new("TextLabel")
-Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
-Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    local Toggle_Text = Instance.new("TextLabel")
+    Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+    Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Toggle_Text.Text = colorToggle.text
-Toggle_Text.Name = "Toggle_Text"
-Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
-Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
-Toggle_Text.BackgroundTransparency = 1
-Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
-Toggle_Text.BorderSizePixel = 0
-Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
-Toggle_Text.TextSize = 14
-Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Toggle_Text.Parent = Toggle_Componenet
+    Toggle_Text.Name = "Toggle_Text"
+    Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+    Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+    Toggle_Text.BackgroundTransparency = 1
+    Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+    Toggle_Text.BorderSizePixel = 0
+    Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+    Toggle_Text.TextSize = 14
+    Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle_Text.Parent = Toggle_Componenet
 
-local Toggle = Instance.new("Frame")
-Toggle.AnchorPoint = Vector2.new(1, 0.5)
-Toggle.Name = "Toggle"
-Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
-Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle.Size = UDim2.new(0, 16, 0, 16)
-Toggle.BorderSizePixel = 0
-Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Toggle.Parent = Toggle_Componenet
+    local Toggle = Instance.new("Frame")
+    Toggle.AnchorPoint = Vector2.new(1, 0.5)
+    Toggle.Name = "Toggle"
+    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.Size = UDim2.new(0, 16, 0, 16)
+    Toggle.BorderSizePixel = 0
+    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Toggle.Parent = Toggle_Componenet
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 4)
-UICorner.Parent = Toggle
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Toggle
 
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(26, 26, 26)
-UIStroke.Parent = Toggle
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+    UIStroke.Parent = Toggle
 
-local Check = Instance.new("ImageLabel")
-Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Check.Name = "Check"
-Check.AnchorPoint = Vector2.new(0.5, 0.5)
-Check.Image = "rbxassetid://103083009202465"
-Check.BackgroundTransparency = 1
-Check.Position = UDim2.new(0.5, 0, 0.5, 0)
-Check.Size = UDim2.new(0, 10, 0, 12)
-Check.BorderSizePixel = 0
-Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    local Check = Instance.new("ImageLabel")
+    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Check.Name = "Check"
+    Check.AnchorPoint = Vector2.new(0.5, 0.5)
+    Check.Image = "rbxassetid://103083009202465"
+    Check.BackgroundTransparency = 1
+    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Check.Size = UDim2.new(0, 10, 0, 12)
+    Check.BorderSizePixel = 0
+    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Check.Visible = false
-Check.Parent = Toggle
+    Check.Parent = Toggle
 
-local Color_Frame = Instance.new("ImageLabel")
-Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Color_Frame.Name = "Color_Frame"
-Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
+    local Color_Frame = Instance.new("ImageLabel")
+    Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Color_Frame.Name = "Color_Frame"
+    Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
     Color_Frame.Image = colorToggle.colorpickerIcon
-Color_Frame.BackgroundTransparency = 1
-Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
-Color_Frame.Size = UDim2.new(0, 15, 0, 15)
-Color_Frame.BorderSizePixel = 0
+    Color_Frame.BackgroundTransparency = 1
+    Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
+    Color_Frame.Size = UDim2.new(0, 15, 0, 15)
+    Color_Frame.BorderSizePixel = 0
     Color_Frame.BackgroundColor3 = colorToggle.color
-Color_Frame.Parent = Toggle_Componenet
+    Color_Frame.Parent = Toggle_Componenet
 
     -- Color picker container (initially hidden)
     local Container = Instance.new("Frame")
@@ -1901,7 +1909,6 @@ Color_Frame.Parent = Toggle_Componenet
     UICorner6.CornerRadius = UDim.new(0, 4)
     UICorner6.Parent = Colorframe
 
-
     local UICorner7 = Instance.new("UICorner")
     UICorner7.CornerRadius = UDim.new(0, 4)
     UICorner7.Parent = Container
@@ -1910,13 +1917,12 @@ Color_Frame.Parent = Toggle_Componenet
     ContainerStroke.Color = Color3.fromRGB(25, 25, 25)
     ContainerStroke.Parent = Container
 
-
     local function closeColorPicker()
         Container.Visible = false
     end
 
     -- Color picker variables
-    local mouse = game.Players.LocalPlayer:GetMouse()
+    local mouse = Players.LocalPlayer:GetMouse()
     local color = {}
     local extra_value = {Color = colorToggle.defaultColor}
     
