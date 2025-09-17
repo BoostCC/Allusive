@@ -1939,7 +1939,6 @@ Color_Frame.Parent = Toggle_Componenet
     local function updateColor()
         local newColor = Color3.fromHSV(color.h, color.s, color.v)
         colorToggle.color = newColor
-        Color_Frame.BackgroundColor3 = newColor
         Color_Frame.ImageColor3 = newColor
         if colorToggle.callback then
             colorToggle.callback(colorToggle.state, newColor)
