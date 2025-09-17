@@ -1930,12 +1930,6 @@ Color_Frame.Parent = Toggle_Componenet
     local colorPickerDragging = false
     local huePickerDragging = false
 
-    -- Initialize picker positions
-    Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
-    ColorPicker.Position = UDim2.new(1 - color.s, 0, 1 - color.v, 0)
-    HuePicker.Position = UDim2.new(0.5, 0, 1 - color.h, 0)
-    updateColor()
-
     local function updateColor()
         local newColor = Color3.fromHSV(color.h, color.s, color.v)
         colorToggle.color = newColor
@@ -1944,6 +1938,12 @@ Color_Frame.Parent = Toggle_Componenet
             colorToggle.callback(colorToggle.state, newColor)
         end
     end
+
+    -- Initialize picker positions
+    Value.ImageColor3 = Color3.fromHSV(color.h, 1, 1)
+    ColorPicker.Position = UDim2.new(1 - color.s, 0, 1 - color.v, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, 1 - color.h, 0)
+    updateColor()
 
     local function updateColorPicker()
         local ColorX = math.clamp(mouse.X - Colorframe.AbsolutePosition.X, 0, Colorframe.AbsoluteSize.X) / Colorframe.AbsoluteSize.X
