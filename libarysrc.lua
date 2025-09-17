@@ -1861,9 +1861,9 @@ Color_Frame.Parent = Toggle_Componenet
     UICorner3.Parent = Hue
 
     local HuePicker = Instance.new("Frame")
-    HuePicker.AnchorPoint = Vector2.new(0.5, 0)
+    HuePicker.AnchorPoint = Vector2.new(0.5, 0.5)
     HuePicker.Name = "Picker"
-    HuePicker.Position = UDim2.new(0.5, 0, 0, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, 0.5, 0)
     HuePicker.BorderColor3 = Color3.fromRGB(0, 0, 0)
     HuePicker.Size = UDim2.new(0, 10, 0, 10)
     HuePicker.BorderSizePixel = 0
@@ -1881,7 +1881,7 @@ Color_Frame.Parent = Toggle_Componenet
     local ColorPicker = Instance.new("Frame")
     ColorPicker.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ColorPicker.AnchorPoint = Vector2.new(0.5, 0.5)
-    ColorPicker.BackgroundTransparency = 1
+    ColorPicker.BackgroundTransparency = 0
     ColorPicker.Position = UDim2.new(0.5, 0, 0.5, 0)
     ColorPicker.Name = "Picker"
     ColorPicker.Size = UDim2.new(0, 10, 0, 10)
@@ -1916,14 +1916,6 @@ UIGradient.Color = ColorSequence.new{
     ContainerStroke.Color = Color3.fromRGB(25, 25, 25)
     ContainerStroke.Parent = Container
 
-    local function updateColor(newColor)
-        colorToggle.color = newColor
-        Color_Frame.BackgroundColor3 = newColor
-        Color_Frame.ImageColor3 = newColor
-        if colorToggle.callback then
-            colorToggle.callback(colorToggle.state, newColor)
-        end
-    end
 
     local function closeColorPicker()
         Container.Visible = false
@@ -1953,19 +1945,22 @@ UIGradient.Color = ColorSequence.new{
     local colorPickerDragging = false
     local huePickerDragging = false
 
-    -- Initialize picker positions
-    ColorPicker.Position = UDim2.new(currentSat, 0, 1 - currentVal, 0)
+    -- Initialize picker positions and update color
+    updateSVFrame()
+    ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
     HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+    updateColor()
 
     Colorframe.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             colorPickerDragging = true
+            local mousePos = UserInputService:GetMouseLocation()
             local absPos = Colorframe.AbsolutePosition
             local absSize = Colorframe.AbsoluteSize
-            local rx = math.clamp((input.Position.X - absPos.X) / absSize.X, 0, 1)
-            local ry = math.clamp((input.Position.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentSat = 1 - rx
-            currentVal = 1 - ry
+            local rx = math.clamp((mousePos.X - absPos.X) / absSize.X, 0, 1)
+            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
+            currentSat = rx
+            currentVal = ry
             ColorPicker.Position = UDim2.new(rx, 0, ry, 0)
             updateColor()
         end
@@ -1974,9 +1969,10 @@ UIGradient.Color = ColorSequence.new{
     Hue.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             huePickerDragging = true
+            local mousePos = UserInputService:GetMouseLocation()
             local absPos = Hue.AbsolutePosition
             local absSize = Hue.AbsoluteSize
-            local ry = math.clamp((input.Position.Y - absPos.Y) / absSize.Y, 0, 1)
+            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
             currentHue = ry
             HuePicker.Position = UDim2.new(0.5, 0, ry, 0)
             updateSVFrame()
@@ -1988,19 +1984,21 @@ UIGradient.Color = ColorSequence.new{
     UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
         if colorPickerDragging then
+            local mousePos = UserInputService:GetMouseLocation()
             local absPos = Colorframe.AbsolutePosition
             local absSize = Colorframe.AbsoluteSize
-            local rx = math.clamp((input.Position.X - absPos.X) / absSize.X, 0, 1)
-            local ry = math.clamp((input.Position.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentSat = 1 - rx
-            currentVal = 1 - ry
+            local rx = math.clamp((mousePos.X - absPos.X) / absSize.X, 0, 1)
+            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
+            currentSat = rx
+            currentVal = ry
             ColorPicker.Position = UDim2.new(rx, 0, ry, 0)
             updateColor()
         end
         if huePickerDragging then
+            local mousePos = UserInputService:GetMouseLocation()
             local absPos = Hue.AbsolutePosition
             local absSize = Hue.AbsoluteSize
-            local ry = math.clamp((input.Position.Y - absPos.Y) / absSize.Y, 0, 1)
+            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
             currentHue = ry
             HuePicker.Position = UDim2.new(0.5, 0, ry, 0)
             updateSVFrame()
