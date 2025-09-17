@@ -1903,6 +1903,7 @@ function Section:AddColorToggle(config)
 
     local UIStroke3 = Instance.new("UIStroke")
     UIStroke3.Color = Color3.fromRGB(255, 255, 255)
+    UIStroke3.Thickness = 2
     UIStroke3.Parent = ColorPicker
 
     local UICorner6 = Instance.new("UICorner")
@@ -2015,6 +2016,7 @@ function Section:AddColorToggle(config)
         end
     end)
 
+    -- Global mouse tracking for dragging outside elements
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             colorPickerDragging = false
