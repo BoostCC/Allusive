@@ -1473,14 +1473,19 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
     local function closeDropdown()
         open = false
-        -- Smooth icon rotation back
-        local rotateInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-        TweenService:Create(Icon, rotateInfo, {Rotation = 0}):Play()
         
-        -- Smooth dropdown close animation
-        local closeInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-        local closeTween = TweenService:Create(OptionsContainer, closeInfo, {Size = UDim2.new(0, 210, 0, 0)})
+        -- Ultra-smooth dropdown close animation with bounce
+        local closeTween = TweenService:Create(OptionsContainer, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 210, 0, 0)
+        })
         closeTween:Play()
+        
+        -- Smooth icon rotation back with bounce
+        local arrowTween = TweenService:Create(Icon, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Rotation = 0
+        })
+        arrowTween:Play()
+        
         closeTween.Completed:Connect(function()
             OptionsContainer.Visible = false
         end)
@@ -1566,7 +1571,7 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                         local textLabel = tl
                         
                         if index then
-                            -- Remove from selection - STARHUB style slide out
+                            -- Remove from selection - ultra-smooth slide out
                             table.remove(dd.selectedItems, index)
                             textLabel.TextColor3 = Color3.fromRGB(76, 76, 76)
                             
@@ -1576,7 +1581,7 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                             })
                             slideOut:Play()
                         else
-                            -- Add to selection - STARHUB style slide in
+                            -- Add to selection - ultra-smooth slide in with bounce
                             table.insert(dd.selectedItems, opt)
                             textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                             
@@ -1623,14 +1628,25 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                 OptionsContainer.Position = UDim2.fromOffset(absPos.X - parentAbs.X, absPos.Y - parentAbs.Y + absSize.Y + 1)
                 OptionsContainer.Size = UDim2.new(0, 210, 0, 0)
                 OptionsContainer.Visible = true
+                OptionsContainer.BackgroundTransparency = 1
                 
-                -- Smooth icon rotation
-                local rotateInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                TweenService:Create(Icon, rotateInfo, {Rotation = 180}):Play()
+                -- Fade in background first
+                local fadeIn = TweenService:Create(OptionsContainer, TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 0
+                })
+                fadeIn:Play()
                 
-                -- Smooth dropdown open animation with bounce
-                local openInfo = TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                TweenService:Create(OptionsContainer, openInfo, {Size = UDim2.new(0, 210, 0, math.min(#dd.options * 20 + 13, 120))}):Play()
+                -- Then expand size with ultra-smooth bounce easing
+                local openTween = TweenService:Create(OptionsContainer, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                    Size = UDim2.new(0, 210, 0, math.min(#dd.options * 20 + 13, 120))
+                })
+                openTween:Play()
+                
+                -- Rotate arrow with smooth bounce easing
+                local arrowTween = TweenService:Create(Icon, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                    Rotation = 180
+                })
+                arrowTween:Play()
                 
                 -- Set up click outside detection
                 if clickOutsideConnection then
@@ -1745,75 +1761,75 @@ function Section:AddColorToggle(config)
     colorToggle.state = false
     colorToggle.color = colorToggle.defaultColor
 
-    local Toggle_Componenet = Instance.new("Frame")
-    Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
-    Toggle_Componenet.BackgroundTransparency = 1
-    Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
-    Toggle_Componenet.Name = "Toggle_Componenet"
-    Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
-    Toggle_Componenet.BorderSizePixel = 0
-    Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local Toggle_Componenet = Instance.new("Frame")
+Toggle_Componenet.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle_Componenet.AnchorPoint = Vector2.new(0.5, 0)
+Toggle_Componenet.BackgroundTransparency = 1
+Toggle_Componenet.Position = UDim2.new(0.5, 0, 0, 0)
+Toggle_Componenet.Name = "Toggle_Componenet"
+Toggle_Componenet.Size = UDim2.new(0, 228, 0, 30)
+Toggle_Componenet.BorderSizePixel = 0
+Toggle_Componenet.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Toggle_Componenet.Parent = self.holder
 
-    local Toggle_Text = Instance.new("TextLabel")
-    Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
-    Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+local Toggle_Text = Instance.new("TextLabel")
+Toggle_Text.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Toggle_Text.TextColor3 = Color3.fromRGB(76, 76, 76)
+Toggle_Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Toggle_Text.Text = colorToggle.text
-    Toggle_Text.Name = "Toggle_Text"
-    Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
-    Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
-    Toggle_Text.BackgroundTransparency = 1
-    Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
-    Toggle_Text.BorderSizePixel = 0
-    Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
-    Toggle_Text.TextSize = 14
-    Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Toggle_Text.Parent = Toggle_Componenet
+Toggle_Text.Name = "Toggle_Text"
+Toggle_Text.AnchorPoint = Vector2.new(0, 0.5)
+Toggle_Text.Size = UDim2.new(0, 1, 0, 1)
+Toggle_Text.BackgroundTransparency = 1
+Toggle_Text.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+Toggle_Text.BorderSizePixel = 0
+Toggle_Text.AutomaticSize = Enum.AutomaticSize.XY
+Toggle_Text.TextSize = 14
+Toggle_Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Toggle_Text.Parent = Toggle_Componenet
 
-    local Toggle = Instance.new("Frame")
-    Toggle.AnchorPoint = Vector2.new(1, 0.5)
-    Toggle.Name = "Toggle"
-    Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
-    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle.Size = UDim2.new(0, 16, 0, 16)
-    Toggle.BorderSizePixel = 0
-    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    Toggle.Parent = Toggle_Componenet
+local Toggle = Instance.new("Frame")
+Toggle.AnchorPoint = Vector2.new(1, 0.5)
+Toggle.Name = "Toggle"
+Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Size = UDim2.new(0, 16, 0, 16)
+Toggle.BorderSizePixel = 0
+Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Toggle.Parent = Toggle_Componenet
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 4)
-    UICorner.Parent = Toggle
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Toggle
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(26, 26, 26)
-    UIStroke.Parent = Toggle
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Parent = Toggle
 
-    local Check = Instance.new("ImageLabel")
-    Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Check.Name = "Check"
-    Check.AnchorPoint = Vector2.new(0.5, 0.5)
-    Check.Image = "rbxassetid://103083009202465"
-    Check.BackgroundTransparency = 1
-    Check.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Check.Size = UDim2.new(0, 10, 0, 12)
-    Check.BorderSizePixel = 0
-    Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local Check = Instance.new("ImageLabel")
+Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Check.Name = "Check"
+Check.AnchorPoint = Vector2.new(0.5, 0.5)
+Check.Image = "rbxassetid://103083009202465"
+Check.BackgroundTransparency = 1
+Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+Check.Size = UDim2.new(0, 10, 0, 12)
+Check.BorderSizePixel = 0
+Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Check.Visible = false
-    Check.Parent = Toggle
+Check.Parent = Toggle
 
-    local Color_Frame = Instance.new("ImageLabel")
-    Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Color_Frame.Name = "Color_Frame"
-    Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
+local Color_Frame = Instance.new("ImageLabel")
+Color_Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Color_Frame.Name = "Color_Frame"
+Color_Frame.AnchorPoint = Vector2.new(1, 0.5)
     Color_Frame.Image = colorToggle.colorpickerIcon
-    Color_Frame.BackgroundTransparency = 1
-    Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
-    Color_Frame.Size = UDim2.new(0, 15, 0, 15)
-    Color_Frame.BorderSizePixel = 0
+Color_Frame.BackgroundTransparency = 1
+Color_Frame.Position = UDim2.new(1, -30, 0.5, 0)
+Color_Frame.Size = UDim2.new(0, 15, 0, 15)
+Color_Frame.BorderSizePixel = 0
     Color_Frame.BackgroundColor3 = colorToggle.color
-    Color_Frame.Parent = Toggle_Componenet
+Color_Frame.Parent = Toggle_Componenet
 
     -- Color picker container (initially hidden)
     local Container = Instance.new("Frame")
@@ -1910,7 +1926,7 @@ function Section:AddColorToggle(config)
     UICorner6.Parent = Colorframe
 
     -- Add UIGradient to Colorframe to create the hue gradient background
-    local UIGradient = Instance.new("UIGradient")
+local UIGradient = Instance.new("UIGradient")
     UIGradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
@@ -1946,7 +1962,7 @@ function Section:AddColorToggle(config)
     -- Helper function to update the gradient based on hue
     local function updateColorFrameGradient()
         local hueColor = Color3.fromHSV(color.h, 1, 1)
-        UIGradient.Color = ColorSequence.new{
+UIGradient.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
             ColorSequenceKeypoint.new(1, hueColor)
         }
