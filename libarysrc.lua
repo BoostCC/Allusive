@@ -1915,63 +1915,68 @@ Color_Frame.Parent = Toggle_Componenet
         Container.Visible = false
     end
 
-    local function updateSVFrame()
-        Colorframe.BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1)
-    end
+    -- Color picker variables
+    local mouse = game.Players.LocalPlayer:GetMouse()
+    local color = {}
+    local extra_value = {Color = colorToggle.defaultColor}
     
-    local function updateColor()
-        local c = Color3.fromHSV(currentHue, currentSat, currentVal)
-        colorToggle.color = c
-        Color_Frame.BackgroundColor3 = c
-        Color_Frame.ImageColor3 = c
-        updateSVFrame() -- Update the color frame background
-        if colorToggle.callback then
-            colorToggle.callback(colorToggle.state, c)
-        end
-    end
-
-    -- Initialize with default color using Roblox's built-in HSV
+    -- Initialize color values from default color
     local h, s, v = colorToggle.defaultColor:ToHSV()
-    local currentHue = h
-    local currentSat = s
-    local currentVal = v
+    color.h = h
+    color.s = s
+    color.v = v
 
     -- Color picker interaction
     local colorPickerDragging = false
     local huePickerDragging = false
 
-    -- Initialize picker positions and update color
-    updateSVFrame()
-    ColorPicker.Position = UDim2.new(currentSat, 0, currentVal, 0)
-    HuePicker.Position = UDim2.new(0.5, 0, currentHue, 0)
+    -- Initialize picker positions
+    Colorframe.BackgroundColor3 = Color3.fromHSV(color.h, 1, 1)
+    ColorPicker.Position = UDim2.new(1 - color.s, 0, 1 - color.v, 0)
+    HuePicker.Position = UDim2.new(0.5, 0, 1 - color.h, 0)
     updateColor()
+
+    local function updateColor()
+        local newColor = Color3.fromHSV(color.h, color.s, color.v)
+        colorToggle.color = newColor
+        Color_Frame.BackgroundColor3 = newColor
+        Color_Frame.ImageColor3 = newColor
+        if colorToggle.callback then
+            colorToggle.callback(colorToggle.state, newColor)
+        end
+    end
+
+    local function updateColorPicker()
+        local ColorX = math.clamp(mouse.X - Colorframe.AbsolutePosition.X, 0, Colorframe.AbsoluteSize.X) / Colorframe.AbsoluteSize.X
+        local ColorY = math.clamp(mouse.Y - Colorframe.AbsolutePosition.Y, 0, Colorframe.AbsoluteSize.Y) / Colorframe.AbsoluteSize.Y
+        ColorPicker.Position = UDim2.new(ColorX, 0, ColorY, 0)
+
+        color.s = 1 - ColorX
+        color.v = 1 - ColorY
+
+        updateColor()
+    end
+
+    local function updateHuePicker()
+        local y = math.clamp(mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y)
+        HuePicker.Position = UDim2.new(0.5, 0, y / Hue.AbsoluteSize.Y, 0)
+        local hue = y / Hue.AbsoluteSize.Y
+        color.h = 1 - hue
+        Colorframe.BackgroundColor3 = Color3.fromHSV(color.h, 1, 1)
+        updateColor()
+    end
 
     Colorframe.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             colorPickerDragging = true
-            local mousePos = UserInputService:GetMouseLocation()
-            local absPos = Colorframe.AbsolutePosition
-            local absSize = Colorframe.AbsoluteSize
-            local rx = math.clamp((mousePos.X - absPos.X) / absSize.X, 0, 1)
-            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentSat = rx
-            currentVal = ry
-            ColorPicker.Position = UDim2.new(rx, 0, ry, 0)
-            updateColor()
+            updateColorPicker()
         end
     end)
 
     Hue.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             huePickerDragging = true
-            local mousePos = UserInputService:GetMouseLocation()
-            local absPos = Hue.AbsolutePosition
-            local absSize = Hue.AbsoluteSize
-            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentHue = ry
-            HuePicker.Position = UDim2.new(0.5, 0, ry, 0)
-            updateSVFrame()
-            updateColor()
+            updateHuePicker()
         end
     end)
 
@@ -1979,25 +1984,10 @@ Color_Frame.Parent = Toggle_Componenet
     UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
         if colorPickerDragging then
-            local mousePos = UserInputService:GetMouseLocation()
-            local absPos = Colorframe.AbsolutePosition
-            local absSize = Colorframe.AbsoluteSize
-            local rx = math.clamp((mousePos.X - absPos.X) / absSize.X, 0, 1)
-            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentSat = rx
-            currentVal = ry
-            ColorPicker.Position = UDim2.new(rx, 0, ry, 0)
-            updateColor()
+            updateColorPicker()
         end
         if huePickerDragging then
-            local mousePos = UserInputService:GetMouseLocation()
-            local absPos = Hue.AbsolutePosition
-            local absSize = Hue.AbsoluteSize
-            local ry = math.clamp((mousePos.Y - absPos.Y) / absSize.Y, 0, 1)
-            currentHue = ry
-            HuePicker.Position = UDim2.new(0.5, 0, ry, 0)
-            updateSVFrame()
-            updateColor()
+            updateHuePicker()
         end
     end)
 
