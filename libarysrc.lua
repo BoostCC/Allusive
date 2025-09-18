@@ -1241,6 +1241,175 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
     return toggle
 end
 
+function Section:CreateToggleWithKeybind(config)
+    local toggle = {}
+    toggle.config = config
+    toggle.state = false
+    
+    -- Create toggle component
+    local ToggleComponent = Instance.new("Frame")
+    ToggleComponent.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ToggleComponent.AnchorPoint = Vector2.new(0.5, 0)
+    ToggleComponent.BackgroundTransparency = 1
+    ToggleComponent.Position = UDim2.new(0.5, 0, 0, 0)
+    ToggleComponent.Name = "Toggle_" .. config.ToggleText
+    ToggleComponent.Size = UDim2.new(0, 228, 0, 30)
+    ToggleComponent.BorderSizePixel = 0
+    ToggleComponent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleComponent.Parent = self.holder
+    
+    local ToggleText = Instance.new("TextLabel")
+    ToggleText.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+    ToggleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ToggleText.Text = config.ToggleText
+    ToggleText.Name = "Toggle_Text"
+    ToggleText.AnchorPoint = Vector2.new(0, 0.5)
+    ToggleText.Size = UDim2.new(0, 1, 0, 1)
+    ToggleText.BackgroundTransparency = 1
+    ToggleText.Position = UDim2.new(0.035087719559669495, 0, 0.5, 0)
+    ToggleText.BorderSizePixel = 0
+    ToggleText.AutomaticSize = Enum.AutomaticSize.XY
+    ToggleText.TextSize = 14
+    ToggleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleText.Parent = ToggleComponent
+
+local Toggle = Instance.new("Frame")
+Toggle.AnchorPoint = Vector2.new(1, 0.5)
+Toggle.Name = "Toggle"
+Toggle.Position = UDim2.new(0.9649122953414917, 0, 0.5, 0)
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Size = UDim2.new(0, 16, 0, 16)
+Toggle.BorderSizePixel = 0
+Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Toggle.Parent = ToggleComponent
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Toggle
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+UIStroke.Parent = Toggle
+
+local Check = Instance.new("ImageLabel")
+Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Check.Name = "Check"
+Check.AnchorPoint = Vector2.new(0.5, 0.5)
+Check.Image = "rbxassetid://103083009202465"
+Check.BackgroundTransparency = 1
+Check.Position = UDim2.new(0.5, 0, 0.5, 0)
+Check.Size = UDim2.new(0, 10, 0, 12)
+Check.BorderSizePixel = 0
+Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Check.Parent = Toggle
+    Check.Visible = false
+
+local Keybind = Instance.new("TextLabel")
+Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keybind.Text = "NONE"
+Keybind.BorderSizePixel = 0
+Keybind.AnchorPoint = Vector2.new(1, 0.5)
+Keybind.Size = UDim2.new(0, 1, 0, 1)
+Keybind.Name = "Keybind"
+Keybind.Position = UDim2.new(1, -30, 0.5, 0)
+Keybind.AutomaticSize = Enum.AutomaticSize.XY
+Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
+Keybind.TextSize = 14
+Keybind.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+Keybind.Parent = ToggleComponent
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0, 3)
+UIPadding.PaddingBottom = UDim.new(0, 3)
+UIPadding.PaddingRight = UDim.new(0, 6)
+UIPadding.PaddingLeft = UDim.new(0, 6)
+UIPadding.Parent = Keybind
+
+local UICorner2 = Instance.new("UICorner")
+UICorner2.CornerRadius = UDim.new(0, 4)
+UICorner2.Parent = Keybind
+    
+    -- Toggle click functionality
+    ToggleComponent.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            toggle.state = not toggle.state
+            
+            -- Animate toggle
+            if toggle.state then
+                -- Turn on animation - keep original colors as specified
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Check.Visible = true
+                
+                -- Smooth scale animation
+                local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
+                scaleTween:Play()
+            else
+                -- Turn off animation
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                Check.Visible = false
+            end
+            
+            -- Call callback if provided
+            if config.Callback then
+                config.Callback(toggle.state)
+            end
+        end
+    end)
+    
+    toggle.component = ToggleComponent
+    toggle.toggle = Toggle
+    toggle.check = Check
+    toggle.text = ToggleText
+    toggle.keybind = Keybind
+    toggle.key = nil
+    
+    -- Keybind functionality
+    local isBinding = false
+    
+    Keybind.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if not isBinding then
+                isBinding = true
+                Keybind.Text = "..."
+                
+                -- Listen for key input
+                local connection
+                connection = UserInputService.InputBegan:Connect(function(input2)
+                    if input2.UserInputType == Enum.UserInputType.Keyboard then
+                        local keyName = input2.KeyCode.Name
+                        
+                        if keyName == "Backspace" then
+                            -- Unbind key
+                            toggle.key = nil
+                            Keybind.Text = "NONE"
+                        else
+                            -- Set new key
+                            toggle.key = keyName
+                            Keybind.Text = keyName
+                        end
+                        
+                        isBinding = false
+                        connection:Disconnect()
+                    end
+                end)
+            end
+        end
+    end)
+    
+    -- Register with section
+    table.insert(self.components, toggle)
+    
+    return toggle
+end
+
 function Section:CreateSlider(config)
     local slider = {}
     slider.config = config or {}
