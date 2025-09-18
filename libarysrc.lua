@@ -1295,59 +1295,63 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
                 
                 -- Listen for key input
                 local connection
-                connection = UserInputService.InputBegan:Connect(function(input2)
-                    if input2.UserInputType == Enum.UserInputType.Keyboard then
-                        local keyName = input2.KeyCode.Name
-                        
-                        if keyName == "Backspace" then
-                            -- Unbind key
-                            toggle.key = nil
-                            Keybind.Text = "NONE"
-                        else
-                            -- Set new key
-                            toggle.key = keyName
-                            Keybind.Text = keyName
+                if UserInputService then
+                    connection = UserInputService.InputBegan:Connect(function(input2)
+                        if input2.UserInputType == Enum.UserInputType.Keyboard then
+                            local keyName = input2.KeyCode.Name
+                            
+                            if keyName == "Backspace" then
+                                -- Unbind key
+                                toggle.key = nil
+                                Keybind.Text = "NONE"
+                            else
+                                -- Set new key
+                                toggle.key = keyName
+                                Keybind.Text = keyName
+                            end
+                            
+                            isBinding = false
+                            connection:Disconnect()
                         end
-                        
-                        isBinding = false
-                        connection:Disconnect()
-                    end
-                end)
+                    end)
+                end
             end
         end
     end)
     
     -- Key press detection for toggling
-    UserInputService.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Keyboard and toggle.key and input.KeyCode.Name == toggle.key then
-            toggle.state = not toggle.state
-            
-            -- Animate toggle
-            if toggle.state then
-                -- Turn on animation
-                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-                UIStroke.Color = Color3.fromRGB(26, 26, 26)
-                ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                Check.Visible = true
+    if UserInputService then
+        UserInputService.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.Keyboard and toggle.key and input.KeyCode.Name == toggle.key then
+                toggle.state = not toggle.state
                 
-                -- Smooth scale animation
-                local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
-                scaleTween:Play()
-            else
-                -- Turn off animation
-                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-                UIStroke.Color = Color3.fromRGB(26, 26, 26)
-                ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
-                Check.Visible = false
+                -- Animate toggle
+                if toggle.state then
+                    -- Turn on animation
+                    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                    ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    Check.Visible = true
+                    
+                    -- Smooth scale animation
+                    local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                    local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
+                    scaleTween:Play()
+                else
+                    -- Turn off animation
+                    Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                    UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                    ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                    Check.Visible = false
+                end
+                
+                -- Call callback if provided
+                if config.Callback then
+                    config.Callback(toggle.state)
+                end
             end
-            
-            -- Call callback if provided
-            if config.Callback then
-                config.Callback(toggle.state)
-            end
-        end
-    end)
+        end)
+    end
     
     -- Register with section
     table.insert(self.components, toggle)
