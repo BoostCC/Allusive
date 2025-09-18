@@ -1127,32 +1127,6 @@ Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Check.Parent = Toggle
     Check.Visible = false
 
-local Keybind = Instance.new("TextLabel")
-Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
-Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Keybind.Text = "NONE"
-Keybind.BorderSizePixel = 0
-Keybind.AnchorPoint = Vector2.new(1, 0.5)
-Keybind.Size = UDim2.new(0, 1, 0, 1)
-Keybind.Name = "Keybind"
-Keybind.Position = UDim2.new(1, -30, 0.5, 0)
-Keybind.AutomaticSize = Enum.AutomaticSize.XY
-Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
-Keybind.TextSize = 14
-Keybind.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
-Keybind.Parent = ToggleComponent
-
-local UIPadding = Instance.new("UIPadding")
-UIPadding.PaddingTop = UDim.new(0, 3)
-UIPadding.PaddingBottom = UDim.new(0, 3)
-UIPadding.PaddingRight = UDim.new(0, 6)
-UIPadding.PaddingLeft = UDim.new(0, 6)
-UIPadding.Parent = Keybind
-
-local UICorner2 = Instance.new("UICorner")
-UICorner2.CornerRadius = UDim.new(0, 4)
-UICorner2.Parent = Keybind
     
     -- Toggle click functionality
     ToggleComponent.InputBegan:Connect(function(input)
@@ -1199,41 +1173,6 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
     toggle.toggle = Toggle
     toggle.check = Check
     toggle.text = ToggleText
-    toggle.keybind = Keybind
-    toggle.key = nil
-    
-    -- Keybind functionality
-    local isBinding = false
-    
-    Keybind.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if not isBinding then
-                isBinding = true
-                Keybind.Text = "..."
-                
-                -- Listen for key input
-                local connection
-                connection = UserInputService.InputBegan:Connect(function(input2)
-                    if input2.UserInputType == Enum.UserInputType.Keyboard then
-                        local keyName = input2.KeyCode.Name
-                        
-                        if keyName == "Backspace" then
-                            -- Unbind key
-                            toggle.key = nil
-                            Keybind.Text = "NONE"
-                        else
-                            -- Set new key
-                            toggle.key = keyName
-                            Keybind.Text = keyName
-                        end
-                        
-                        isBinding = false
-                        connection:Disconnect()
-                    end
-                end)
-            end
-        end
-    end)
     
     -- Register with section
     table.insert(self.components, toggle)
@@ -1305,32 +1244,6 @@ Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Check.Parent = Toggle
     Check.Visible = false
 
-local Keybind = Instance.new("TextLabel")
-Keybind.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
-Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Keybind.Text = "NONE"
-Keybind.BorderSizePixel = 0
-Keybind.AnchorPoint = Vector2.new(1, 0.5)
-Keybind.Size = UDim2.new(0, 1, 0, 1)
-Keybind.Name = "Keybind"
-Keybind.Position = UDim2.new(1, -30, 0.5, 0)
-Keybind.AutomaticSize = Enum.AutomaticSize.XY
-Keybind.TextYAlignment = Enum.TextYAlignment.Bottom
-Keybind.TextSize = 14
-Keybind.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
-Keybind.Parent = ToggleComponent
-
-local UIPadding = Instance.new("UIPadding")
-UIPadding.PaddingTop = UDim.new(0, 3)
-UIPadding.PaddingBottom = UDim.new(0, 3)
-UIPadding.PaddingRight = UDim.new(0, 6)
-UIPadding.PaddingLeft = UDim.new(0, 6)
-UIPadding.Parent = Keybind
-
-local UICorner2 = Instance.new("UICorner")
-UICorner2.CornerRadius = UDim.new(0, 4)
-UICorner2.Parent = Keybind
     
     -- Toggle click functionality
     ToggleComponent.InputBegan:Connect(function(input)
@@ -1400,6 +1313,38 @@ UIStroke.Color = Color3.fromRGB(26, 26, 26)
                         connection:Disconnect()
                     end
                 end)
+            end
+        end
+    end)
+    
+    -- Key press detection for toggling
+    UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Keyboard and toggle.key and input.KeyCode.Name == toggle.key then
+            toggle.state = not toggle.state
+            
+            -- Animate toggle
+            if toggle.state then
+                -- Turn on animation
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Check.Visible = true
+                
+                -- Smooth scale animation
+                local scaleInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local scaleTween = TweenService:Create(Check, scaleInfo, {Size = UDim2.new(0, 10, 0, 12)})
+                scaleTween:Play()
+            else
+                -- Turn off animation
+                Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+                UIStroke.Color = Color3.fromRGB(26, 26, 26)
+                ToggleText.TextColor3 = Color3.fromRGB(76, 76, 76)
+                Check.Visible = false
+            end
+            
+            -- Call callback if provided
+            if config.Callback then
+                config.Callback(toggle.state)
             end
         end
     end)
